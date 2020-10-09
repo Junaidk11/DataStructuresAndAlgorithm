@@ -57,4 +57,5 @@ int main(){
       Application code for using Stack DS. 
 
     */
+   return 0;
 }
