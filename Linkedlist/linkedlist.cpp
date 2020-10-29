@@ -77,3 +77,25 @@ Node* linkedlist::searchList(int x){
     }
     return listTraverser; // You will either get the address of the first node that has data == x or you will get NULL (indicating reached end of list and 'x' not found in the list)
 }
+
+Node* linkedlist::deleteNode(int x){
+
+    if(headptr==NULL){
+        return headptr; // LinkedList is empty
+    }else{
+
+        Node* nodeToDelete = searchList(x); // This will either return NULL or the pointer to where the first Node with data == x is located
+        if(nodeToDelete == NULL){
+            return nodeToDelete; // "x" not in the list
+        }else{
+            Node* findNodeBefore = headptr;
+            do{
+                findNodeBefore=findNodeBefore->getNextNode();
+            }while(findNodeBefore->getNextNode()!=nodeToDelete && findNodeBefore->getNextNode()!=NULL);
+
+            // After this you have a pointer to the node before the node to delete or NULL (which would mean nodeToDelete doesn't exist -> which is not possible based previous if statement)
+            findNodeBefore->setNextNode(nodeToDelete->getNextNode());
+            return findNodeBefore;
+        }
+    }
+}
