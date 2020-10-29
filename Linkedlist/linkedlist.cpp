@@ -29,6 +29,7 @@ linkedlist::~linkedlist()
     delete this;
 }
 
+// Adding a node to the front of the node
 int linkedlist::addNodeToFront(Node* nodePtr){
 
     if(true){
@@ -39,3 +40,23 @@ int linkedlist::addNodeToFront(Node* nodePtr){
     return 0; // Return 0 to indicate head node update failed. 
 }
 
+int linkedlist::addNodeToEnd(Node* nodePtr){
+
+    if(headptr==NULL){ // if Linkedlist is empty, add node to
+        headptr=nodePtr;
+        nodePtr->setNextNode(NULL); 
+        return 1; // 1 = true, indicates node successfully added
+    }else{
+
+        Node* listTraverser = headptr; // Create a node pointer to traverse through the linkedlist
+        while(listTraverser!=NULL){ //Loop through the linkedlist until reach the end of the list
+            listTraverser = listTraverser->getNextNode(); 
+        }
+        listTraverser->setNextNode(nodePtr); // The end node points to the new node
+        nodePtr->setNextNode(NULL); // The new node points to NULL (end of list indicator)
+        return 1; 
+
+    }
+    return 0;  // Node addition failed. 
+
+}
