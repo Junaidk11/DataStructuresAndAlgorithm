@@ -14,7 +14,7 @@ public:
     // Methods
     int addNodeToFront(Node* nodePtr);
     int addNodeToEnd(Node* nodePtr);
-    int isEmpty(Node *headptr);
+    int isEmpty();
     Node* searchList(int x);
     Node* deleteNode(int x);
 };
@@ -59,4 +59,12 @@ int linkedlist::addNodeToEnd(Node* nodePtr){
     }
     return 0;  // Node addition failed. 
 
+}
+
+int linkedlist::isEmpty(){
+    if(headptr==NULL){
+        return 1; // return True if headptr is pointing to NULL, linkedlist is empty
+    }else{
+        return 0; // return false if headptr is not pointing to NULL, this means linkedlist not empty.
+    }
 }
