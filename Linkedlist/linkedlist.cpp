@@ -32,6 +32,7 @@ class linkedlist{
 public:
     // Methods
     linkedlist();
+    ~linkedlist();
     void addNodeToFront(Node* nodePtr);
     int addNodeToEnd(Node* nodePtr);
     int isEmpty();
@@ -70,6 +71,10 @@ void Node::setNextNode(Node* node_ptr){
 
 linkedlist::linkedlist(){
     headptr = NULL;
+}
+
+linkedlist::~linkedlist(){
+    delete this;
 }
 
 // Adding a node to the front of the node
