@@ -17,7 +17,7 @@ class Node{
         int getData(){ return data;} 
         Node* getNextNode(); 
         void setData(int x);
-        Node* setNextNode(Node* node_ptr);
+        void setNextNode(Node* node_ptr);
 };
 
 Node::Node(){
@@ -44,6 +44,6 @@ void Node::setData(int x){
     this->data = x;
 }
 
-Node* Node::setNextNode(Node* node_ptr){
+void Node::setNextNode(Node* node_ptr){
     this->next=node_ptr;
 }
