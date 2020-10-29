@@ -68,3 +68,12 @@ int linkedlist::isEmpty(){
         return 0; // return false if headptr is not pointing to NULL, this means linkedlist not empty.
     }
 }
+
+Node* linkedlist::searchList(int x){
+    Node* listTraverser = headptr;  // Create a pointer to the head pointer of the list, will use it to traverse through the list
+
+    while(listTraverser->getNextNode()!=NULL && listTraverser->getData()!=x){
+        listTraverser = listTraverser->getNextNode();
+    }
+    return listTraverser; // You will either get the address of the first node that has data == x or you will get NULL (indicating reached end of list and 'x' not found in the list)
+}
