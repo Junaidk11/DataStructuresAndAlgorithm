@@ -17,6 +17,7 @@ public:
     int isEmpty();
     Node* searchList(int x);
     Node* deleteNode(int x);
+    void printList();
 };
 
 linkedlist::linkedlist(/* args */)
@@ -98,4 +99,14 @@ Node* linkedlist::deleteNode(int x){
             return findNodeBefore;
         }
     }
+}
+
+void linkedlist::printList(){
+    Node* listTraverser = headptr;
+    while(listTraverser!=NULL){
+
+        printf("List item: %d\n",listTraverser->getData());
+        listTraverser->setNextNode(listTraverser->getNextNode());
+    }
+
 }
