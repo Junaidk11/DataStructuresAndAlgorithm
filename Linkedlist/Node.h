@@ -3,8 +3,9 @@ using namespace std;
 
 class Node{
 
-    int data;
-    Node* next; 
+    private:
+        int data;
+        Node* next; 
     
     public:
         
@@ -14,9 +15,9 @@ class Node{
 
         // Getters and Setters
         int getData(){ return data;} 
-        Node* getNextNode(){ return this->next;} 
-        void setData(int x){ this->data = x;}
-        Node* setNextNode(Node* node_ptr){ return this->next;}
+        Node* getNextNode(); 
+        void setData(int x);
+        Node* setNextNode(Node* node_ptr);
 };
 
 Node::Node(){
@@ -30,4 +31,19 @@ Node::Node(int x){
 
 Node::~Node(){
     delete this;
+}
+
+int Node::getData(){
+    return data;
+}
+Node* Node::getNextNode(){
+    return next;
+}
+
+void Node::setData(int x){ 
+    this->data = x;
+}
+
+Node* Node::setNextNode(Node* node_ptr){
+    this->next=node_ptr;
 }
