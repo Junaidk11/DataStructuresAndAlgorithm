@@ -3,7 +3,6 @@ using namespace std;
 #include <stdio.h>
 
 
-
 class Node{
 
     private:
@@ -31,8 +30,13 @@ class linkedlist{
     Node* headptr; // 
 public:
     // Methods
+    /* The addition of the constructor and destructor of linkedlist class with Node class as an attribute throws: Segmentation error 11: Why?
+    *   Segmentation error = Going out of bound. I believe this is because of the atrributes of the linkedlist class is another class which has its own 
+    *   constructor and destructor. 
+    * 
+    /*
     linkedlist();
-    ~linkedlist();
+    ~linkedlist();*/
     void addNodeToFront(Node* nodePtr);
     int addNodeToEnd(Node* nodePtr);
     int isEmpty();
@@ -68,7 +72,7 @@ void Node::setData(int x){
 void Node::setNextNode(Node* node_ptr){
     this->next=node_ptr;
 }
-
+/*
 linkedlist::linkedlist(){
     headptr = NULL;
 }
@@ -76,6 +80,7 @@ linkedlist::linkedlist(){
 linkedlist::~linkedlist(){
     delete this;
 }
+*/
 
 // Adding a node to the front of the node
 void linkedlist::addNodeToFront(Node* nodePtr){
