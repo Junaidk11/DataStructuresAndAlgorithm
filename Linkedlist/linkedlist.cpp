@@ -35,7 +35,7 @@ public:
     int addNodeToEnd(Node* nodePtr);
     int isEmpty();
     Node* searchList(int x);
-    Node* deleteNode(int x);
+    int deleteNode(int x);
     void printList();
 };
 
@@ -118,26 +118,28 @@ Node* linkedlist::searchList(int x){
     return listTraverser; // You will either get the address of the first node that has data == x or you will get NULL (indicating reached end of list and 'x' not found in the list)
 }
 
-Node* linkedlist::deleteNode(int x){
+int linkedlist::deleteNode(int x){
 
+    Node* nodeToDelete;
     if(headptr==NULL){
-        return headptr; // LinkedList is empty
+        return 0; // LinkedList is empty
     }else{
 
-        Node* nodeToDelete = searchList(x); // This will either return NULL or the pointer to where the first Node with data == x is located
+        nodeToDelete = searchList(x); // This will either return NULL or the pointer to where the first Node with data == x is located
         if(nodeToDelete == NULL){
-            return nodeToDelete; // "x" not in the list
+            return 0; // "x" not in the list
         }else{
             Node* findNodeBefore = headptr;
-            do{
+
+            while(findNodeBefore->getNextNode()!=NULL && findNodeBefore->getNextNode()!=nodeToDelete){
                 findNodeBefore=findNodeBefore->getNextNode();
-            }while(findNodeBefore->getNextNode()!=nodeToDelete && findNodeBefore->getNextNode()!=NULL);
+            }
 
             // After this you have a pointer to the node before the node to delete or NULL (which would mean nodeToDelete doesn't exist -> which is not possible based previous if statement)
             findNodeBefore->setNextNode(nodeToDelete->getNextNode());
-            return findNodeBefore;
         }
     }
+    return 1; // 1 indicates delete successfull
 }
 
 void linkedlist::printList(){
@@ -206,6 +208,16 @@ int main(){
     }else{
         printf("The address of the first node that contains your requested integer: %p.\n", l.searchList(x));
     }
+
+    // Delete a node from the  list
+    cout << "Enter an integer to delete from your linkedlist:" << endl; 
+    scanf("%d",&x);
+    if(l.deleteNode(x)){
+        printf("Delete successful.\n");
+    }else{
+        printf("Delete failed - Integer not found or delete operation failed. \n");
+    }
+    l.printList();
 
     return 0;
 }
