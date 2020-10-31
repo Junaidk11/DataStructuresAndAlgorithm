@@ -121,6 +121,22 @@ int circularLinkedList::AddNodeToEnd(Node* nodePtr){
     return 0;
 }
 
+Node* circularLinkedList::searchList(int x){
+    Node* listTraverser = headptr; 
+    if(listTraverser==NULL){
+        //List is empty
+        return NULL; 
+    }else{
+        do{
+            if(listTraverser->getData()==x){
+                return listTraverser; 
+            }else{
+                listTraverser=listTraverser->getNextNode();
+            }
+        }while(listTraverser!=NULL && listTraverser!=headptr); // The first condition is added to handle the scenario where your circularlist has a single node.
+    }
+    return NULL;
+}
 
 Node::Node(){
     this->nextNode= NULL;
@@ -151,8 +167,8 @@ void Node::setNextNode(Node* nextNodePtr){
 }
 
 int main(){
-    
 
+    /* Uncomment this block to test AddNodeToEnd method of the circularlinkedlist class
     // Testing the 3 possible setups of linkedlist for Node addition to the end:
         // An empty list
             int x;
@@ -177,8 +193,8 @@ int main(){
             numbers.AddNodeToEnd(item3);
             numbers.printlist();
 
-    
-    /* // Uncomment this block to test adding nodes to the front and the back. 
+    */
+     // Uncomment this block to test adding nodes to the front and the back. 
     // Adding a node to the front of the list 
     int x;
     printf("Enter an integer: (Adding to the front of the list)");
@@ -222,7 +238,17 @@ int main(){
     Node* item6 = new Node(x);
     numbers.AddNodeToEnd(item6);
     numbers.printlist();
-    */
+    
+
+    // Testing searchList Method of the circularlinkedlist class
+    printf("Enter an integer to search for in the list: ");
+    scanf("%d",&x);
+    Node* searchResult = numbers.searchList(x);
+    if(searchResult==NULL){
+        printf("Integer not found in the list. \n\n");
+    }else{
+        printf("Integer found in the list. First node in the list that contains this integer: %p \n", searchResult);
+    }
 
     return 0;
 
