@@ -162,8 +162,8 @@ void linkedlist::printList(){
     int i =1;
     while(listTraverser!=NULL){ //If the current node is not NULL, continue printing the node's data
 
-        printf("Node %d's data %d and Address %p. \n",i++,listTraverser->getData(), listTraverser);
-        
+        printf("Node %d Address: %p, Node %d: Data = %d, Next Node Address: %p. \n",i,listTraverser, i,listTraverser->getData(), listTraverser->getNextNode());
+        i++;
         listTraverser = listTraverser->getNextNode();
     }
 }
