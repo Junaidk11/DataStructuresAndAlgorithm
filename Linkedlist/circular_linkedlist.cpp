@@ -89,6 +89,38 @@ int circularLinkedList::AddNodeToFront(Node* nodePtr){
     return 0;
 }
 
+/*
+        Three possible setups you can have when adding a new node to the circular linkedlist:
+            1) The linkedlist is empty. 
+            2) The linkedlist only has one node, i.e. the first node is pointing to NULL, i.e. your linkedlist is actually a linear linkedlist. 
+            3) The linked list has more than 1 node, i.e. you have a circular linked list
+
+*/
+int circularLinkedList::AddNodeToEnd(Node* nodePtr){
+    if(headptr==NULL){  // Check if list is empty. if true, then add node by pointing to the headptr to the nodeptr
+            headptr = nodePtr;
+            nodePtr->setNextNode(NULL); // The new node is the first node in the list, it should not be pointing to anything -> i.e. you have a linear linkedlist.
+            return 1; // new node added to the list
+    }else if(headptr->getNextNode()==NULL){ // Check if the list has 1 node only, if true, then add new node after the first node and point the new node to the first node, headptr not changed
+        Node* listTraverser = headptr; // Create a temporary pointer to traverse through the list.
+        listTraverser->setNextNode(nodePtr); // The first node (which is the only node in the list will point to the next node)
+        listTraverser=listTraverser->getNextNode(); //Move the temporary node pointer to the newly added node in the list
+        listTraverser->setNextNode(headptr); // The newly added node is now pointing to the first node, which is pointed to by the headptr (head pointer)
+        return 1; // New node added to the list
+    }else{  // The third case is: the list already has 2 or more nodes
+        
+        Node* listTraverser = headptr; // Create a temporary pointer to traverse through the list.
+        while(listTraverser->getNextNode()!=headptr){  // Updated indexing node-pointer until you reach the node that is pointing back to the node that is pointing to the head node.
+                listTraverser = listTraverser->getNextNode();
+        }
+        // After loop, the indexing node-pointer is pointing to a node that is pointing to the headnode, 
+        listTraverser->setNextNode(nodePtr); // Now the last node of the circular linkedlist will point to the new node
+        nodePtr->setNextNode(headptr); // The newly added node to the end of the circular linkedlist will point to the head node.
+        return 1; // Addition to the list was succesfull
+    }
+    return 0;
+}
+
 
 Node::Node(){
     this->nextNode= NULL;
@@ -120,9 +152,36 @@ void Node::setNextNode(Node* nextNodePtr){
 
 int main(){
     
+
+    // Testing the 3 possible setups of linkedlist for Node addition to the end:
+        // An empty list
+            int x;
+            printf("Enter an integer: (Note: Adding to the end of the list):");
+            scanf("%d",&x);
+            Node* item1 = new Node(x);
+            circularLinkedList numbers;
+            numbers.AddNodeToEnd(item1);
+            numbers.printlist();
+
+        // Adding a node to the end of a list with a single node
+            printf("Enter an integer (Note: Adding to the end of the list):");
+            scanf("%d",&x);
+            Node* item2 = new Node(x);
+            numbers.AddNodeToEnd(item2);
+            numbers.printlist();
+
+        // Adding a node to the end of a list with 2 or more nodes
+            printf("Enter an integer (Note: Adding to the end of the list):");
+            scanf("%d",&x);
+            Node* item3 = new Node(x);
+            numbers.AddNodeToEnd(item3);
+            numbers.printlist();
+
+    
+    /* // Uncomment this block to test adding nodes to the front and the back. 
     // Adding a node to the front of the list 
     int x;
-    printf("Enter an integer:");
+    printf("Enter an integer: (Adding to the front of the list)");
     scanf("%d",&x);
     Node* item1 = new Node(x);
     circularLinkedList numbers;
@@ -130,25 +189,40 @@ int main(){
     numbers.printlist();
 
     // Adding a node to the front of the list 
-    printf("Enter an integer:");
+    printf("Enter an integer (Note: Adding to the front of the list):");
     scanf("%d",&x);
     Node* item2 = new Node(x);
     numbers.AddNodeToFront(item2);
     numbers.printlist();
 
     // Adding a node to the front of the list 
-    printf("Enter an integer:");
+    printf("Enter an integer (Note: Adding to the front of the list):");
     scanf("%d",&x);
     Node* item3 = new Node(x);
     numbers.AddNodeToFront(item3);
     numbers.printlist();
 
     // Adding a node to the front of the list 
-    printf("Enter an integer:");
+    printf("Enter an integer (Note: Adding to the front of the list):");
     scanf("%d",&x);
     Node* item4 = new Node(x);
     numbers.AddNodeToFront(item4);
     numbers.printlist();
+
+    // Adding a node to the back of the list 
+    printf("Enter an integer (Note: Adding to the end of the list):");
+    scanf("%d",&x);
+    Node* item5 = new Node(x);
+    numbers.AddNodeToEnd(item5);
+    numbers.printlist();
+
+    // Adding a node to the back of the list 
+    printf("Enter an integer (Note: Adding to the end of the list):");
+    scanf("%d",&x);
+    Node* item6 = new Node(x);
+    numbers.AddNodeToEnd(item6);
+    numbers.printlist();
+    */
 
     return 0;
 
