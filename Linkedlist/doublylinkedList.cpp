@@ -34,6 +34,7 @@ class doublyLinkedList{
         void deleteNode(Node *);
         void forward_traverse();
         void backward_traverse();
+        Node* searchList(int x);
 };
 
 // Constructors and Destructor definitions 
@@ -107,6 +108,42 @@ void doublyLinkedList::AddNodeToEnd(int x){
         lastNode = nodePtr; // Update the lastNode pointer of the list to point to the newly added node
     }
 }
+
+void doublyLinkedList::AddNodeAfter(Node* nodePtr, int x){
+
+    Node* nodeToAdd=nodeInitialization(x); // Dynamically allocate memory for the new node and initialize it. 
+    if(firstNode==NULL && lastNode==NULL){ // check if list is empty, if empty, just add new node to the list
+        firstNode = nodeToAdd;
+        lastNode = nodeToAdd; 
+    }else if(nodePtr!=NULL){// Making sure nodePtr is not NULL, can't add after a NULL PTR
+        if(nodePtr==lastNode){ //Adding after the last node = AddToEnd
+            AddNodeToEnd(x);
+        }else{ // Adding somewhere between the firstNode and lastNode
+            Node* temporaryNodePtr = nodePtr->frontNode; // This temp node pointer is pointing to the node ahead of nodePtr
+            nodeToAdd->frontNode = temporaryNodePtr; // The new node should point to the node ahead of nodePtr
+            temporaryNodePtr->backNode = nodeToAdd;  // The node ahead of nodePtr should point back to new node
+            nodeToAdd->backNode = nodePtr; // The new node's back pointer should point to the nodePtr
+            nodePtr->frontNode = nodeToAdd; // nodePtr is the node after which the new node is added, so it should point to the new node.
+        }
+    }
+}
+
+Node* doublyLinkedList:: searchList(int x){
+    
+    if(firstNode==NULL && lastNode==NULL){
+        return NULL; //List is empty
+    }else{
+        Node* listTraverser = firstNode; // Can search from the front or from the back 
+        while(listTraverser!=NULL){
+            if(listTraverser->data==x){
+                return listTraverser;
+            }else{
+                listTraverser=listTraverser->frontNode;
+            }
+        }
+    }
+    return NULL; // Data not found in the list
+}
 void doublyLinkedList::forward_traverse(){
 
     printf("Forward traversing. \n");
@@ -149,28 +186,37 @@ int main(){
     scanf("%d",&x);
     numbers->AddNodeToFront(x);
     numbers->forward_traverse();
-    numbers->backward_traverse();
+    //numbers->backward_traverse();
 
     // Add Node to the front of the list
      printf("Enter an integer (Note: Adding to the front of the list):");
     scanf("%d",&x);
     numbers->AddNodeToFront(x);
     numbers->forward_traverse();
-    numbers->backward_traverse();
+    //numbers->backward_traverse();
 
     // Add Node to the end of the list
     printf("Enter an integer (Note: Adding to the end of the list):");
     scanf("%d",&x);
     numbers->AddNodeToEnd(x);
     numbers->forward_traverse();
-    numbers->backward_traverse();
+    //numbers->backward_traverse();
 
     // Add Node to the end of the list
     printf("Enter an integer (Note: Adding to the end of the list):");
     scanf("%d",&x);
     numbers->AddNodeToEnd(x);
     numbers->forward_traverse();
-    numbers->backward_traverse();
+    //numbers->backward_traverse();
+
+    // Add Node after a given node
+    int y; // Adding node after this value
+    printf("Enter node data you want to add, followed by the value of the node you want to add this node after:");
+    scanf("%d %d",&x, &y);
+    Node* afterNode = numbers->searchList(y); // Search for y in the list
+    numbers->AddNodeAfter(afterNode, x);  // Add the new node with data=x to the list
+    numbers->forward_traverse();
+    //numbers->backward_traverse();
 
     return 0;
 }
