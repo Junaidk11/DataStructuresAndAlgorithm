@@ -34,9 +34,9 @@ public:
     *   Segmentation error = Going out of bound. I believe this is because of the atrributes of the linkedlist class is another class which has its own 
     *   constructor and destructor. 
     * 
-    /*
-    linkedlist();
-    ~linkedlist();*/
+    */
+    //linkedlist();
+    //~linkedlist();
     void addNodeToFront(Node* nodePtr);
     int addNodeToEnd(Node* nodePtr);
     int isEmpty();
