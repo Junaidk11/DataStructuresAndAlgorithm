@@ -23,6 +23,8 @@ class doublyLinkedList{
         int getData(Node* nodePtr); 
         Node* getFirstNodeAddress();
         Node* getLastNodeAddress();
+
+        friend Node* nodeInitialization(int value, Node* frontPtr, Node* backPtr);
         
         // Doubly linked list Operations
         void AddNodeToFront(int x);
@@ -68,7 +70,86 @@ Node* doublyLinkedList::getLastNodeAddress(){
     return this->lastNode;
 
 }
+
+// Initialize a node with data
+Node* nodeInitialization(int value){
+    Node* node = new Node;
+    node->data = value; 
+    node->backNode = NULL; 
+    node->frontNode = NULL; 
+    return node;
+}
+
+void doublyLinkedList::AddNodeToFront(int x){
+
+    Node* nodePTr = nodeInitialization(x); // Dynamically allocate memory for the new node and initialize it. 
+   if(firstNode==NULL && lastNode==NULL){
+       firstNode = nodePTr; 
+       lastNode = nodePTr; 
+   }else{
+       firstNode->backNode = nodePTr;  // The current first node will point to the new node which was just initialized.
+       nodePTr->frontNode = firstNode; // The new node's front will point to the old head node (aka first node)
+       firstNode = nodePTr; // Update headnode pointer
+   }
+}
+
+void doublyLinkedList::forward_traverse(){
+
+    printf("Forward traversing. \n");
+    Node* listTraverser = firstNode; // Use this pointer to traverse through the list
+    int i = 1;
+    do{
+        if(listTraverser==NULL){
+            break; // List is empty
+        }else{
+            printf("Node %d Address: %p, Node %d: Data = %d, Next Node Address: %p. \n",i,listTraverser, i,listTraverser->data, listTraverser->frontNode);
+            listTraverser = listTraverser->frontNode;
+        }
+        i++;
+    }while(listTraverser!=NULL);
+}
+
+void doublyLinkedList::backward_traverse(){
+
+    printf("Backward traversing. \n");
+    Node* listTraverser = lastNode; // Use this pointer to traverse through the list
+    int i = 1;
+    do{
+        if(listTraverser==NULL){
+            break; // List is empty
+        }else{
+            printf("Node %d Address: %p, Node %d: Data = %d, Next Node Address: %p. \n",i,listTraverser, i,listTraverser->data, listTraverser->backNode);
+            listTraverser = listTraverser->backNode;
+        }
+        i++;
+    }while(listTraverser!=NULL);
+}
+
 int main(){
+
+
+    doublyLinkedList* numbers = new doublyLinkedList;     // Dynamically allocate memory for the doubly linked list
+    int x;
+    // Add Node to the front of list
+    cout << "Enter an integer:" << endl; 
+    scanf("%d",&x);
+    numbers->AddNodeToFront(x);
+    numbers->forward_traverse();
+    numbers->backward_traverse();
+
+    // Add Node to the front of the list
+    cout << "Enter an integer:" << endl; 
+    scanf("%d",&x);
+    numbers->AddNodeToFront(x);
+    numbers->forward_traverse();
+    numbers->backward_traverse();
+
+    // Add Node to the front of the list
+    cout << "Enter an integer:" << endl; 
+    scanf("%d",&x);
+    numbers->AddNodeToFront(x);
+    numbers->forward_traverse();
+    numbers->backward_traverse();
 
 
     return 0;
