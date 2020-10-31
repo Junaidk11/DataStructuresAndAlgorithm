@@ -128,6 +128,25 @@ void doublyLinkedList::AddNodeAfter(Node* nodePtr, int x){
     }
 }
 
+void doublyLinkedList::AddNodeBefore(Node* nodePtr, int x){
+
+    Node* nodeToAdd=nodeInitialization(x); // Dynamically allocate memory for the new node and initialize it. 
+    if(firstNode==NULL && lastNode==NULL){ // check if list is empty, if empty, just add new node to the list
+        firstNode = nodeToAdd;
+        lastNode = nodeToAdd; 
+    }else if(nodePtr!=NULL){// Making sure nodePtr is not NULL, can't add before a NULL PTR
+        if(nodePtr==firstNode){ //Adding before the first node = AddToFront
+            AddNodeToFront(x);
+        }else{ // Adding somewhere between the firstNode and lastNode
+            Node* temporaryNodePtr = nodePtr->backNode; // This temp node pointer is pointing to the node before of nodePtr
+            nodeToAdd->backNode = temporaryNodePtr; // The new node should point to the node behind of nodePtr
+            temporaryNodePtr->frontNode = nodeToAdd;  // The node behind of nodePtr should point back to new node
+            nodeToAdd->frontNode = nodePtr; // The new node's front pointer should point to nodePtr
+            nodePtr->backNode = nodeToAdd; // nodePtr is the node after which the new node is added, so it should point to the new node.
+        }
+    }
+
+}
 Node* doublyLinkedList:: searchList(int x){
     
     if(firstNode==NULL && lastNode==NULL){
@@ -215,6 +234,16 @@ int main(){
     scanf("%d %d",&x, &y);
     Node* afterNode = numbers->searchList(y); // Search for y in the list
     numbers->AddNodeAfter(afterNode, x);  // Add the new node with data=x to the list
+    numbers->forward_traverse();
+    //numbers->backward_traverse();
+
+
+    // Add Node before a given node
+      // Adding node before the value = y
+    printf("Enter node data you want to add, followed by the value of the node you want to add this node before:");
+    scanf("%d %d",&x, &y);
+    Node* beforeNode = numbers->searchList(y); // Search for y in the list
+    numbers->AddNodeBefore(beforeNode, x);  // Add the new node with data=x to the list
     numbers->forward_traverse();
     //numbers->backward_traverse();
 
