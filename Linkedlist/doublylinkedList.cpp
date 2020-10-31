@@ -34,8 +34,40 @@ class doublyLinkedList{
         void backward_traverse();
 };
 
+// Constructors and Destructor definitions 
 
+doublyLinkedList::doublyLinkedList(){
+    setFirstNodeAddress(NULL);
+    setLastNodeAddress(NULL);
+}
 
+doublyLinkedList::doublyLinkedList(Node* firstNodePtr, Node* lastNodePtr){
+    setFirstNodeAddress(firstNodePtr);
+    setLastNodeAddress(lastNodePtr);
+}
+
+doublyLinkedList::~doublyLinkedList(){
+    delete this;
+}
+
+// Setters and Getter Definitions
+
+void doublyLinkedList::setFirstNodeAddress(Node* nodePtr){
+    firstNode = nodePtr;
+}
+void doublyLinkedList::setLastNodeAddress(Node* nodePtr){
+    lastNode = nodePtr;
+} 
+int doublyLinkedList::getData(Node* nodePtr){
+    return nodePtr->data;
+}
+Node* doublyLinkedList::getFirstNodeAddress(){
+    return this->firstNode;
+}
+Node* doublyLinkedList::getLastNodeAddress(){
+    return this->lastNode;
+
+}
 int main(){
 
 
