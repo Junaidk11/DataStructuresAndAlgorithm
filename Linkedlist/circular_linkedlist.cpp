@@ -138,6 +138,26 @@ Node* circularLinkedList::searchList(int x){
     return NULL;
 }
 
+
+void circularLinkedList::deleteNode(int x){
+    Node* listTraverser1 = headptr;  
+    if(listTraverser1==NULL){ // List is empty
+        return;  // Adding this return in a void function will increase readability of the code
+    }else{
+        Node* listTraverser2 = listTraverser1->getNextNode();
+        do{
+            if(listTraverser2->getData()==x){
+                listTraverser1->setNextNode(listTraverser2->getNextNode()); // The previous node's node-pointer will point to the node after the one that contains x
+                break;
+            }else{
+                listTraverser1 = listTraverser1->getNextNode(); // Update the back-pointer
+                listTraverser2=listTraverser1->getNextNode();   // Update the front-pointer (this will point to the node that should be deleted, if x is found in it)
+            }
+        }while(listTraverser1!=NULL && listTraverser1!=headptr);
+    }
+}
+
+
 Node::Node(){
     this->nextNode= NULL;
 }
@@ -239,7 +259,7 @@ int main(){
     numbers.AddNodeToEnd(item6);
     numbers.printlist();
     
-
+    
     // Testing searchList Method of the circularlinkedlist class
     printf("Enter an integer to search for in the list: ");
     scanf("%d",&x);
@@ -249,6 +269,12 @@ int main(){
     }else{
         printf("Integer found in the list. First node in the list that contains this integer: %p \n", searchResult);
     }
+
+    // Testing the deleteNode Method of the circularlinkedlist class
+    printf("Enter an integer to delete from the list: ");
+    scanf("%d",&x);
+    numbers.deleteNode(x);
+    numbers.printlist();
 
     return 0;
 
