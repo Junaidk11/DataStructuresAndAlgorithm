@@ -93,6 +93,20 @@ void doublyLinkedList::AddNodeToFront(int x){
    }
 }
 
+
+void doublyLinkedList::AddNodeToEnd(int x){
+
+    Node* nodePtr = nodeInitialization(x); // Dynamically allocate memory for the new node and initialize it. 
+
+    if(firstNode==NULL && lastNode==NULL){ // List is empty
+        firstNode = nodePtr; 
+        lastNode = nodePtr;
+    }else{
+        lastNode->frontNode = nodePtr;  // The last node's front pointer will point to the new node
+        nodePtr->backNode = lastNode; // The new node's back pointer will point to the current last node
+        lastNode = nodePtr; // Update the lastNode pointer of the list to point to the newly added node
+    }
+}
 void doublyLinkedList::forward_traverse(){
 
     printf("Forward traversing. \n");
@@ -131,26 +145,32 @@ int main(){
     doublyLinkedList* numbers = new doublyLinkedList;     // Dynamically allocate memory for the doubly linked list
     int x;
     // Add Node to the front of list
-    cout << "Enter an integer:" << endl; 
+    printf("Enter an integer (Note: Adding to the front of the list):");
     scanf("%d",&x);
     numbers->AddNodeToFront(x);
     numbers->forward_traverse();
     numbers->backward_traverse();
 
     // Add Node to the front of the list
-    cout << "Enter an integer:" << endl; 
+     printf("Enter an integer (Note: Adding to the front of the list):");
     scanf("%d",&x);
     numbers->AddNodeToFront(x);
     numbers->forward_traverse();
     numbers->backward_traverse();
 
-    // Add Node to the front of the list
-    cout << "Enter an integer:" << endl; 
+    // Add Node to the end of the list
+    printf("Enter an integer (Note: Adding to the end of the list):");
     scanf("%d",&x);
-    numbers->AddNodeToFront(x);
+    numbers->AddNodeToEnd(x);
     numbers->forward_traverse();
     numbers->backward_traverse();
 
+    // Add Node to the end of the list
+    printf("Enter an integer (Note: Adding to the end of the list):");
+    scanf("%d",&x);
+    numbers->AddNodeToEnd(x);
+    numbers->forward_traverse();
+    numbers->backward_traverse();
 
     return 0;
 }
