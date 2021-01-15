@@ -1,5 +1,6 @@
-// Tree Node Structure
+#include <iostream>
 
+// Tree Node Structure
 struct tree_node{
     int data;  // For node data
     tree_node *left, *right; // Node pointers to hold left and right subtree
@@ -21,11 +22,22 @@ class BinarySearchTree{
     public: 
     
     // The public methods will call the private methods AND handle the scenario when root == NULL (i.e. empty tree)
-
+    void BinarySearchTree(){
+        root = NULL;
+    }
     void insert(int data);
     bool searchTree(int data);
     void pre_order();
     void post_order();
     void in_order();
 };
+
+void BinarySearchTree::insert(int data){
+    if(root==NULL){
+        //Tree is empty
+        cout<<"Binary Search Tree is empty." << endl; 
+    }else{
+        insert(root,data);
+    }
+}
 
