@@ -1,29 +1,29 @@
 #include "Node.h"
 
 Node::Node(){
-    this->next=NULL;
+    this->nextNode= NULL;
 }
-
 Node::Node(int x){
-    this->data=x;
-    this->next=NULL;
+    this->data = x; 
+    this->nextNode = NULL;
 }
 
 Node::~Node(){
-    delete this;
+    delete this; // Delete the calling object
 }
 
 int Node::getData(){
-    return data;
+    return this->data;
 }
+
 Node* Node::getNextNode(){
-    return next;
+    return this->nextNode;
 }
 
-void Node::setData(int x){ 
-    this->data = x;
+void Node::setData(int x){
+    this->data =x;
 }
 
-void Node::setNextNode(Node* node_ptr){
-    this->next=node_ptr;
+void Node::setNextNode(Node* nextNodePtr){
+    this->nextNode = nextNodePtr;
 }

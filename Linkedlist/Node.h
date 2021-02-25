@@ -4,20 +4,17 @@ using namespace std;
 /*  Node Class Definition.  */ 
 class Node{
 
-    private:
+    private: 
         int data;
-        Node* next; 
-    
+        Node* nextNode;
     public:
-        
-        Node();// Default Constructor
-        Node(int x); // Parameterized constructor
-        ~Node(); // Destructor
-
+        Node();  // Default constructor
+        Node(int x); // Parametric Constructor
+        ~Node();     // Destructor 
         // Getters and Setters
-        int getData(); 
-        Node* getNextNode(); 
-        void setData(int x);
-        void setNextNode(Node* node_ptr);
+        int getData();
+        Node* getNextNode();
+        void setData(int x); 
+        void setNextNode(Node* nextNodePtr);
 };
 
