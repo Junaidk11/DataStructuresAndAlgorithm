@@ -4,5 +4,4 @@
  - Stacks
  - Queues
  - Linkedlist
- - Trees
- 
+ - Binary Search Tree
