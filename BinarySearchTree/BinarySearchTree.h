@@ -13,7 +13,7 @@ class BinarySearchTree{
 
     // Binary Search Tree Methods
     void insert(tree_node* node, int data); 
-    bool searhTree(tree_node* node, int data);
+    bool searchTree(tree_node* node, int data);
 
     // Traversing tree
     void pre_order(tree_node *root);

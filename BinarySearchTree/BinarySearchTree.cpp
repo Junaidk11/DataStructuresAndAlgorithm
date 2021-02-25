@@ -126,3 +126,36 @@ void BinarySearchTree::post_order(){
         post_order(root); // Call the private member function 
     }/* end else */
 }
+
+
+bool BinarySearchTree::searchTree(tree_node *node, int data){
+    bool itemExist = false;
+    if(node!=NULL){ // Make sure you're not out of bounds 
+            if(node->data == data){ // Check if item is in the root node
+                itemExist = true; 
+                return itemExist;
+            }/* end if */
+            else if(data < node->data){ // Item, if exists, must be in the left subtree
+                itemExist = searchTree(node->left, data);  // Recursive Search on the left subtree.
+            } /* end else-if */
+            else if(data > node->data){ // Item, if exists, must be in the right subtree
+                itemExist = searchTree(node->right, data);  // Recursive Search on the right subtree
+            } /* end else-if */
+    } /* end if */
+
+    return itemExist; // Item doesn't exist in the tree. 
+}
+
+bool BinarySearchTree::searchTree(int data){
+
+    bool itemExist = false; 
+    if(root==NULL){
+        cout<< "Tree is empty." <<endl; 
+    } /* end if */
+    else{
+        itemExist = searchTree(root, data); // Call the private member function
+        
+    } /* end else */
+    return itemExist; 
+
+}

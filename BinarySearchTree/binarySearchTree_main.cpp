@@ -16,6 +16,8 @@ int main(){
     cout << endl;
     myTree.post_order(); // post_order traversal, the root node is processed at the end. 
     cout << endl;
+    cout << "Item Search Result: " << myTree.searchTree(1) << endl;  // should return 0 
+    cout << "Item Search Result: " << myTree.searchTree(23) << endl;  // should return 1 -> this is the right most leaf node of the tree
 
 
     return 0;
