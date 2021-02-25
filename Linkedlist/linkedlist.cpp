@@ -1,78 +1,6 @@
-#include <iostream>
-using namespace std; 
 #include <stdio.h>
+#include "linkedlist.h"
 
-
-class Node{
-
-    private:
-        int data;
-        Node* next; 
-    
-    public:
-        
-        Node();// Default Constructor
-        Node(int x); // Parameterized constructor
-        ~Node(); // Destructor
-
-        // Getters and Setters
-        int getData(); 
-        Node* getNextNode(); 
-        void setData(int x);
-        void setNextNode(Node* node_ptr);
-};
-
-
-
-class linkedlist{
-
-    /* data */
-    Node* headptr; // 
-public:
-    // Methods
-    /* The addition of the constructor and destructor of linkedlist class with Node class as an attribute throws: Segmentation error 11: Why?
-    *   Segmentation error = Going out of bound. I believe this is because of the atrributes of the linkedlist class is another class which has its own 
-    *   constructor and destructor. 
-    * 
-    */
-    //linkedlist();
-    //~linkedlist();
-    void addNodeToFront(Node* nodePtr);
-    int addNodeToEnd(Node* nodePtr);
-    int isEmpty();
-    Node* searchList(int x);
-    int deleteNode(int x);
-    void printList();
-};
-
-Node::Node(){
-    this->next=NULL;
-}
-
-Node::Node(int x){
-    this->data=x;
-    this->next=NULL;
-}
-
-Node::~Node(){
-    delete this;
-}
-
-int Node::getData(){
-    return data;
-}
-Node* Node::getNextNode(){
-    return next;
-}
-
-void Node::setData(int x){ 
-    this->data = x;
-}
-
-void Node::setNextNode(Node* node_ptr){
-    this->next=node_ptr;
-}
-/*
 linkedlist::linkedlist(){
     headptr = NULL;
 }
@@ -80,7 +8,7 @@ linkedlist::linkedlist(){
 linkedlist::~linkedlist(){
     delete this;
 }
-*/
+
 
 // Adding a node to the front of the node
 void linkedlist::addNodeToFront(Node* nodePtr){
@@ -135,7 +63,7 @@ Node* linkedlist::searchList(int x){
 
 int linkedlist::deleteNode(int x){
 
-    Node* nodeToDelete;
+    Node* nodeToDelete = NULL;
     if(headptr==NULL){
         return 0; // LinkedList is empty
     }else{
@@ -146,13 +74,14 @@ int linkedlist::deleteNode(int x){
         }else{
             Node* findNodeBefore = headptr;
 
-            while(findNodeBefore->getNextNode()!=NULL && findNodeBefore->getNextNode()!=nodeToDelete){
+            while((findNodeBefore->getNextNode()!=NULL) && (findNodeBefore->getNextNode()!=nodeToDelete) ){
+                
                 findNodeBefore=findNodeBefore->getNextNode();
             }
-
             // After this you have a pointer to the node before the node to delete or NULL (which would mean nodeToDelete doesn't exist -> which is not possible based previous if statement)
-            findNodeBefore->setNextNode(nodeToDelete->getNextNode());
+            findNodeBefore->setNextNode(nodeToDelete->getNextNode());         
         }
+        
     }
     return 1; // 1 indicates delete successfull
 }
@@ -166,75 +95,4 @@ void linkedlist::printList(){
         i++;
         listTraverser = listTraverser->getNextNode();
     }
-}
-
-int main(){
-
-    int x;
-
-    // Add First node to the list
-    cout << "Enter an integer:" << endl; 
-    scanf("%d",&x);
-    Node* item = new Node(x);
-    linkedlist* l = new linkedlist; 
-    l->addNodeToFront(item);
-    l->printList();
-
-    // Add a new node to the front of the list
-    cout << "Enter an integer:" << endl; 
-    scanf("%d",&x);
-    Node* item2 = new Node(x);
-    l->addNodeToFront(item2);
-    l->printList();
-
-    // Add a new node to the end of the list
-    cout << "Enter an integer:" << endl; 
-    scanf("%d",&x);
-    Node* item3 = new Node(x);
-    l->addNodeToEnd(item3);
-    l->printList();
-
-    // Add a new node to the end of the list
-    cout << "Enter an integer:" << endl; 
-    scanf("%d",&x);
-    Node* item4 = new Node(x);
-    l->addNodeToEnd(item4);
-    l->printList();
-    
-    // Add a new node to the end of the list
-    cout << "Enter an integer:" << endl; 
-    scanf("%d",&x);
-    Node* item5 = new Node(x);
-    l->addNodeToFront(item5);
-    l->printList();
-
-    // Add a new node to the end of the list
-    cout << "Enter an integer:" << endl; 
-    scanf("%d",&x);
-    Node* item6 = new Node(x);
-    l->addNodeToFront(item6);
-    l->printList();
-
-    // Search for a node in the list with data == x
-    cout << "Enter an integer to look for in your linkedlist:" << endl; 
-    scanf("%d",&x);
-    if(l->searchList(x)==NULL){
-        printf("Integer not found in the list. \n");
-    }else{
-        printf("The address of the first node that contains your requested integer: %p.\n", l->searchList(x));
-    }
-
-    // Delete a node from the  list
-    cout << "Enter an integer to delete from your linkedlist:" << endl; 
-    scanf("%d",&x);
-    if(l->deleteNode(x)){
-        printf("Delete successful->\n");
-    }else{
-        printf("Delete failed - Integer not found or delete operation failed. \n");
-    }
-    l->printList();
-
-    // Release memory allocated in the heap
-    delete l;
-    return 0;
 }
