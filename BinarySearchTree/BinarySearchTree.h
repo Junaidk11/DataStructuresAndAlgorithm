@@ -92,3 +92,27 @@ void BinarySearchTree::insert(int data){
         insert(root,data); // call private member function to insert the new value (if it doesn't exist).
     } 
 }
+
+
+void BinarySearchTree::in_order(tree_node* root){
+
+    if(root!=NULL){
+        in_order(root->left); // Process left subtree in order, recursive call
+        cout << root->data << endl; // Print current Node's data
+        in_order(root->right); // Process right subtree in order, recursive call
+    }
+    
+    
+}
+/*   In order traversing the tree.
+        The output will be an ascending list. 
+*/
+void BinarySearchTree:: in_order(){
+    if(root == NULL){
+        cout << "Tree is empty." << endl;
+    } /* end if */
+    else {
+        in_order(root);  // Call the private member function
+    }
+
+}
