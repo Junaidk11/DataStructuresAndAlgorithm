@@ -1,5 +1,5 @@
 # Data Structures And Algorithm
- Implementations of Data Structures and Algorithms with OOP in C++
+ Implementations of Data Structures and Algorithms in C/C++
 
  - Stacks
  - Queues
