@@ -1,33 +1,44 @@
 #include "Stack.h"
 
-// Default Constructor
 Stack::Stack(){
-        top = -1;
-    
+    top = -1; //-1 indicates stack is empty, because Array indexing starts at 0
+    size = 10;
 }
+
 void Stack::push(int x){
-    if(top>=10){
-        cout << "Stack overflow. \n";
+    // Check if Stack is not full
+    if(top>size-1){
+        cout << "Stack overflow. \n" << endl;
     }else{
-        a[++top] = x;
+        a[++top] = x; // Increment top counter and then Push element to the top of the stack 
     }
 }
 
 int Stack::pop(){
-    int top_element; 
-    if(top<0){
-        cout << "Stack Underflow. \n";
-        top_element = -1;
+    //Check if stack is empty
+    if(top == -1){
+        cout << " Stack underflow." << endl;
     }else{
-        top_element = a[top--];
+        return a[top--]; //Return the top of the stack followed by decrementing top 
     }
-    return top_element;
 }
 
-void Stack::isEmpty(){
-    if(top<0){
-        cout<< "Stack is empty. \n";
+bool Stack::isEmpty(){
+    if(top==-1){
+        return true;
+    }
+    return false;
+}
+
+void Stack::display(){
+    // Check if stack is empty
+    if(top==-1){
+        cout << "Stack underflow. " << endl;
     }else{
-        cout<< "Stack not empty. \n";
+        int stack_size = top;
+        while(stack_size>-1){
+            printf("Stack element at index %d: %d \n", stack_size, a[stack_size]);
+            stack_size--;
+        }
     }
 }

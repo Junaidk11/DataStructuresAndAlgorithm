@@ -1,13 +1,13 @@
-// Stack Class 
+
 class Stack{
 
-    int top;  // Keep track of top of the Stack
-
+    int top;  // Top of the stack 
+    int size; 
     public:
-    int a[10];   // Stack maximum size is 10
-    Stack();     // Default constructor
-    void push(int x);   // Pushing new element to the stack
-    int pop();          // Removing top element of the stack
-    void isEmpty();     // Checking if stack is empty
-
+        int a[10];        // Stack Size
+        Stack();            // Stack class constructor
+        int pop();          // Method to remove element at top of the stack
+        void push(int x);   // Push new element to the top of the stack
+        bool isEmpty();     // Checking if the stack is empty
+        void display();     // Display Stack contents
 };
