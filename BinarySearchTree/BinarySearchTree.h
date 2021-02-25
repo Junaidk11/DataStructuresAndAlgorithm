@@ -93,12 +93,13 @@ void BinarySearchTree::insert(int data){
     } 
 }
 
+/* Private member function, called my the public in_order() method */ 
 
 void BinarySearchTree::in_order(tree_node* root){
 
     if(root!=NULL){
         in_order(root->left); // Process left subtree in order, recursive call
-        cout << root->data << endl; // Print current Node's data
+        printf("%d ",root->data);  // Print current Node's data
         in_order(root->right); // Process right subtree in order, recursive call
     }
     
@@ -107,7 +108,7 @@ void BinarySearchTree::in_order(tree_node* root){
 /*   In order traversing the tree.
         The output will be an ascending list. 
 */
-void BinarySearchTree:: in_order(){
+void BinarySearchTree::in_order(){
     if(root == NULL){
         cout << "Tree is empty." << endl;
     } /* end if */
@@ -115,4 +116,25 @@ void BinarySearchTree:: in_order(){
         in_order(root);  // Call the private member function
     }
 
+}
+
+void BinarySearchTree::pre_order(tree_node *root){
+    if(root!=NULL){
+        printf("%d ",root->data); 
+        pre_order(root->left); // Process left subtree, recursive call
+        pre_order(root->right); // Process right subtree, recursive call 
+    }
+}
+/* 
+    Preorder traversal of a tree. You process each node as you visit it. 
+    This traversal is used for copying a tree. 
+*/
+void BinarySearchTree::pre_order(){
+
+    if(root==NULL){
+        cout << " Tree is empty." <<endl;
+    } /* end if */
+    else{
+        pre_order(root);
+    }
 }

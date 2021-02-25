@@ -14,7 +14,11 @@ int main(){
      // --Insert a bunch of nodes
     
     myTree.in_order(); // in_order traversal, should print all the nodes in ascending order. 
+    cout << endl;
+    myTree.pre_order();
+    cout << endl;
     
+
 
     return 0;
 }
