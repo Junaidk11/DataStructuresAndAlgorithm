@@ -1,7 +1,4 @@
-#include <iostream>
-using namespace std; 
-
-#include "BinarySearchTree.h"
+#include "BinarySearchTree.cpp"
 
 int main(){
     BinarySearchTree myTree = BinarySearchTree(); // Instantiate an object of type BinarySearchTree
@@ -18,7 +15,6 @@ int main(){
     myTree.pre_order();
     cout << endl;
     
-
 
     return 0;
 }
