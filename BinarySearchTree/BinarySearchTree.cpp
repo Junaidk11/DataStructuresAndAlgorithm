@@ -89,7 +89,7 @@ void BinarySearchTree::pre_order(tree_node *root){
         printf("%d ",root->data); 
         pre_order(root->left); // Process left subtree, recursive call
         pre_order(root->right); // Process right subtree, recursive call 
-    }
+    }/* end if */
 }
 /* 
     Preorder traversal of a tree. You process each node as you visit it. 
@@ -101,6 +101,28 @@ void BinarySearchTree::pre_order(){
         cout << " Tree is empty." <<endl;
     } /* end if */
     else{
-        pre_order(root);
+        pre_order(root); // Call private member function 
+    } /* end else */
+}
+
+/* 
+    In this traversal, each node is processed after its subtrees (both left and right) have been processed. 
+    This type of traversal is used for deleting a tree. 
+
+*/ 
+void BinarySearchTree::post_order(tree_node* root){
+    if(root!=NULL){
+        post_order(root->left);  // process left subtree first -> its a recursive call
+        post_order(root->right);   // Process right subtree next -> its a recursive call
+        printf("%d ",root->data);   //  print current node value.
     }
+}
+void BinarySearchTree::post_order(){
+
+    if(root==NULL){
+        cout<<"Tree is empty."<<endl;
+    } /* end if */
+    else{
+        post_order(root); // Call the private member function 
+    }/* end else */
 }

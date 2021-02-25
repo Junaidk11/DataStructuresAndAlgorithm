@@ -10,11 +10,13 @@ int main(){
     myTree.insert(20);
      // --Insert a bunch of nodes
     
-    myTree.in_order(); // in_order traversal, should print all the nodes in ascending order. 
+    myTree.in_order();  // in_order traversal, should print all the nodes in ascending order. 
     cout << endl;
-    myTree.pre_order();
+    myTree.pre_order(); // pre_order traversal 
     cout << endl;
-    
+    myTree.post_order(); // post_order traversal, the root node is processed at the end. 
+    cout << endl;
+
 
     return 0;
 }
