@@ -9,6 +9,9 @@ struct Graph* createGraph(int vertices){
     // Initialize adjacency list
     newGraph->numVertices = vertices;
 
+    // Allocate memory for visited list
+    newGraph->visited = (int*)calloc(vertices, sizeof(int));  
+
     // Allocate memory for the adjancy list
     newGraph->adjList = (struct Node**)malloc(vertices*sizeof(struct Node*));
 
@@ -63,4 +66,38 @@ void printGraph(struct Graph* graph){
         }
         printf("\n");
     }
+}
+
+void printVisitedList(struct Graph* graph){
+    int i;
+    printf("Visited List: ");
+    for(i =0; i< graph->numVertices; i++){
+        printf(" %d ", graph->visited[i]);
+    }
+    printf("\n");
+}
+void DFS( struct Graph* graph, int startIndex){
+
+    
+    // Mark given start vertex as visited
+    graph->visited[startIndex] = 1;
+
+    // Print Visited List
+    printVisitedList(graph); 
+
+    // Create a temp Node ptr for iterating adjacent nodes of given vertex
+    struct Node* temp = graph->adjList[startIndex];
+
+    // Explore all UNVISITED vertices connected to current Vertex
+    while( temp!=NULL){
+
+        int connectedIndex = temp->Vertex; 
+        if(graph->visited[connectedIndex]==0){
+            // Not visited this connectedNode
+            DFS(graph, connectedIndex);
+        }
+        // Move to next connected vertex to current Vertex
+        temp = temp->nextNode;
+    }
+
 }
