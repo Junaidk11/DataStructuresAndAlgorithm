@@ -57,15 +57,38 @@ void treeRecursion(int n){
     }
 }
 
+
+void funcA(int);  // To avoid "Implicit Definition" errors when calling funcA in funcB
+void funcB(int n){
+    
+    if(n>1){
+        printf("%d ", n);
+        funcA(n/2);
+    }
+}
+void funcA( int n){
+    if( n >0){
+        
+        printf("%d ", n);
+        funcB(n-1);
+    }
+    
+}
+void indirectRecursion(int n){
+
+    funcA(n);
+
+}
+
 int main(int argc, const char * argv[]) {
     
+#if  TESTALL==1
     int a = 5;
     // Tail Recursion result:
     //      Print current value of n
     //      Call function again with n-1
     //      repeat until base case reached, then back track -> n=0
     
-#if  TESTALL==1
     tailRecursion(a); // Pass by value, tail recursion -> 5 4 3 2 1
     headRecursion(a);   // Pass by value, 1 2 3 4 5
     
@@ -76,9 +99,11 @@ int main(int argc, const char * argv[]) {
     
     printf("Static Variable Recursive Function: ");
     printf("%d \n", staticRecursion(a)); // Result is 25
-#endif
     
     treeRecursion(3); // 3 2 1 1 2 1 1
+#endif
+    
+    indirectRecursion(20); // 20 19 9 8 4 3 1
     
     return 0;
 }
