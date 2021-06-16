@@ -80,6 +80,18 @@ void indirectRecursion(int n){
 
 }
 
+int func3(int n){
+    if (n>0){
+        return n-1;
+    }else{
+        return func3(func3(n+11));
+    }
+}
+void nestedRecursion(int n){
+    
+    printf("%d ",func3(n));
+    
+}
 int main(int argc, const char * argv[]) {
     
 #if  TESTALL==1
@@ -101,9 +113,12 @@ int main(int argc, const char * argv[]) {
     printf("%d \n", staticRecursion(a)); // Result is 25
     
     treeRecursion(3); // 3 2 1 1 2 1 1
+    indirectRecursion(20); // 20 19 9 8 4 3 1
+    
 #endif
     
-    indirectRecursion(20); // 20 19 9 8 4 3 1
+    nestedRecursion(95);
+   
     
     return 0;
 }
