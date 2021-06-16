@@ -81,9 +81,10 @@ void indirectRecursion(int n){
 }
 
 int func3(int n){
-    if (n>100){
+    if (n>100){ // For a value of n=101, this function returns 91
         return n-10;
     }else{
+        // For values less than 100, the function will recursively call itself
         return func3(func3(n+11));
     }
 }
@@ -117,7 +118,7 @@ int main(int argc, const char * argv[]) {
     
 #endif
     
-    nestedRecursion(95);
+    nestedRecursion(120);
    
     
     return 0;
