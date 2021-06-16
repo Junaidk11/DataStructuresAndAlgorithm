@@ -81,8 +81,8 @@ void indirectRecursion(int n){
 }
 
 int func3(int n){
-    if (n>0){
-        return n-1;
+    if (n>100){
+        return n-10;
     }else{
         return func3(func3(n+11));
     }
