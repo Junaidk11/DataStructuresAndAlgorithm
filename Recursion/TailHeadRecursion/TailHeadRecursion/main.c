@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 
+#define TESTALL 0
 void tailRecursion(int n){
     
     if(n>0){
@@ -47,6 +48,15 @@ int staticRecursion(int n){
     return 0;
 }
 
+void treeRecursion(int n){
+    
+    if(n>0){
+        printf("%d ", n);
+        treeRecursion(n-1);
+        treeRecursion(n-1);
+    }
+}
+
 int main(int argc, const char * argv[]) {
     
     int a = 5;
@@ -54,6 +64,8 @@ int main(int argc, const char * argv[]) {
     //      Print current value of n
     //      Call function again with n-1
     //      repeat until base case reached, then back track -> n=0
+    
+#if  TESTALL==1
     tailRecursion(a); // Pass by value, tail recursion -> 5 4 3 2 1
     headRecursion(a);   // Pass by value, 1 2 3 4 5
     
@@ -64,6 +76,9 @@ int main(int argc, const char * argv[]) {
     
     printf("Static Variable Recursive Function: ");
     printf("%d \n", staticRecursion(a)); // Result is 25
+#endif
+    
+    treeRecursion(3); // 3 2 1 1 2 1 1
     
     return 0;
 }
