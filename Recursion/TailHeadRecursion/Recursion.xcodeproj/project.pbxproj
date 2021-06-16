@@ -23,7 +23,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		22A291B02679662100C0497C /* TailHeadRecursion */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TailHeadRecursion; sourceTree = BUILT_PRODUCTS_DIR; };
+		22A291B02679662100C0497C /* Recursion */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Recursion; sourceTree = BUILT_PRODUCTS_DIR; };
 		22A291B32679662100C0497C /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -41,7 +41,7 @@
 		22A291A72679662100C0497C = {
 			isa = PBXGroup;
 			children = (
-				22A291B22679662100C0497C /* TailHeadRecursion */,
+				22A291B22679662100C0497C /* RecursionTypes */,
 				22A291B12679662100C0497C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -49,25 +49,25 @@
 		22A291B12679662100C0497C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				22A291B02679662100C0497C /* TailHeadRecursion */,
+				22A291B02679662100C0497C /* Recursion */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		22A291B22679662100C0497C /* TailHeadRecursion */ = {
+		22A291B22679662100C0497C /* RecursionTypes */ = {
 			isa = PBXGroup;
 			children = (
 				22A291B32679662100C0497C /* main.c */,
 			);
-			path = TailHeadRecursion;
+			path = RecursionTypes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		22A291AF2679662100C0497C /* TailHeadRecursion */ = {
+		22A291AF2679662100C0497C /* Recursion */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 22A291B72679662100C0497C /* Build configuration list for PBXNativeTarget "TailHeadRecursion" */;
+			buildConfigurationList = 22A291B72679662100C0497C /* Build configuration list for PBXNativeTarget "Recursion" */;
 			buildPhases = (
 				22A291AC2679662100C0497C /* Sources */,
 				22A291AD2679662100C0497C /* Frameworks */,
@@ -77,9 +77,9 @@
 			);
 			dependencies = (
 			);
-			name = TailHeadRecursion;
+			name = Recursion;
 			productName = TailHeadRecursion;
-			productReference = 22A291B02679662100C0497C /* TailHeadRecursion */;
+			productReference = 22A291B02679662100C0497C /* Recursion */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -95,7 +95,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 22A291AB2679662100C0497C /* Build configuration list for PBXProject "TailHeadRecursion" */;
+			buildConfigurationList = 22A291AB2679662100C0497C /* Build configuration list for PBXProject "Recursion" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -108,7 +108,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				22A291AF2679662100C0497C /* TailHeadRecursion */,
+				22A291AF2679662100C0497C /* Recursion */,
 			);
 		};
 /* End PBXProject section */
@@ -259,7 +259,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		22A291AB2679662100C0497C /* Build configuration list for PBXProject "TailHeadRecursion" */ = {
+		22A291AB2679662100C0497C /* Build configuration list for PBXProject "Recursion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				22A291B52679662100C0497C /* Debug */,
@@ -268,7 +268,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		22A291B72679662100C0497C /* Build configuration list for PBXNativeTarget "TailHeadRecursion" */ = {
+		22A291B72679662100C0497C /* Build configuration list for PBXNativeTarget "Recursion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				22A291B82679662100C0497C /* Debug */,
