@@ -6,10 +6,6 @@
 	objectVersion = 50;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		22A291B42679662100C0497C /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 22A291B32679662100C0497C /* main.c */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		22A291AE2679662100C0497C /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -23,6 +19,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		22639855267D6587003C6254 /* sumOfNaturalNumbers.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sumOfNaturalNumbers.c; sourceTree = "<group>"; };
 		22A291B02679662100C0497C /* Recursion */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Recursion; sourceTree = BUILT_PRODUCTS_DIR; };
 		22A291B32679662100C0497C /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -58,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				22A291B32679662100C0497C /* main.c */,
+				22639855267D6587003C6254 /* sumOfNaturalNumbers.c */,
 			);
 			path = RecursionTypes;
 			sourceTree = "<group>";
@@ -118,7 +116,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22A291B42679662100C0497C /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

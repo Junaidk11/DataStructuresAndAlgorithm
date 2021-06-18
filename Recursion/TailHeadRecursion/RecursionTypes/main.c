@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 
+
 #define TESTALL 0
 void tailRecursion(int n){
     
@@ -115,10 +116,12 @@ int main(int argc, const char * argv[]) {
     
     treeRecursion(3); // 3 2 1 1 2 1 1
     indirectRecursion(20); // 20 19 9 8 4 3 1
-    
+    nestedRecursion(120);
 #endif
     
-    nestedRecursion(120);
+    
+    
+    
    
     
     return 0;
