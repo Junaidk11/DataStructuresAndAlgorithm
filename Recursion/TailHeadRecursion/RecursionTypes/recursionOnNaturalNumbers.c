@@ -7,10 +7,12 @@
 
 #include <stdio.h>
 
-#define SUM_OF_NATURAL_NUMBERS 0
+#define SUM_OF_NATURAL_NUMBERS      0
+#define PROD_OF_NATURAL_NUMBERS     1
 
 
 #if SUM_OF_NATURAL_NUMBERS == 1
+
 /*
     Sum of n-natural Numbers using:
             Recursion
@@ -63,6 +65,26 @@ int loop_sum_of_natural_num(int n){
 
 #endif
 
+
+#if PROD_OF_NATURAL_NUMBERS == 1
+
+/*
+        The time and space complexity is same as recursive implementation of sum of N natural numbers, for an input of 'n', the function is called n+1 times, so n+1 activation records are created in the stack, so space complexity of O(n+1) = O(n). Similarly, for an input of n, the function is called n+1 times to give you the result, therefore the time complexity is also O(n+1) = O(n).
+        You can implement this recursive call using a loop and reduce the space complexity, but the time complexity will still be O(n+1). 
+        
+ */
+int factorial(int n){
+    
+    if(n==0){
+        // Base case
+        return 1;
+    }else{
+        // Recursive case to break down the input to base case
+        return factorial(n-1)*n;
+    }
+}
+
+#endif
 int main(void){
     
 #if SUM_OF_NATURAL_NUMBERS == 1
@@ -72,5 +94,8 @@ int main(void){
     printf("Sum Of n natural numbers: %d \n", loop_sum_of_natural_num(5));
 #endif
     
+#if PROD_OF_NATURAL_NUMBERS == 1
+    printf("Sum of Product of n natural numbers: %d \n", factorial(5));
+#endif
     return 0;
 }
