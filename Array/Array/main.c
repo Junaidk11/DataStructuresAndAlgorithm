@@ -39,6 +39,10 @@ int dynamicArray_linearSearch(struct dynamicArray *arr, int value);
 
 int Recursive_BinarySearch(int arr[], int low, int high, int key);
 int Iterative_BinarySearch(int arr[], int length, int key);
+void left_shift(int *arr, int length);
+void right_shift(int *arr, int length);
+void rotate_left(int *arr, int length);
+void rotate_right(int *arr, int length);
 
 // Programs
 void append_to_array(void);
@@ -46,14 +50,76 @@ void insert_at_index(void);
 void delete_at_index(void);
 void linear_Search(void);
 void binary_Search(void);
-
+void shift_array(void);
+void rotate_array(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    binary_Search();
+    rotate_array();
     return 0;
 }
 
+void rotate_array(void){
+    
+#ifdef LEFT_ROTATE
+    // Statically allocated array
+    struct staticArray arr ={{1,2,4,5,6},20, 5};
+    staticArray_Display(arr);
+    rotate_left(arr.A, arr.length);
+    staticArray_Display(arr);
+    rotate_left(arr.A, arr.length);
+    staticArray_Display(arr);
+    
+    // Dynamically allocated array
+    struct dynamicArray arr2 = createDynamicStruct();
+    dynamicArray_Display(arr2);
+    rotate_left(arr2.A, arr2.length);
+    dynamicArray_Display(arr2);
+    rotate_left(arr2.A, arr2.length);
+    dynamicArray_Display(arr2);
+#else
+    // Statically allocated array
+    struct staticArray arr ={{1,2,4,5,6},20, 5};
+    staticArray_Display(arr);
+    rotate_right(arr.A, arr.length);
+    staticArray_Display(arr);
+    rotate_right(arr.A, arr.length);
+    staticArray_Display(arr);
+    
+    // Dynamically allocated array
+    struct dynamicArray arr2 = createDynamicStruct();
+    dynamicArray_Display(arr2);
+    rotate_right(arr2.A, arr2.length);
+    dynamicArray_Display(arr2);
+    rotate_right(arr2.A, arr2.length);
+    dynamicArray_Display(arr2);
+#endif
+}
+void shift_array(void){
+    
+#ifdef LEFT_SHIFT
+    struct staticArray arr ={{1,2,4,5,6}, 20, 5};
+    staticArray_Display(arr);
+    left_shift(arr.A, arr.length);
+    staticArray_Display(arr);
+    
+    struct dynamicArray arr2 = createDynamicStruct();
+    dynamicArray_Display(arr2);
+    left_shift(arr2.A, arr2.length);
+    dynamicArray_Display(arr2);
+#else
+    struct staticArray arr ={{1,2,4,5,6}, 20, 5};
+    staticArray_Display(arr);
+    right_shift(arr.A, arr.length);
+    staticArray_Display(arr);
+    
+    struct dynamicArray arr2 = createDynamicStruct();
+    dynamicArray_Display(arr2);
+    right_shift(arr2.A, arr2.length);
+    dynamicArray_Display(arr2);
+#endif
+    
+}
 void binary_Search(void){
     
     
@@ -425,3 +491,52 @@ int Iterative_BinarySearch(int arr[], int length, int key){
     return -1; // key not found
 }
 
+/*
+        You start at index 0, copy value at index 1 to index 0
+            Process repeated until you reach the end of array.
+        Element at index 0 is lost
+ */
+void left_shift(int *arr, int length){
+    
+    int i;
+    for(i=0;i<length; i++){
+        arr[i] = arr[i+1];
+    }
+    arr[length-1] = 0;
+}
+/*
+        You start at the end of the array, copy second last to last,
+            process repeats until you reach the first index
+        Element at the end is lost
+ */
+void right_shift(int *arr, int length){
+    int i;
+    for(i=length-1;i>0;i--){
+        arr[i]=arr[i-1];
+    }
+    arr[0] = 0; // The first element is set to 0
+}
+/*
+        Rotate is similar to shift, except that the element lost is wrapped around.
+            For Left rotate, the element at index 0 is brought to end index
+            For right rotate, the element at end index is brought to index 0
+ */
+void rotate_left(int *arr, int length){
+    int i, firstElement = arr[0];
+    
+    // Start at the front of the array
+    for(i=0;i<length;i++){
+        arr[i]=arr[i+1];
+    }
+    arr[length-1] = firstElement; // Bring first element to end of array
+}
+/*
+    In rotating right, the last index value is brought to the front of the array
+ */
+void rotate_right(int *arr, int length){
+    int i, lastElement = arr[length-1];
+    for(i=length-1;i>0;i--){
+        arr[i]=arr[i-1]; // Copy left index to the current index
+    }
+    arr[0] = lastElement;
+}
