@@ -30,8 +30,8 @@ void dynamicArray_append(struct dynamicArray *arr, int value);
 void staticArray_append(struct staticArray *arr, int value);
 void staticArray_insertAtIndex(struct staticArray *arr, int index, int value);
 void dynamicArray_insertAtIndex(struct dynamicArray *arr, int index, int value);
-void staticArray_deleteAtIndex(struct staticArray *arr, int index);
-void dynamicArray_deleteAtIndex(struct dynamicArray *arr, int index);
+int staticArray_deleteAtIndex(struct staticArray *arr, int index);
+int dynamicArray_deleteAtIndex(struct dynamicArray *arr, int index);
 
 // Programs
 void append_to_array(void);
@@ -51,14 +51,14 @@ void delete_at_index(void){
     
     struct staticArray A = {{1,2,3,4},20, 4};
     staticArray_Display(A);
-    staticArray_deleteAtIndex(&A, -1);
+    printf("Deleted value is: %d\n",staticArray_deleteAtIndex(&A, -1));
     staticArray_Display(A);
     
     
     // Create a dynamic array struct
     struct dynamicArray B = createDynamicStruct();
     dynamicArray_Display(B);
-    dynamicArray_deleteAtIndex(&B, 0);
+    printf("Deleted value is: %d\n", dynamicArray_deleteAtIndex(&B, 0));
     dynamicArray_Display(B);
     
 }
@@ -232,35 +232,40 @@ void dynamicArray_insertAtIndex(struct dynamicArray *arr, int index, int value){
         If the delete element is at the end of array, then no shifting required -> O(1)
         If the delet element is at the start, then shifting by "length" elements, so O(n) complexity.
 */
-void staticArray_deleteAtIndex(struct staticArray *arr, int index){
+int staticArray_deleteAtIndex(struct staticArray *arr, int index){
     
     // First check if index is within length of the array
     if(index<0 || index>arr->length){
         printf("Index is out of bound.\n");
+        return 0;
     }else
     {
         // Start at delete index and shift elements from right to left until you reach lenght-1
-        int i;
+        int x = arr->A[index], i;
+        
         for(i=index; i<arr->length-1; i++){
             arr->A[i] = arr->A[i+1];
         }
         // Update length of Array
         arr->length--;
+        return x;
     }
 }
 
-void dynamicArray_deleteAtIndex(struct dynamicArray *arr, int index){
+int dynamicArray_deleteAtIndex(struct dynamicArray *arr, int index){
     // First check if index is within length of the array
     if(index<0 || index>arr->length){
         printf("Index is out of bound.\n");
+        return 0;
     }else
     {
         // Start at delete index and shift elements from right to left until you reach lenght-1
-        int i;
+        int x = arr->A[index],i;
         for(i=index; i<arr->length-1; i++){
             arr->A[i] = arr->A[i+1];
         }
         // Update length of Array
         arr->length--;
+        return x;
     }
 }
