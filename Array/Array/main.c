@@ -23,6 +23,7 @@ struct staticArray{
 };
 
 // Member functions
+struct dynamicArray createDynamicStruct(void);
 void staticArray_Display(struct staticArray arr);
 void dynamicArray_Display(struct dynamicArray arr);
 void dynamicArray_append(struct dynamicArray *arr, int value);
@@ -41,14 +42,34 @@ int main(int argc, const char * argv[]) {
     insert_at_index();
     return 0;
 }
-
+struct dynamicArray createDynamicStruct(void){
+    struct dynamicArray B;
+    printf("Size of the array?\n");
+    scanf("\n %d \n", &B.size);
+    B.A = (int *)malloc(B.size*sizeof(int)); // Allocate memory for Array
+    printf("\n");
+    printf("How many elements in the array?\n");
+    scanf("%d\n",&B.length);
+    printf("Enter values of the elements.\n");
+    int i;
+    for(i=0; i<B.length; i++){
+        scanf("%d", &B.A[i]);
+    }
+    return B;
+}
 void insert_at_index(void){
     
     // Create a staticArray
-    struct staticArray A = {{1,4,5,6}, 20, 4};
+    /*struct staticArray A = {{1,4,5,6}, 20, 4};
     staticArray_Display(A);
     staticArray_insertAtIndex(&A,0,9);
     staticArray_Display(A);
+    */
+    // Create a dynamic struct
+    struct dynamicArray B = createDynamicStruct();
+    dynamicArray_Display(B);
+    dynamicArray_insertAtIndex(&B,0, 12);
+    dynamicArray_Display(B);
 }
 
 void dynamicArray_Display(struct dynamicArray arr){
@@ -145,7 +166,29 @@ void append_to_array(void){
 void staticArray_insertAtIndex(struct staticArray *arr, int index, int value){
 
     // First check if index in within bounds of the array
-    if(index>arr->size){
+    if(index>arr->size || index<0){
+        printf("Index out of array bounds.\n");
+        return;
+    }else{
+        // Starting at length, shift all the elements on left to the right,
+        // decrement the iterator, until iterator = index, then insert new element there
+        
+        int i;
+        for(i=arr->length; i>index; i--){
+            arr->A[i]=arr->A[i-1]; // Element on left of 'i' is moved to current 'i'
+        }
+        // i == index
+        arr->A[i] = value;
+        // increase length by 1
+        arr->length++;
+    }
+}
+
+
+void dynamicArray_insertAtIndex(struct dynamicArray *arr, int index, int value){
+
+    // First check if index in within bounds of the array
+    if(index>arr->size || index<0){
         printf("Index out of array bounds.\n");
         return;
     }else{
