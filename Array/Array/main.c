@@ -36,11 +36,9 @@ int staticArray_deleteAtIndex(struct staticArray *arr, int index);
 int dynamicArray_deleteAtIndex(struct dynamicArray *arr, int index);
 int staticArray_linearSearch(struct staticArray *arr, int value);
 int dynamicArray_linearSearch(struct dynamicArray *arr, int value);
-int staticArray_binarySearch_iterative(struct staticArray arr, int low, int high, int key);
-int staticArray_binarySearch_tailRecursion(struct staticArray arr, int low, int high, int key);
-int dynamicArray_binarySearch_iterative(struct dynamicArray arr, int low, int high, int key);
-int dynamicArray_binarySearch_tailRecursion(struct dynamicArray arr, int low, int high, int key);
 
+int Recursive_BinarySearch(int arr[], int low, int high, int key);
+int Iterative_BinarySearch(int arr[], int length, int key);
 
 // Programs
 void append_to_array(void);
@@ -48,6 +46,8 @@ void insert_at_index(void);
 void delete_at_index(void);
 void linear_Search(void);
 void binary_Search(void);
+
+
 int main(int argc, const char * argv[]) {
     // insert code here...
     binary_Search();
@@ -56,19 +56,13 @@ int main(int argc, const char * argv[]) {
 
 void binary_Search(void){
     
-    // Create a static sorted array
-    /*
-    struct staticArray A ={ {2,4,5,7,9,12,16}, 20, 7};
-    printf("Index of key in array: %d\n", staticArray_binarySearch_iterative(A, 0, 6, 7));
-    printf("Index of key in array: %d\n", staticArray_binarySearch_iterative(A, 0, 6, 3));
-    printf("Index of key in array: %d\n", staticArray_binarySearch_tailRecursion(A, 6, 4, 7));
-    printf("Index of key in array: %d\n", staticArray_binarySearch_tailRecursion(A, 0, 6, 11));
-    */
     
-    // Create a dynamic sorted array
-    struct dynamicArray B = createDynamicStruct();
-    printf("Index of key in array: %d\n", dynamicArray_binarySearch_iterative(B, 0, 6, 7));
-    printf("Index of key in array: %d\n", dynamicArray_binarySearch_tailRecursion(B, 6, 2, 7));
+    struct staticArray C ={{1,3,4,5,6,8},20, 6};
+    struct dynamicArray D = createDynamicStruct();
+    printf("Index of key in array: %d\n", Recursive_BinarySearch(C.A, 1, 3, 0));
+    printf("Index of key in array: %d\n", Iterative_BinarySearch(C.A, C.length, 0));
+    printf("Index of key in array: %d\n", Recursive_BinarySearch(D.A, 0, 5, 0));
+    printf("Index of key in array: %d\n", Iterative_BinarySearch(D.A, D.length, 0));
     
 }
 void linear_Search(void){
@@ -366,6 +360,38 @@ int dynamicArray_linearSearch(struct dynamicArray *arr, int value){
     return -1; // Element not found
 }
 
+
+// Tail Recursion
+// Can easily be converted to a while loop and it is preferred over tail recurison
+/*
+        The binary search can also be performed using recursion.
+        The recursive binary search is a tail recursion (i.e. function does nothing
+        after returning from recursive call). A tail recursion can be converted to a
+        while loop implementation, which is preferred as space complexity is reduced,
+        (recursive calls use stack memory).
+ 
+ */
+int Recursive_BinarySearch(int arr[], int low, int high, int key){
+    
+    // Binary search performed as long as low<=high
+    int mid;
+    if(low<=high){
+        mid = floor((low+high)/2);
+        if(arr[mid]==key){
+            return mid;
+        }else if(key<arr[mid]){
+            // key has to be on left side
+            return Recursive_BinarySearch(arr, low, mid-1, key);
+        }else{
+            // key has to be on right side
+            return Recursive_BinarySearch(arr, mid+1, high, key);
+        }
+    }
+    
+    // At point low>high, key not found
+    return -1;
+}
+
 /*
         Pre-requisite for Binary search: The Array has to be sorted.
         Procedure:
@@ -379,103 +405,23 @@ int dynamicArray_linearSearch(struct dynamicArray *arr, int value){
                     which means there are no more elements to check, the key is not found in the array.
  */
 
-int staticArray_binarySearch_iterative(struct staticArray arr, int low, int high, int key){
+int Iterative_BinarySearch(int arr[], int length, int key){
     
-    int l=low, h=high,midpoint=0;
-    while(l<=h){
-        midpoint = floor((l+h)/2);
-        if(arr.A[midpoint]==key){
+    int low = 0, high=length-1, midpoint=0;
+    while(low<=high){
+        midpoint = floor((low+high)/2);
+        if(arr[midpoint]==key){
             return midpoint;
-        }else if(key<arr.A[midpoint]){
-            // key is in left side of the array, update high
-            h = midpoint-1;
+        }else if(key<arr[midpoint]){
+            //update high because key if exists, has to be on left
+            high = midpoint-1;
         }else{
-            // key is in right side of the array, update low
-            l = midpoint+1;
+            // update low becaue key if exists, has to be on right
+            low = midpoint+1;
         }
     }
     
-    // if you reached here then key not found in the array
-    return -1;
+    // At this point, there are no elements to check
+    return -1; // key not found
 }
 
-/*
-        The binary search can also be performed using recursion.
-        The recursive binary search is a tail recursion (i.e. function does nothing
-        after returning from recursive call). A tail recursion can be converted to a
-        while loop implementation, which is preferred as space complexity is reduced,
-        (recursive calls use stack memory).
- 
- */
-int staticArray_binarySearch_tailRecursion(struct staticArray arr, int low, int high, int key)
-{
-    
-    // If low>high -> no elements left, key not found
-    if(low<=high){
-        int midpoint = floor((low+high)/2);
-        if(arr.A[midpoint]==key){
-            return midpoint;
-        }else if(key<arr.A[midpoint]){
-            // key is on left side of midpoint
-            // recursive call with high updated
-            return staticArray_binarySearch_tailRecursion(arr,low, midpoint-1,key);
-        }else{
-            // key is on right side of midpoint
-            // recursive call with low updated
-            return staticArray_binarySearch_tailRecursion(arr, midpoint+1, high, key);
-        }
-    }
-    // key not in array because low>high, no elements to check
-    return -1;
-}
-
-int dynamicArray_binarySearch_iterative(struct dynamicArray arr, int low, int high, int key){
-    
-    int l=low, h=high, midpoint=0;
-    
-    while(l<=h){
-        // There are elements to check
-        
-        // calculate midpoint
-        midpoint=floor((l+h)/2);
-    
-        if(arr.A[midpoint]==key){
-            // key found in array
-            return midpoint;
-        }else if(key<arr.A[midpoint]){
-            // key is on left of current midpoint
-            // update high
-            h = midpoint-1;
-        }else{
-            // key is on right of current midpoitn
-            // update low
-            l = midpoint+1;
-        }
-    }
-    // key not found in the array
-    return -1;
-}
-// Tail Recursion
-int dynamicArray_binarySearch_tailRecursion(struct dynamicArray arr, int low, int high, int key){
-    
-    // Recursive calls are only made if low<=high -> i.e. there are elements to look at
-    if(low<=high){
-        
-        int midpoint = floor((low+high)/2);
-        if(arr.A[midpoint]==key){
-            // Key found
-            return midpoint;
-        }else if(key<arr.A[midpoint]){
-            // Key could be on the left side of midpoint
-            // update high
-            return dynamicArray_binarySearch_tailRecursion(arr, low, midpoint-1, key);
-        }else{
-            // Key could be on the right side of midpoint
-            // update low
-            return dynamicArray_binarySearch_tailRecursion(arr, midpoint+1, high, key);
-        }
-    }
-    
-    // At this point low>high, i.e. all elements checked, key not found
-    return -1;
-}
