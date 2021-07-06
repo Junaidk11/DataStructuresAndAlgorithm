@@ -32,19 +32,42 @@ void staticArray_insertAtIndex(struct staticArray *arr, int index, int value);
 void dynamicArray_insertAtIndex(struct dynamicArray *arr, int index, int value);
 int staticArray_deleteAtIndex(struct staticArray *arr, int index);
 int dynamicArray_deleteAtIndex(struct dynamicArray *arr, int index);
+int staticArray_linearSearch(struct staticArray *arr, int value);
+int dynamicArray_linearSearch(struct dynamicArray *arr, int value);
+
 
 // Programs
 void append_to_array(void);
 void insert_at_index(void);
 void delete_at_index(void);
-
+void linear_Search(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    delete_at_index();
+    linear_Search();
     return 0;
 }
 
+void linear_Search(void){
+    
+    // Create a static Array struct
+    struct staticArray A = {{1,2,3,4},20, 4};
+    staticArray_Display(A);
+    printf("Index of value found: %d\n",staticArray_linearSearch(&A, 3));
+    staticArray_Display(A);
+    printf("Index of value found: %d\n",staticArray_linearSearch(&A, 3)); // Index will be different because we moved the value to left by 1 index
+    staticArray_Display(A);
+    printf("Index of value found: %d\n",staticArray_linearSearch(&A, 3)); // Index will be different because we moved the value to left by 1 index
+    staticArray_Display(A);
+    
+    /*
+    // Create a dynamic array struct
+    struct dynamicArray B = createDynamicStruct();
+    dynamicArray_Display(B);
+    printf("Index of value found: %d\n", dynamicArray_linearSearch(&B, 3));
+    dynamicArray_Display(B);
+    */
+}
 void delete_at_index(void){
     
     // Create a static Array struct
@@ -268,4 +291,52 @@ int dynamicArray_deleteAtIndex(struct dynamicArray *arr, int index){
         arr->length--;
         return x;
     }
+}
+
+/*
+        Linear Search requires no duplication.
+        An improvment to typical linear search is: if you're repeatedly searching
+        for the same element, you can swap that element with the element before it,
+        this way the element slowly moves to the front of the array, thus reducing the
+        number of comparisons done to find it each time -> this improvement is called "Transposition".
+        
+        Another improvement to is moving the element found to the front of the array,
+        so that if you search it again (right after first search), you will find the element at the start so your algorithm runs at best case O(1). The drawback here is that if you search for some other element, the current element at index 0 can be pushed anywhere depending on the value you're looking for right now.
+ 
+        Therefore, transposition improvement is slow improvement but move to front improvement is not always improving your search time.
+ */
+int staticArray_linearSearch(struct staticArray *arr, int value){
+    
+    int i;
+    for(i=0; i< arr->length; i++){
+        if(arr->A[i] == value){
+            // Value found
+            if(i!=0){
+                // move the element to the previous index
+                arr->A[i]^=arr->A[i-1];
+                arr->A[i-1]^=arr->A[i];
+                arr->A[i]^= arr->A[i-1];
+            }
+            return i; // Return current index of value found
+        }
+    }
+    return -1; // Element not found
+}
+
+int dynamicArray_linearSearch(struct dynamicArray *arr, int value){
+    int i;
+    for(i=0; i< arr->length; i++){
+        if(arr->A[i] == value){
+            // Value found
+            // move the element to the previous index
+            if(i!=0){
+                // Don't want to shift element out of bound.
+                arr->A[i]^=arr->A[i-1];
+                arr->A[i-1]^=arr->A[i];
+                arr->A[i]^= arr->A[i-1];
+            }
+            return i; // Return current index of value found
+        }
+    }
+    return -1; // Element not found
 }
