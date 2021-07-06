@@ -51,6 +51,7 @@ int main(int argc, const char * argv[]) {
 void linear_Search(void){
     
     // Create a static Array struct
+    
     struct staticArray A = {{1,2,3,4},20, 4};
     staticArray_Display(A);
     printf("Index of value found: %d\n",staticArray_linearSearch(&A, 3));
@@ -60,13 +61,13 @@ void linear_Search(void){
     printf("Index of value found: %d\n",staticArray_linearSearch(&A, 3)); // Index will be different because we moved the value to left by 1 index
     staticArray_Display(A);
     
-    /*
+    
     // Create a dynamic array struct
     struct dynamicArray B = createDynamicStruct();
     dynamicArray_Display(B);
     printf("Index of value found: %d\n", dynamicArray_linearSearch(&B, 3));
     dynamicArray_Display(B);
-    */
+    
 }
 void delete_at_index(void){
     
@@ -292,7 +293,12 @@ int dynamicArray_deleteAtIndex(struct dynamicArray *arr, int index){
         return x;
     }
 }
-
+// Used in Improved linear search to swap a successfull search index with value at index-1 to speed up next search of the same value
+void swap( int *x, int *y){
+    *(x)^=*(y);
+    *(y)^=*(x);
+    *(x)^=*(y);
+}
 /*
         Linear Search requires no duplication.
         An improvment to typical linear search is: if you're repeatedly searching
@@ -313,9 +319,7 @@ int staticArray_linearSearch(struct staticArray *arr, int value){
             // Value found
             if(i!=0){
                 // move the element to the previous index
-                arr->A[i]^=arr->A[i-1];
-                arr->A[i-1]^=arr->A[i];
-                arr->A[i]^= arr->A[i-1];
+                swap(&arr->A[i], &arr->A[i-1]);
             }
             return i; // Return current index of value found
         }
@@ -331,9 +335,7 @@ int dynamicArray_linearSearch(struct dynamicArray *arr, int value){
             // move the element to the previous index
             if(i!=0){
                 // Don't want to shift element out of bound.
-                arr->A[i]^=arr->A[i-1];
-                arr->A[i-1]^=arr->A[i];
-                arr->A[i]^= arr->A[i-1];
+                swap(&arr->A[i], &arr->A[i-1]);
             }
             return i; // Return current index of value found
         }
