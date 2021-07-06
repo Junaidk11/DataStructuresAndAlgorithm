@@ -136,6 +136,10 @@ void append_to_array(void){
     
 }
 
+//  This function has min and max time complexity
+// If the new value is added to the end of the array -> no shifting required, O(1)
+// If the new value is added to the front of the array -> shifting "length" elements -> loop executed O(length), or O(n) where n is size of array.
+// Typical only care about worse case time of a function -> so, O(n)
 void staticArray_insertAtIndex(struct staticArray arr, int index, int value){
     
     staticArray_Display(arr); // Display before insertion
