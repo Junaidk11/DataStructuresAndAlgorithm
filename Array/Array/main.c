@@ -44,6 +44,9 @@ void right_shift(int *arr, int length);
 void rotate_left(int *arr, int length);
 void rotate_right(int *arr, int length);
 void reverse_array(int *arr, int length);
+void staticArray_insert_sortedArray(struct staticArray *arr, int value);
+void dynamicArray_insert_sortedArray(struct dynamicArray *arr, int value);
+
 
 // Programs
 void append_to_array(void);
@@ -54,11 +57,35 @@ void binary_Search(void);
 void shift_array(void);
 void rotate_array(void);
 void reverse(void);
+void sorted_Array_insert(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    reverse();
+    sorted_Array_insert();
     return 0;
+}
+
+void sorted_Array_insert(void){
+    // Statically allocated memory
+    struct staticArray arr ={{1,6,8,9}, 20, 4};
+    staticArray_Display(arr);
+    staticArray_insert_sortedArray(&arr, 0);
+    staticArray_Display(arr);
+    staticArray_insert_sortedArray(&arr, -1);
+    staticArray_Display(arr);
+    staticArray_insert_sortedArray(&arr, 7);
+    staticArray_Display(arr);
+    
+    // Dynamic array
+    struct dynamicArray arr2 = createDynamicStruct();
+    dynamicArray_Display(arr2);
+    dynamicArray_insert_sortedArray(&arr2, 0);
+    dynamicArray_Display(arr2);
+    dynamicArray_insert_sortedArray(&arr2, -1);
+    dynamicArray_Display(arr2);
+    dynamicArray_insert_sortedArray(&arr2, 7);
+    dynamicArray_Display(arr2);
+    
 }
 
 void reverse(void){
@@ -610,4 +637,64 @@ void reverse_array(int *arr, int length){
     // release dynamically allocated memory for tempArr
     free(tempArr);
 #endif
+}
+
+/*
+        Insert a value in a sorted array.
+        The idea is to start at the end of the array and if the given value is
+        less than current index value, shift the value to the right. You repeat this
+        until you reach an element in the array whose value is less than given value.
+        
+        The typical way done is you look for position in the sorted array and then shift all the elements after that to the right to make room. But, its better to start at the end of the sorted array and shift while you look for its correct position of insertion.
+        
+        
+ */
+
+void staticArray_insert_sortedArray(struct staticArray *arr, int value){
+    if(arr->length==arr->size){
+        // No room for insertion
+        printf("Array is full.\n");
+        return;
+    }else if(arr->length<arr->size){
+        // There is room for insertion
+        int i = (arr->length)-1; // Start at the end of the sorted array
+        // Keep shifting elements to the right if the current element is > value
+        // I'm assuming the list is sorted in ascending order
+        
+        // The (i!=-1) is added for case when given value has to be inserted at the
+        // front -> worse case scenario of this algorithm
+        while(arr->A[i]>value && (i!=-1)){
+            arr->A[i+1] = arr->A[i]; // shifting element to the right
+            i--;
+        }
+        // arr[i] < value, therefore, 'value' is inserted right after
+        arr->A[i+1] = value;
+        (arr->length)++; // Increase length, new element added.
+    }
+    
+}
+
+void dynamicArray_insert_sortedArray(struct dynamicArray *arr, int value){
+    
+    if(arr->length==arr->size){
+        // No room for insertion
+        printf("Array is full.\n");
+        return;
+    }else if(arr->length<arr->size){
+        // There is room for insertion
+        int i = (arr->length)-1; // Start at the end of the sorted array
+        // Keep shifting elements to the right if the current element is > value
+        // I'm assuming the list is sorted in ascending order
+        
+        // The (i!=-1) is added for case when given value has to be inserted at the
+        // front -> worse case scenario of this algorithm
+        while(arr->A[i]>value && (i!=-1)){
+            arr->A[i+1] = arr->A[i]; // shifting element to the right
+            i--;
+        }
+        // arr[i] < value, therefore, 'value' is inserted right after
+        arr->A[i+1] = value;
+        (arr->length)++; // Increase length, new element added.
+    }
+    
 }
