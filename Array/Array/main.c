@@ -49,6 +49,17 @@ bool isSorted(int arr[], int length);
 void move_negative_to_left(int *arr, int length);
 int * mergeArrays(int *arr1, int arr1_lenght, int *arr2, int arr2_length);
 
+// Set Operations on array - an Array can hold a set of elements
+//      Union: All the elements of arr1 and arr2, without duplicates
+//      Intersection: Common elements of arr1 and arr2.
+//      Difference: Arr1-Arr2, the elements that are in arr2 but not in arr1?
+//      Set membership: Searching if an element is part of the set
+void union_of_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
+void intersection_of_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
+void difference_in_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
+void isMemberOfSet(int *arr1, int arr1_len, int value);
+
+
 
 // Programs
 void print_Array(int* arr, int length);
