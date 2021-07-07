@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h> // For malloc function
 #include <math.h> // For floor operations in BinarySearch
-
+#include <stdbool.h> // for bool type
 // creating a struct for an array
 
 struct dynamicArray{
@@ -36,7 +36,6 @@ int staticArray_deleteAtIndex(struct staticArray *arr, int index);
 int dynamicArray_deleteAtIndex(struct dynamicArray *arr, int index);
 int staticArray_linearSearch(struct staticArray *arr, int value);
 int dynamicArray_linearSearch(struct dynamicArray *arr, int value);
-
 int Recursive_BinarySearch(int arr[], int low, int high, int key);
 int Iterative_BinarySearch(int arr[], int length, int key);
 void left_shift(int *arr, int length);
@@ -46,7 +45,7 @@ void rotate_right(int *arr, int length);
 void reverse_array(int *arr, int length);
 void staticArray_insert_sortedArray(struct staticArray *arr, int value);
 void dynamicArray_insert_sortedArray(struct dynamicArray *arr, int value);
-
+bool isSorted(int arr[], int length);
 
 // Programs
 void append_to_array(void);
@@ -58,13 +57,23 @@ void shift_array(void);
 void rotate_array(void);
 void reverse(void);
 void sorted_Array_insert(void);
+void check_if_sorted(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    sorted_Array_insert();
+    check_if_sorted();
     return 0;
 }
 
+void check_if_sorted(void){
+    
+    // Statically allocated memory
+    struct staticArray arr ={{1,1,9,10}, 20, 4};
+    printf("Is the array sorted? %d\n", isSorted(arr.A, 4));
+    // Dynamic array
+    struct dynamicArray arr2 = createDynamicStruct();
+    printf("Is the array sorted? %d\n", isSorted(arr2.A, 4));
+}
 void sorted_Array_insert(void){
     // Statically allocated memory
     struct staticArray arr ={{1,6,8,9}, 20, 4};
@@ -697,4 +706,26 @@ void dynamicArray_insert_sortedArray(struct dynamicArray *arr, int value){
         (arr->length)++; // Increase length, new element added.
     }
     
+}
+
+/*
+      You compare pair of indices starting at front and you look for first pair that
+        is not sorted. i.e. if checking for sorted in ascending order,
+      then element at i should be less than element at i+1, find first pair that negates this and return false
+        
+        Key note: You don't traverse the array till length-1, because you can't
+                  compare element at length-1 with non-exisiting element at length,
+                  so, you stop at length-1 for last pair comparison.
+ */
+bool isSorted(int arr[], int length){
+    
+    int i;
+    for(i=0;i<length-1;i++){
+        if(arr[i]>arr[i+1]){
+            // found a pair not in ascending order
+            return false;
+        }
+    }
+    // You reached here, that means the list is sorted in ascending order
+    return true;
 }
