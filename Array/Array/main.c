@@ -46,10 +46,12 @@ void reverse_array(int *arr, int length);
 void staticArray_insert_sortedArray(struct staticArray *arr, int value);
 void dynamicArray_insert_sortedArray(struct dynamicArray *arr, int value);
 bool isSorted(int arr[], int length);
-
 void move_negative_to_left(int *arr, int length);
+int * mergeArrays(int *arr1, int arr1_lenght, int *arr2, int arr2_length);
+
 
 // Programs
+void print_Array(int* arr, int length);
 void append_to_array(void);
 void insert_at_index(void);
 void delete_at_index(void);
@@ -61,11 +63,22 @@ void reverse(void);
 void sorted_Array_insert(void);
 void check_if_sorted(void);
 void separate_pos_neg_values(void);
+void merge_two_arrays(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    separate_pos_neg_values();
+    merge_two_arrays();
     return 0;
+}
+
+
+void merge_two_arrays(void){
+    
+    // the two arrays you want to merge have to be sorted.
+    int arr1[] ={ 1,3,5,7,9,11};
+    int arr2[] ={ 1,4,6,10};
+    int *mergeArray = mergeArrays(arr1, 6, arr2, 4);
+    print_Array(mergeArray, 10);
 }
 
 void separate_pos_neg_values(void){
@@ -781,3 +794,65 @@ void move_negative_to_left(int *arr, int length){
     }
     
 }
+
+/*
+        Note: Merge only makes sense for sorted arrays.
+        This function will two arrays and return pointer to the merged array.
+        The idea is to use three iterators: 1 for traversing arr1, 1 for traversing arr2 and 1 for traversing the merge array.
+        
+        You compare current index of each array and the smaller among them is copied to the merged array, increment the iterator of arr from which you copied and increment iterator of the merged Array.
+        
+        One of the arrays will reach the end first, then copy the elements of the array not traversed completely to the merge array.
+        
+        The time complexity of a merge algorithm is always denoted as
+        theta(arr1_length + arr2_length), i.e. whenever you see two degrees in time
+        complexity notation, it means there is some sort of merge in there.
+ 
+ */
+int* mergeArrays(int *arr1, int arr1_length, int *arr2, int arr2_length){
+    
+    int i=0,j=0,k=0;
+    
+    // Allocate memory from heap for merged Array
+    int * mergedArray = (int*)malloc((arr1_length+arr2_length)*sizeof(int));
+    
+    while(i<arr1_length && j<arr2_length){
+        // Compare and copy the lowest of the two array elements
+        // over to the mergeArray, increment iterator
+        if(arr1[i]<arr2[j]){
+            mergedArray[k]=arr1[i];
+            i++;
+            k++;
+        }else{
+            mergedArray[k]=arr2[j];
+            j++;
+            k++;
+        }
+    }// End of while-loop, one of the array copied over completely
+    
+    // Copy over all the remaining elements of arr1
+    while(i<arr1_length){
+        mergedArray[k]=arr1[i];
+        i++;
+        k++;
+    }
+    
+    // Copy over all the remaining elements of arr2
+    while(j<arr2_length){
+        mergedArray[k]=arr2[j];
+        j++;
+        k++;
+    }
+    // return merged array
+    return mergedArray;
+}
+
+void print_Array(int* arr, int length){
+    printf("The elements of the array are.\n");
+    int i;
+    for(i=0;i<length;i++){
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
