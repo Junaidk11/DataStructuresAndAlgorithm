@@ -43,6 +43,7 @@ void left_shift(int *arr, int length);
 void right_shift(int *arr, int length);
 void rotate_left(int *arr, int length);
 void rotate_right(int *arr, int length);
+void reverse_array(int *arr, int length);
 
 // Programs
 void append_to_array(void);
@@ -52,11 +53,41 @@ void linear_Search(void);
 void binary_Search(void);
 void shift_array(void);
 void rotate_array(void);
+void reverse(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    rotate_array();
+    reverse();
     return 0;
+}
+
+void reverse(void){
+#if METHOD2
+    // Statically allocated memory
+    struct staticArray arr ={{1,2,3,4,5}, 20, 5};
+    staticArray_Display(arr);
+    reverse_array(arr.A, arr.length);
+    staticArray_Display(arr);
+    
+    // Dynamic array
+    struct dynamicArray arr2 = createDynamicStruct();
+    dynamicArray_Display(arr2);
+    reverse_array(arr2.A, arr2.length);
+    dynamicArray_Display(arr2);
+#else
+    // METHOD1
+    // Statically allocated memory
+    struct staticArray arr ={{1,2,3,4,5}, 20, 5};
+    staticArray_Display(arr);
+    reverse_array(arr.A, arr.length);
+    staticArray_Display(arr);
+    
+    // Dynamic array
+    struct dynamicArray arr2 = createDynamicStruct();
+    dynamicArray_Display(arr2);
+    reverse_array(arr2.A, arr2.length);
+    dynamicArray_Display(arr2);
+#endif
 }
 
 void rotate_array(void){
@@ -539,4 +570,44 @@ void rotate_right(int *arr, int length){
         arr[i]=arr[i-1]; // Copy left index to the current index
     }
     arr[0] = lastElement;
+}
+
+/*
+        Reversing can be done in two ways:
+            1) Create another array of same size and use two iterators,
+                one pointing to end of original and the other pointing to start
+                of new array. Copy elements over.
+                After copy elements in reverse to the new array, copy the new array to old array and return new array memory to program
+            2) Use two iterators, one pointing to front and the other to the end
+                Swap the values at these indices, increment front iterator and decrement end iterator. This is repeated until the two iterators are equal or if front iterator is > end iterator
+ */
+void reverse_array(int *arr, int length){
+
+#ifdef METHOD2
+// Method 2 is simpler, because its a single for loop
+    int i, j,temp;
+    for(i=0, j=length-1;i<j;i++, j--){
+        // swap the two values
+        temp = arr[j];
+        arr[j] = arr[i];
+        arr[i] = temp;
+    }
+#else
+    // Method 1
+    int *tempArr = (int *)malloc(length*sizeof(int));
+    
+    // Copy elements from arr into tempArr in reverse
+    int i, j;
+    for(i=length-1,j=0;i>=0;i--,j++){
+        tempArr[j]=arr[i];
+    }
+    
+    // Copy values in tempArr over to original arr
+    for(i=0;i<length;i++){
+        arr[i] = tempArr[i];
+    }
+    
+    // release dynamically allocated memory for tempArr
+    free(tempArr);
+#endif
 }
