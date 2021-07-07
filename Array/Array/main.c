@@ -47,6 +47,8 @@ void staticArray_insert_sortedArray(struct staticArray *arr, int value);
 void dynamicArray_insert_sortedArray(struct dynamicArray *arr, int value);
 bool isSorted(int arr[], int length);
 
+void move_negative_to_left(int *arr, int length);
+
 // Programs
 void append_to_array(void);
 void insert_at_index(void);
@@ -58,11 +60,27 @@ void rotate_array(void);
 void reverse(void);
 void sorted_Array_insert(void);
 void check_if_sorted(void);
+void separate_pos_neg_values(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    check_if_sorted();
+    separate_pos_neg_values();
     return 0;
+}
+
+void separate_pos_neg_values(void){
+    // Statically allocated memory
+    struct staticArray arr ={{1,6,-8,9,-5, -2,4}, 20, 7};
+    staticArray_Display(arr);
+    move_negative_to_left(arr.A, 7);
+    staticArray_Display(arr);
+    
+    // Dynamic array
+    struct dynamicArray arr2 = createDynamicStruct();
+    dynamicArray_Display(arr2);
+    move_negative_to_left(arr2.A, 7);
+    dynamicArray_Display(arr2);
+    
 }
 
 void check_if_sorted(void){
@@ -728,4 +746,38 @@ bool isSorted(int arr[], int length){
     }
     // You reached here, that means the list is sorted in ascending order
     return true;
+}
+
+/*
+    This function moves all the negative numbers in an array to the left
+    and all the positive numbers to the right.
+ 
+    The idea is to use two iterators, one starting at the front and one at the back.
+    The front iterator will look for positive numbers and the back iterator will
+    look for negative numbers. When they've found their numbers, the two will swap to push positive to the front and the negative to the end. This is repeated until the front iterator cross the back iterator, which means you've pushed all the negative to the front and all the positive numbers to the right.
+    
+    This algorithm does n+2 comparisons -> time complexity is o(n)
+ */
+void move_negative_to_left(int *arr, int length){
+    int i = 0, j=length-1;
+    
+    while(i<j){
+        // The two iterators keep moving until i crosses j,
+        // then you scanned full array
+        while(arr[i]<0){
+            // Its negative number, move to next index
+            i++;
+        } // end of this while -> you've found a positive number
+        
+        while(arr[j]>0){
+            // Its a positive number, move to previous index
+            j--;
+        }// end of this while -> you've found a negative number
+        
+        if(i<j){
+            // Swap the two numbers iff i hasn't crossed j
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    
 }
