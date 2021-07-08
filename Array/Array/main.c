@@ -62,6 +62,7 @@ int * mergeArrays(int *arr1, int arr1_length, int *arr2, int arr2_length);
 //  require another array to return results.
 struct dynamicArray* union_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 struct dynamicArray* union_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
+struct dynamicArray* intersection_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 
 
 // Programs
@@ -80,11 +81,25 @@ void separate_pos_neg_values(void);
 void merge_two_arrays(void);
 void get_union_of_unsorted_sets(void);
 void get_union_of_sorted_sets(void);
+void get_intersection_of_unsorted_sets(void);
+
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    get_union_of_sorted_sets();
+    get_intersection_of_unsorted_sets();
     return 0;
+}
+
+
+void get_intersection_of_unsorted_sets(void){
+    int arr1[]={3,5,7,9,11};
+    int arr2[]={1,3,5,11,15};
+    int arr3[]={1,5,15};
+    print_Array(arr3, 3);
+    print_Array(arr2, 5);
+    struct dynamicArray *result = intersection_of_unsorted_sets(arr3, 3, arr2, 5);
+    dynamicArray_Display(*result);
+    
 }
 
 // Test case:  Same size sorted sets: Passed
@@ -1059,4 +1074,45 @@ struct dynamicArray* union_of_sorted_sets(int *arr1, int arr1_len, int *arr2, in
     }
     
     return union_result;
+}
+
+
+/*
+    Intersection of two sets should return a set with only values common in the two sets.
+    
+    In this you iterate through one of the sets and each iteration,you look for element in the other set, if it exist, then you copy it over to the result set.
+ 
+    So, time complexity is, for each element in set1 you search set2 for that element, so time complexity it arr1_len*arr2_len, i.e. O(n^2)
+            Because each element of arr1 (arr1_len elements) is searched in arr2 (arr2_len), so you iterate through arr2_len elements arr1_len times. Hence the time complexity of O(arr1_len*arr2_len) -> in single variable O(n^2)
+    
+ */
+struct dynamicArray* intersection_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len){
+    
+    struct dynamicArray* intersection = (struct dynamicArray*)malloc(sizeof(struct dynamicArray));
+    
+    // The intersection can at most have all the elements of set1 (i.e. arr1).
+    // i.e. all the element of arr1 are in arr2
+    intersection->size = arr1_len;
+    intersection->A=(int*)malloc(intersection->size*sizeof(int));
+    intersection->length=0;
+    
+    int i,k=0; // to iterate through set1 and for the intersection set.
+    for(i=0; i<arr1_len;i++){
+        
+        if(linearSearch(arr2, arr2_len, arr1[i])){
+            // Element found in both sets
+            intersection->A[k] = arr1[i];
+            k++;
+            intersection->length++;
+        }
+    } // End all of for-loop, all of arr1 elements looked for in arr2.
+    
+    // resize the dynamic array if needed
+    if(intersection->length<intersection->size){
+        intersection->A=(int*)realloc(intersection->A, intersection->length*sizeof(int));
+        // Update size
+        intersection->size=intersection->length;
+    }
+                        
+    return intersection;
 }
