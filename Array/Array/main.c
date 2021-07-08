@@ -47,17 +47,20 @@ void staticArray_insert_sortedArray(struct staticArray *arr, int value);
 void dynamicArray_insert_sortedArray(struct dynamicArray *arr, int value);
 bool isSorted(int arr[], int length);
 void move_negative_to_left(int *arr, int length);
-int * mergeArrays(int *arr1, int arr1_lenght, int *arr2, int arr2_length);
+int * mergeArrays(int *arr1, int arr1_length, int *arr2, int arr2_length);
 
 // Set Operations on array - an Array can hold a set of elements
 //      Union: All the elements of arr1 and arr2, without duplicates
 //      Intersection: Common elements of arr1 and arr2.
 //      Difference: Arr1-Arr2, the elements that are in arr2 but not in arr1?
 //      Set membership: Searching if an element is part of the set
-void union_of_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
-void intersection_of_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
-void difference_in_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
-void isMemberOfSet(int *arr1, int arr1_len, int value);
+//
+//  The two sets could be sorted or unsorted. If the two sets are sorted,
+//  all the set operations below can be implemented using the idea behind merge of
+//  two arrays. For unsorted sets, there are different ways to do it. Regardless of
+//  if the two sets are sorted or unsorted, the result of a set operation would
+//  require another array to return results.
+struct dynamicArray* union_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 
 
 
@@ -75,11 +78,28 @@ void sorted_Array_insert(void);
 void check_if_sorted(void);
 void separate_pos_neg_values(void);
 void merge_two_arrays(void);
+void get_union_of_unsorted_sets(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    merge_two_arrays();
+    get_union_of_unsorted_sets();
     return 0;
+}
+
+// Test passed with both: Same size unsorted arrays & different sizes
+void get_union_of_unsorted_sets(void){
+    
+    // Create two unsorted arrays
+
+    int arr1[]={3,5,10,4,6};
+    int arr2[]={12,4,7,2,5};
+    int arr3[]={12,4,6};
+    print_Array(arr3, 3);
+    print_Array(arr2, 5);
+    struct dynamicArray *union_result = union_of_unsorted_sets(arr3, 3, arr2, 5);
+    dynamicArray_Display(*union_result);
+    
+    
 }
 
 
@@ -867,3 +887,88 @@ void print_Array(int* arr, int length){
     printf("\n");
 }
 
+
+
+void copy(struct dynamicArray **destination, int* source, int source_len){
+    
+    int i;
+    for(i=0; i<source_len; i++){
+        // copy contents of source array into array of destination
+        (*(*destination)).A[i] = source[i];
+        // Increment length
+        (*(*destination)).length++;
+    } // source is copied over to destination struct's array A
+    
+}
+
+// Allocate memory from the heap for dynamicArray
+// The 'size' member of argument must be initialized before using this
+void allocateArray(struct dynamicArray **arr){
+    
+    (*(*arr)).A = (int *)malloc(((*(*arr)).size)*sizeof(int));
+
+}
+
+bool linearSearch(int arr[] , int arr_len, int value){
+    
+    int i;
+    for(i=0;i<arr_len;i++){
+        if(arr[i]==value){
+            return true;
+        }
+    }
+    return false;
+}
+
+/*
+        The idea is to copy one of the sets into the new array. Then traversing
+        through each index of the second set, you search for that element in the
+        new array, if its not there already, then you copy it over, else move to the next.
+        
+        Therefore, the total time complexity of this setup is:
+            'arr1_len' time to copy one of the sets over to the union array,
+        then search for 'arr2_len' elements in arr1 array.
+        Therefore, total time is O(n^2) because the dominant time taken in searching
+            arr1 for each arr2 element, before deciding to copy it over to union array.
+ */
+struct dynamicArray* union_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len){
+    
+    struct dynamicArray *union_result = (struct dynamicArray *)malloc(sizeof(struct dynamicArray));
+    
+    // At most union array size would set1+set2
+    union_result->size = arr1_len + arr2_len;
+    union_result->length =0; // Initialize the value correctly.
+    
+    // Allocate memory for dynamic array of max possible size of union of sets
+    allocateArray(&union_result);
+    
+    // Copy set arr1 over to union_result struct
+    copy(&union_result, arr1, arr1_len); // Copy the elements of arr1 into union_Result array
+    
+    // Now we loop through arr2, search for its elements in arr1 before placing it in union_array
+    
+    int i;
+    for(i=0;i<arr2_len;i++){
+        // Search for current element of set arr2 in arr1
+        if(!linearSearch(arr1,arr1_len, arr2[i])){
+            // Element not found in set arr1, therefore copy the element over to union
+            union_result->A[union_result->length] = arr2[i];
+            
+            // increment length of union_result
+            (union_result->length)++;
+        }
+    }// Moved all the elements of arr2 that were not already present in arr1
+
+    // Check if all of union array occupied, if not, reduce the size.
+    if(union_result->length < union_result->size){
+        // resize the array for the right size.
+        
+        //struct dynamicArray *final_result = (struct dynamicArray*)realloc(union_result, (union_result->length)*sizeof(int));
+        
+        union_result->A = (int *)realloc(union_result->A, union_result->length*sizeof(int));
+        union_result->size = union_result->length;
+    }
+    
+    return union_result;
+
+}
