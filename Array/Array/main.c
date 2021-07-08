@@ -61,7 +61,7 @@ int * mergeArrays(int *arr1, int arr1_length, int *arr2, int arr2_length);
 //  if the two sets are sorted or unsorted, the result of a set operation would
 //  require another array to return results.
 struct dynamicArray* union_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
-
+struct dynamicArray* union_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 
 
 // Programs
@@ -79,13 +79,26 @@ void check_if_sorted(void);
 void separate_pos_neg_values(void);
 void merge_two_arrays(void);
 void get_union_of_unsorted_sets(void);
+void get_union_of_sorted_sets(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    get_union_of_unsorted_sets();
+    get_union_of_sorted_sets();
     return 0;
 }
 
+// Test case:  Same size sorted sets: Passed
+//             Different size sorted sets: Passed
+void get_union_of_sorted_sets(void){
+    int arr1[]={3,5,7,9,11};
+    int arr2[]={1,3,5,11,15};
+    int arr3[]={0,9,10};
+    print_Array(arr1, 5);
+    print_Array(arr3, 3);
+    struct dynamicArray *union_result = union_of_sorted_sets(arr1, 5, arr3, 3);
+    dynamicArray_Display(*union_result);
+    
+}
 // Test passed with both: Same size unsorted arrays & different sizes
 void get_union_of_unsorted_sets(void){
     
@@ -971,4 +984,79 @@ struct dynamicArray* union_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, 
     
     return union_result;
 
+}
+
+/*
+ 
+    The two sets are sorted and we determine the union of the two sets.
+    The idea here is similar to merging two arrays (which has a prereq of being sorted). So, we use three iterators, one for each set and the third for the union array.
+    We traverse through the two sets, updating the union set. If the two elements of the sets are the same, you copy a single copy of the element to the union set and increment the iterators of both sets at the same.
+ 
+    Once you reach the end of one of the sets, you just copy over the elements of the set that hasn't reached its end.
+ 
+    Since this code is using the idea behind merge of two arrays, its time complexity is dependent on two variables O(arr1_len + arr2_len);
+    But if you were write the two as a function of a single variable, you get O(n),
+    i.e. highest degree is 1.
+ */
+struct dynamicArray* union_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len){
+    
+    // Allocate memory for Result
+    struct dynamicArray *union_result = (struct dynamicArray*)malloc(sizeof(struct dynamicArray));
+    
+    // Set size of the dynamic array
+    union_result->size=arr1_len+arr2_len;
+    union_result->length = 0;
+    
+    // allocate memory from heap for array
+    union_result->A = (int *)malloc(union_result->size*sizeof(int));
+    
+    // three iterators, 1 for each set, 1 for union set
+    int i =0, j=0, k=0;
+    
+    while(i<arr1_len && j<arr2_len){
+        
+        // if set element same, copy one to the union set, increment all iterator
+        if(arr1[i]==arr2[j]){
+            union_result->A[k]=arr1[i];
+            i++;
+            j++;
+            k++;
+            union_result->length++;
+        }else if(arr1[i]<arr2[j]){
+            // Copy arr1 element and increment its iterator
+            union_result->A[k]=arr1[i];
+            i++;
+            k++;
+            union_result->length++;
+        }else{
+            // Copy arr2 element and increment its iterator
+            union_result->A[k] = arr2[j];
+            j++;
+            k++;
+            union_result->length++;
+        }
+    }// End of while loop, one of the sets reached its end
+    
+    //Copy the remaining elements
+    while(i<arr1_len){
+        union_result->A[k] = arr1[i];
+        i++;
+        k++;
+        union_result->length++;
+    }
+    
+    while(j<arr2_len){
+        union_result->A[k] = arr2[j];
+        j++;
+        k++;
+        union_result->length++;
+    }
+    
+    // Resize array if union set not using all the allocated memory
+    if(union_result->length<union_result->size){
+        union_result->A = (int *)realloc(union_result->A, union_result->length*sizeof(int));
+        union_result->size = union_result->length; // Update size
+    }
+    
+    return union_result;
 }
