@@ -66,6 +66,8 @@ struct dynamicArray* intersection_of_unsorted_sets(int *arr1, int arr1_len, int 
 struct dynamicArray* intersection_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 struct dynamicArray* difference_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 struct dynamicArray* difference_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
+bool is_memeber_of_unsorted_set(int *arr, int len, int value);
+bool is_memeber_of_sorted_set(int *arr, int len, int value);
 
 
 // Programs
@@ -88,14 +90,33 @@ void get_intersection_of_unsorted_sets(void);
 void get_intersection_of_sorted_sets(void);
 void get_difference_of_unsorted_sets(void);
 void get_difference_of_sorted_sets(void);
+void search_unsorted_list(void);
+void search_sorted_list(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    get_difference_of_sorted_sets();
+    search_sorted_list();
     return 0;
 }
 
+// Tests: Passed
+void search_sorted_list(void){
+    int arr1[]={3,5,7,9,11};
+    print_Array(arr1, 5);
+    printf("Search for %d, result: %d\n",1, is_memeber_of_unsorted_set(arr1, 5, 1));
+    printf("Search for %d, result: %d\n",9, is_memeber_of_unsorted_set(arr1, 5, 9));
+    
+}
+
+// Tests: Passed
+void search_unsorted_list(void){
+    int arr1[]={1,5,3,11,15};
+    print_Array(arr1, 5);
+    printf("Search for %d, result: %d\n",11, is_memeber_of_unsorted_set(arr1, 5, 11));
+    printf("Search for %d, result: %d\n",2, is_memeber_of_unsorted_set(arr1, 5, 2));
+    
+}
 // Tests: Same size sets - passed
 //        Different size sets - passed
 void get_difference_of_sorted_sets(void){
@@ -1302,4 +1323,30 @@ struct dynamicArray* difference_of_sorted_sets(int *arr1, int arr1_len, int *arr
         difference->A =(int *)realloc(difference->A, difference->size*sizeof(int));
     }
     return difference;
+}
+
+
+/*
+        For unsorted set, you can only perform a Linear search and go through
+        the entire set to find the element.
+        
+        Time complexity is O(set_len) = O(n)
+ */
+bool is_memeber_of_unsorted_set(int *arr, int len, int value){
+    
+    if(linearSearch(arr, len, value)){
+        return true;
+    }
+       return false;
+}
+/*
+       For sorted set, you can only perform a Binary search and find the value in
+       O(log set1_len) = O(log n)
+ */
+bool is_memeber_of_sorted_set(int *arr, int len, int value){
+        
+    if(Iterative_BinarySearch(arr, len, value)){
+        return true;
+    }
+    return false;
 }
