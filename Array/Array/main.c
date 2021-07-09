@@ -64,6 +64,9 @@ struct dynamicArray* union_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, 
 struct dynamicArray* union_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 struct dynamicArray* intersection_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 struct dynamicArray* intersection_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
+struct dynamicArray* difference_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
+struct dynamicArray* difference_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
+
 
 // Programs
 void print_Array(int* arr, int length);
@@ -83,12 +86,41 @@ void get_union_of_unsorted_sets(void);
 void get_union_of_sorted_sets(void);
 void get_intersection_of_unsorted_sets(void);
 void get_intersection_of_sorted_sets(void);
+void get_difference_of_unsorted_sets(void);
+void get_difference_of_sorted_sets(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    get_intersection_of_sorted_sets();
+    get_difference_of_sorted_sets();
     return 0;
+}
+
+// Tests: Same size sets - passed
+//        Different size sets - passed
+void get_difference_of_sorted_sets(void){
+    int arr1[]={3,5,7,9,11};
+    int arr2[]={1,3,5,11,15};
+    int arr3[]={1,7,11};
+    print_Array(arr3, 3);
+    print_Array(arr2, 5);
+    struct dynamicArray *result = difference_of_sorted_sets(arr3, 3, arr2, 5);
+    dynamicArray_Display(*result);
+    
+}
+
+
+// Tests: Same size sets - passed
+//        Different size sets - passed
+void get_difference_of_unsorted_sets(void){
+    int arr1[]={5,3,2,15,1};
+    int arr2[]={1,5,3,11,15};
+    int arr3[]={5,56,45};
+    print_Array(arr3, 3);
+    print_Array(arr2, 5);
+    struct dynamicArray *result = difference_of_unsorted_sets(arr3, 3, arr2, 5);
+    dynamicArray_Display(*result);
+    
 }
 
 // Tests:  Same size sets - passed
@@ -1141,9 +1173,8 @@ struct dynamicArray* intersection_of_unsorted_sets(int *arr1, int arr1_len, int 
             element of set1 is equal to set2's current element. Same idea if current
             element of set2 is < set1's element, you move iterator of set2 to the next element.
             
- 
-            At most the size of result set will be the size of the smallest set of
-            the two given sets.
+            The time complexity of this is dependent on the elements of both sets
+            O(arr1_len1 + arr2_len) -> in a single variable it will be O(n)
             
  */
 struct dynamicArray* intersection_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len){
@@ -1182,4 +1213,93 @@ struct dynamicArray* intersection_of_sorted_sets(int *arr1, int arr1_len, int *a
     }
     return result;
     
+}
+
+/*
+        The difference of two sets is set1-set2, the goal is two only return elements of set1 that are not present in set2, i.e. subtract all the common elements of set1 and set2, leaving only the elements of set1 that are not present in set2.
+ 
+        So, for every element of set1, you search for that element in set2, if it is
+        not present in set2, then move it to result set, else move iterator of set1 to next position.
+        Therefore, for each set1 element, you search set2 -> therefore: set1_Size*set2_Size -> in one variable = O(n^2)
+ */
+struct dynamicArray* difference_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len){
+    
+    // At most all of arr1 elements not found in arr2.
+    struct dynamicArray *difference = (struct dynamicArray*)malloc(sizeof(struct dynamicArray));
+    difference->size = arr1_len;
+    difference->length=0;
+    
+    // allocate size for difference->A, assuming all elements of arr1 not found in arr2
+    difference->A = (int *)malloc(difference->size*sizeof(int));
+    
+    int i,k=0;
+    for(i=0; i<arr1_len; i++){
+        if(!linearSearch(arr2, arr2_len, arr1[i])){
+            // arr1 element not found in arr2
+            difference->A[k] = arr1[i];
+            k++;
+            difference->length++;
+        }
+    } // end of for loop: all the elements of arr1 that are not present in arr2 copied over to differenc->A
+    
+    // Resize result->A if not using all the allocated space
+    if((difference->length+1)<difference->size){
+        difference->size = difference->length+1;
+        difference->A = (int *)realloc(difference->A, difference->size*sizeof(int));
+    }
+    return difference;
+}
+
+/*
+    The two sets are sorted here. The idea of merging two arrays is applied here again.
+        
+    The difference of set1 and set2 is the elements of set1 that are not present in set2. So, if the current set1 element is > set2 element, its possible the next set2 element is same as current set1 element. Therefore, you increment iterator of set2 to the next element, leaving set1 iterator at its current position. When you find a set2 element that is > than current set1 element, then it confirms that current set1 element is not in set2 so you copy it over to the result set. This is repeated until you reach the end of either set1 or set2. Note, you only copy elements of set1 to result if they're not present in set2.
+ 
+        Since you're iterating through two sets, the time complexity is dependent on both set lengths, therefore its O(set1_len + set2_len) -> in 1 variable its O(n)
+ 
+ */
+struct dynamicArray* difference_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len){
+    
+    // At most all the elements of set1 are not found in set2
+    struct dynamicArray* difference = (struct dynamicArray*)malloc(sizeof(struct dynamicArray));
+    difference->size = arr1_len;
+    difference->length=0;
+    
+    // allocate memory for difference->A
+    difference->A=(int *)malloc(difference->size*sizeof(int));
+    
+    // Iterators for the two given sets and result set
+    int i=0,j=0,k=0;
+    
+    while(i<arr1_len && j<arr2_len){
+        
+        if(arr1[i]<arr2[j]){
+            // set1 element is not in set2 because its smaller
+            // copy it into result set
+            difference->A[k] = arr1[i];
+            k++;
+            i++;
+            difference->length++;
+        }else if(arr1[i]>arr2[j]){
+            // set1 element is greater than set2 element
+            // next element of set2 could be == to set1
+            // so you only move set2 iterator
+            j++;
+        }else{
+            // the two set elements are the same
+            // move both iterators forward
+            i++;
+            j++;
+        }
+    } // End of while-loop one of the sets reached its end, don't have to copy the rest
+    
+    // Check if all the memory allocated for result set used
+    // if not, resize it
+    if((difference->length+1)<difference->size){
+        // not all the allocated memory used
+        // resize the result set
+        difference->size = difference->length+1;
+        difference->A =(int *)realloc(difference->A, difference->size*sizeof(int));
+    }
+    return difference;
 }
