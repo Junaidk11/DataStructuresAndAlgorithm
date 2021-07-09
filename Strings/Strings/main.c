@@ -11,19 +11,29 @@
 void print_string(char *str);
 int str_len(char *str);
 void change_to_upper(char *str);
-
+void toggle_upper_to_lower(char *str);
 
 // Programs
 void get_string_length(void);
 void upper_to_lower(void);
+void toggle_lower_to_upper(void);
+
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    upper_to_lower();
+    toggle_lower_to_upper();
     
     return 0;
 }
+// Test passed: Only toggles characters, not affecting any symbols
+void toggle_lower_to_upper(void){
+    char str[] ="heLo worLd, What IT dO &^*&";
+    print_string(str);
+    toggle_upper_to_lower(str);
+    print_string(str);
+}
 
+// Tests passed
 void upper_to_lower(void){
     char str[] = "HELLO WORLD";
     change_to_upper(str);
@@ -78,6 +88,25 @@ void change_to_upper(char *str){
             // Add 32 to convert to lower case
             str[i] = (str[i])+32;
             
+        }
+    }
+}
+
+/*
+    An upper case letter gets switched to lower case
+    A lower case letter gets switched to upper case.
+ */
+void toggle_upper_to_lower(char *str){
+    
+    int i;
+    for(i=0;str[i]!='\0';i++){
+        
+        if(str[i]>='A' && str[i]<='Z'){
+            // Add 32 to convert to lower case
+            str[i]+=32;
+        }else if(str[i]>='a' && str[i]<='z'){
+            // Subtract 32 to convert to upper case
+            str[i]-=32;
         }
     }
 }
