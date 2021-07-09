@@ -96,7 +96,7 @@ void search_sorted_list(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    search_sorted_list();
+    get_difference_of_unsorted_sets();
     return 0;
 }
 
@@ -118,28 +118,30 @@ void search_unsorted_list(void){
     
 }
 // Tests: Same size sets - passed
-//        Different size sets - passed
+//        Set1 smaller than set2 - passed
+//        Set1 bigger than set2 - Passed
 void get_difference_of_sorted_sets(void){
-    int arr1[]={3,5,7,9,11};
+    int arr1[]={3,5,7,9,11,20};
     int arr2[]={1,3,5,11,15};
     int arr3[]={1,7,11};
-    print_Array(arr3, 3);
+    print_Array(arr1, 6);
     print_Array(arr2, 5);
-    struct dynamicArray *result = difference_of_sorted_sets(arr3, 3, arr2, 5);
+    struct dynamicArray *result = difference_of_sorted_sets(arr1, 6, arr2, 5);
     dynamicArray_Display(*result);
     
 }
 
 
 // Tests: Same size sets - passed
-//        Different size sets - passed
+//        Set1 smaller than set2 - passed
+//        Set1 bigger than set2 - Passed
 void get_difference_of_unsorted_sets(void){
-    int arr1[]={5,3,2,15,1};
+    int arr1[]={5,3,2,15,1,25,16};
     int arr2[]={1,5,3,11,15};
     int arr3[]={5,56,45};
-    print_Array(arr3, 3);
+    print_Array(arr1, 7);
     print_Array(arr2, 5);
-    struct dynamicArray *result = difference_of_unsorted_sets(arr3, 3, arr2, 5);
+    struct dynamicArray *result = difference_of_unsorted_sets(arr1, 7, arr2, 5);
     dynamicArray_Display(*result);
     
 }
@@ -1312,8 +1314,14 @@ struct dynamicArray* difference_of_sorted_sets(int *arr1, int arr1_len, int *arr
             i++;
             j++;
         }
-    } // End of while-loop one of the sets reached its end, don't have to copy the rest
+    } // End of while-loop one of the sets reached its end, don't have to copy the elements of set2, only set1's remaining elements
     
+    while(i<arr1_len){
+        difference->A[k]=arr1[i];
+        i++;
+        k++;
+        difference->length++;
+    }
     // Check if all the memory allocated for result set used
     // if not, resize it
     if((difference->length+1)<difference->size){
