@@ -63,7 +63,7 @@ int * mergeArrays(int *arr1, int arr1_length, int *arr2, int arr2_length);
 struct dynamicArray* union_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 struct dynamicArray* union_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 struct dynamicArray* intersection_of_unsorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
-
+struct dynamicArray* intersection_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len);
 
 // Programs
 void print_Array(int* arr, int length);
@@ -82,22 +82,36 @@ void merge_two_arrays(void);
 void get_union_of_unsorted_sets(void);
 void get_union_of_sorted_sets(void);
 void get_intersection_of_unsorted_sets(void);
+void get_intersection_of_sorted_sets(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    get_intersection_of_unsorted_sets();
+    get_intersection_of_sorted_sets();
     return 0;
 }
 
-
-void get_intersection_of_unsorted_sets(void){
+// Tests:  Same size sets - passed
+//        Different size sets - passed
+void get_intersection_of_sorted_sets(void){
     int arr1[]={3,5,7,9,11};
     int arr2[]={1,3,5,11,15};
     int arr3[]={1,5,15};
     print_Array(arr3, 3);
     print_Array(arr2, 5);
     struct dynamicArray *result = intersection_of_unsorted_sets(arr3, 3, arr2, 5);
+    dynamicArray_Display(*result);
+}
+
+// Tests: Same size sets - passed
+//        Different size sets - passed
+void get_intersection_of_unsorted_sets(void){
+    int arr1[]={5,3,2,15,1};
+    int arr2[]={1,5,3,11,15};
+    int arr3[]={5,56,15};
+    print_Array(arr3, 3);
+    print_Array(arr1, 5);
+    struct dynamicArray *result = intersection_of_unsorted_sets(arr3, 3, arr1, 5);
     dynamicArray_Display(*result);
     
 }
@@ -1115,4 +1129,57 @@ struct dynamicArray* intersection_of_unsorted_sets(int *arr1, int arr1_len, int 
     }
                         
     return intersection;
+}
+
+/*
+            The sets are sorted. Use the idea of merging two sorted arrays.
+            Have three iterators, 1 for each given set, and 1 for the result set.
+            You copy element to the result iff the two sets have the same element,
+            else you move forward.
+            (assuming sorted in ascending order)
+            If set1 current element is < set2 current element, then we shouldn't increment move iterators, only set1's because its possible the next
+            element of set1 is equal to set2's current element. Same idea if current
+            element of set2 is < set1's element, you move iterator of set2 to the next element.
+            
+ 
+            At most the size of result set will be the size of the smallest set of
+            the two given sets.
+            
+ */
+struct dynamicArray* intersection_of_sorted_sets(int *arr1, int arr1_len, int *arr2, int arr2_len){
+    
+    int i=0, j=0, k=0;
+    
+    struct dynamicArray *result = (struct dynamicArray*)malloc(sizeof(struct dynamicArray));
+    
+    // Get size of the smallest of the two sets
+    result->size = (arr1_len>=arr2_len)? (arr2_len): (arr1_len);
+    result->A = (int *)malloc(sizeof(result->size));
+    result->length = 0;
+    
+    while(i<arr1_len && j<arr2_len){
+        if(arr1[i]<arr2[j]){
+            // increment arr1 iterator
+            i++;
+        }else if(arr1[i]>arr2[j]){
+            j++;
+        }else{
+            // Both are equal, copy the element to result
+            result->A[k]=arr1[i];
+            i++;
+            j++;
+            k++;
+        }
+    }// One of the sets reached the end.
+    
+    // check if all of result->A allocated memory is occupied,
+    // if not, resize the allocated memory.
+    
+    if((result->length+1)<result->size){
+        
+        result->A = (int *)realloc(result->A, sizeof(result->length+1));
+        result->size = result->length+1;
+    }
+    return result;
+    
 }
