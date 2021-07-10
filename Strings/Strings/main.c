@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 // String operations
 void print_string(char *str);
@@ -17,6 +18,8 @@ int number_of_vowels(char *str);
 int number_of_consonant(char *str);
 int number_of_words(char *str);
 bool isValid(char *str);
+void reverse_using_additionalArray(char *str);
+void reverse_not_using_additionalArray(char *str);
 
 // Programs
 void get_string_length(void);
@@ -24,15 +27,23 @@ void upper_to_lower(void);
 void toggle_lower_to_upper(void);
 void count_vowels_consanonts_words(void);
 void validate_string(void);
+void reverse_string(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    validate_string();
+    reverse_string();
     
     return 0;
 }
 
-// Tests passed. 
+void reverse_string(void){
+    char str[]="HELLOO SSNJFNCJ";
+    char str2[]="HELLO \' \"";
+    printf("Original string: %s\n",str2);
+    reverse_using_additionalArray(str2);
+    printf("Reverse String: %s\n",str2);
+}
+// Tests passed.
 void validate_string(void){
     char str1[] ="JUnaidsjsne";
     char str2[] ="Kjhfcjc?sjcn";
@@ -247,3 +258,57 @@ bool isValid(char *str){
     }
     return true;
 }
+
+/*
+    In this method, you create character array of same size as given string.
+    Iterate to the last character of the given string, copy each character over
+    to the character array and decrement iterator. Finally add NULL character to the
+    character array to make it a string -> this is your reversed string
+ */
+void reverse_using_additionalArray(char *str){
+    
+    // Get size of the given string
+    int i;
+    for(i=0;str[i]!='\0';i++);
+    // i is the size of the given string
+    // i is at '\0'
+    
+    // Create a character array of same size as given string
+    char *reverseString = (char*)malloc((i)*sizeof(char));
+    
+    i--; // i is at last character now
+    
+    // Copy the characters of given string over to
+    // the memory allocated for reverseString
+    // Copy stops when i>=0, i.e. copied all elements, when i=-1, stop
+    int j; // For traversing the allocated block for reverseString
+    for(j=0; i>=0;i--,j++){
+        reverseString[j] = str[i];
+    }
+    
+    // Add NULL character to the character array to make it a string
+    reverseString[j] = '\0';
+    
+    //==================== NOTE ==================================
+    // You can't simply say str = reverseString
+    // because str is holding the memory address of the
+    // the original string given to the function. The pointer str
+    // only exist in this function, so if we assign it address
+    // pointed to by reverseString, our changes won't be returned to the main program.
+    // Because pointer to original string was passed by value.
+    // Therefore, we need to explicitly copy the reversString to the address
+    // pointed to by str
+    //==================== NOTE ==================================
+    
+    // could use i aswell, no restrictions
+    for(j=0;reverseString[j]!='\0';j++){
+        str[j] = reverseString[j];
+    }
+    // NULL character already there in str
+    // Now the address pointed to by str has the reversed string
+    
+    free(reverseString); // return memory to heap
+    reverseString=NULL;
+    
+}
+void reverse_not_using_additionalArray(char *str);
