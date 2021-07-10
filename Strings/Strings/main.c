@@ -24,11 +24,17 @@ bool isPalindrome_using_additionalArray(char *str);
 bool isPalindrome_not_using_additionalArray(char *str);
 
 // Finding duplicates in a string - three possible methods
-void find_duplicates_by_comparing(char *str);
+void find_duplicates_by_comparing(char *str);  // @TODO:
 void find_lowercase_alphabet_duplicates_using_hastable_for_counting(char *str);
 void find_uppercase_alphabet_duplicates_using_hastable_for_counting(char *str);
 void find_upper_and_lowercase_alphabet_duplicates_using_hashtable_for_counting(char *str);
-void find_duplicates_using_hashtable_with_bits(char *str);
+void find_duplicates_using_hashtable_with_bits(char *str); // @TODO:
+
+// Anagram Checking
+// Check if str2 is an anagram of str1
+bool isAnagram(char *str1, char *str2);
+bool isAnagram_using_search(char *str1, char *str2);
+
 
 
 
@@ -41,14 +47,25 @@ void validate_string(void);
 void reverse_string(void);
 void check_palindrome(void);
 void find_duplicates(void);
+void check_anagram(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    find_duplicates();
+    check_anagram();
     
     return 0;
 }
+// Tests passed: Tried lower case letters, mix and match with lower, upper and numbers, changed sizes.
+void check_anagram(void){
+        
+    char str1[]="fried";
+    char str2[]="FIRED";
+    printf("Is \'%s\' an anagram of \'%s\'? %d\n",str2, str1, isAnagram(str1, str2));
+    printf("Is \'%s\' an anagram of \'%s\'? %d\n",str2, str1, isAnagram_using_search(str1, str2));
+    
+}
+
 
 // Tests: Only tested the hashtable method of finding duplicates-> Upper, lower, upper&&lower strings
 void find_duplicates(void){
@@ -488,7 +505,7 @@ bool isPalindrome_not_using_additionalArray(char *str){
  
         All hashtable method of finding the duplicates has a linear time complexity,
         i.e. depending on your range of values expected in the given string, you create a hashtable
-        of that size and populate with count of each alphabet. 
+        of that size and populate with count of each alphabet.
  */
 // We're assuming the string has only lower case alphabets
 void find_lowercase_alphabet_duplicates_using_hastable_for_counting(char *str){
@@ -584,4 +601,157 @@ void find_upper_and_lowercase_alphabet_duplicates_using_hashtable_for_counting(c
             }
         }
     }
+}
+int size_of_string(char *str){
+
+    int i;
+    for(i=0;str[i]!='\0';i++);
+    return i;
+}
+/*
+        Anagram Def: The string str2 is composed of all the characters in str1.
+            
+        Anagram can ONLY exist if the two strings are of same size, else they don't.
+ 
+ 
+        The idea is to use a hashtable of size corresponding to range of ASCII codes
+        possible in str1. For each character found in str1, you set the corresponding
+        hashtable index to 1.
+        
+        After setting up the hashtable for str1 string content,
+        you scan through str2 and check if corresponding hashtable index of the str1
+        is set(or has a count value), if it is, you decrement it, which indicates the corresponding
+        character was found in str2. You repeat this for the entire st2.
+ 
+        At the end you check if the hashtable contents are 0, if they are, then str2
+        contains all the characters of str1, i.e. its an anagram of str1.
+        If any one of str1's hashtable index is not 0, then we can say str2 is not an anagram of
+        str1.
+ 
+        The time complexity of this is linear, because first you set up a hashtable for str1,
+        then you scan through str2 (which is linear), and for each character, you check hashtable content corresponding to it(which is done in constant time), finally you scan hashtable
+        to find the first non-zero index to indicate str2 is not an anagram of str1.
+            Therefore, all these linear operations, sum to give you a linear complexity because
+            highest degree is still 1.
+ */
+// Assume the strings contain all lower case alphabets, the idea is same, you can adapt code for
+// any. If the string can contain both upper and lower case, you can convert both to same and do
+// this operation -> depends on the setup
+bool isAnagram(char *str1, char *str2){
+    
+    
+    int i,j; // For sizes of str1 and str2
+    
+    i = size_of_string(str1);
+    j = size_of_string(str2);
+    
+    if(i!=j){
+        // sizes don't match, can't be an anagram
+        return false;
+    }else{
+        // Sizes match, check if str2 is an anagram of str1
+        
+        // Lower case alphabets ASCII: 97-122
+        // Total 26 alphabets, therefore, Hashtable size if 26.
+        // Hashtable indexing:  character_ASCII_Code - 97 = index of hashtable
+        
+        int count[26] ={0}; // Initialize hashtable with 0
+        
+        // Scan through str1 and fill out hashtable
+        for(i=0;str1[i]!='\0';i++){
+            count[(str1[i]-97)]++;
+        }
+        
+        // Scan str2 and decrement hashtable content
+        for(i=0;str2[i]!='\0';i++){
+            count[(str2[i]-97)]--;
+        }
+        
+        // Find first non-zero entry of str1's hashtable,
+        // to indicate str2 is not an anagram of str1
+        for(i=0;i<26;i++){
+            if(count[i]>0){
+                // found an character of str1 not found in str2
+                return false;
+            }
+        }
+        
+        // str2 is an anagram of str1
+        return true;
+    }
+}
+
+
+int linearSearch_withIndexReturn(char *str, char ch){
+    
+    int i;
+    for(i=0;str[i]!='\0';i++){
+        
+        if(str[i]==ch){
+            // Character found in string
+            return i;
+        }
+    }
+    
+    // character not found in string
+    return -1;
+}
+/*
+    This is a simpler method, where for each character of str2 you check if it exists in str1.
+    The idea is to search for the character in str1, if you find it, you replace it with something
+    that is not in the range of ASCII codes you expect in str1, this way if you have multiple of
+    same character, you will only count it once.
+    
+    In this method you don't need a hashtable.
+ 
+    NOTE: Anagram can only exist, if the two strings are same size
+ */
+// We're expecting strings to only have lower case alphabets.
+bool isAnagram_using_search(char *str1, char *str2){
+    
+    int i,j;
+    i=size_of_string(str1);
+    j=size_of_string(str2);
+    
+    if(i!=j){
+        // The two strings are not same size,
+        // str2 can't be an anagram of str1
+        return false;
+    }else{
+        // Str1 and str2 are same size, anagram possible
+        
+        // Create a copy of str1, don't want to modify original
+        char *copy = create_copy(str1);
+        
+        // Scan str2 and look for each character in str1
+        // indexFound stores the index of the character found in str1
+        int indexFound=-1;
+        for(i=0;str2[i]!='\0';i++){
+            
+            indexFound = linearSearch_withIndexReturn(copy, str2[i]);
+            if(indexFound>=0){
+                // Set it to some special character because we're expecting all lower case
+                copy[indexFound]='*';
+            }
+        }
+        
+        // Check if string 'copy' has all '*', which means str2 is an anagram of str1
+        // because all of str1 characters found in str2
+        for(i=0;copy[i]!='\0';i++){
+            if(copy[i]!='*'){
+                // found a character in str1, that was not found in str2
+                // return memory allocate for copy first
+                free(copy);
+                copy=NULL;
+                return false;
+            }
+        }
+        
+        // Str2 is an anagram of str1
+        // return memory allocated for copy
+        free(copy);
+        copy=NULL;
+        return true;
+    }
+    
 }
