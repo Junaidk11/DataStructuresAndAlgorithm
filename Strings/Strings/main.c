@@ -23,6 +23,14 @@ void reverse_not_using_additionalArray(char *str);
 bool isPalindrome_using_additionalArray(char *str);
 bool isPalindrome_not_using_additionalArray(char *str);
 
+// Finding duplicates in a string - three possible methods
+void find_duplicates_by_comparing(char *str);
+void find_lowercase_alphabet_duplicates_using_hastable_for_counting(char *str);
+void find_uppercase_alphabet_duplicates_using_hastable_for_counting(char *str);
+void find_upper_and_lowercase_alphabet_duplicates_using_hashtable_for_counting(char *str);
+void find_duplicates_using_hashtable_with_bits(char *str);
+
+
 
 // Programs
 void get_string_length(void);
@@ -32,15 +40,33 @@ void count_vowels_consanonts_words(void);
 void validate_string(void);
 void reverse_string(void);
 void check_palindrome(void);
+void find_duplicates(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    check_palindrome();
+    find_duplicates();
     
     return 0;
 }
 
+// Tests: Only tested the hashtable method of finding duplicates-> Upper, lower, upper&&lower strings
+void find_duplicates(void){
+    
+    char str1[]="abdjceedd";
+    char str2[]="ASDCFVDDDRTVFFFF";
+    char str3[]="asdCCf11cvggZZ ";
+    printf("The string is: %s\n",str2);
+    find_lowercase_alphabet_duplicates_using_hastable_for_counting(str2);
+    printf("The string is: %s\n",str1);
+    find_uppercase_alphabet_duplicates_using_hastable_for_counting(str1);
+    
+    // Counting upper and lower case duplicates
+    printf("The string is: %s\n",str3);
+    find_upper_and_lowercase_alphabet_duplicates_using_hashtable_for_counting(str3);
+    
+    
+}
 // Test all passed.
 void check_palindrome(void){
     char str1[]="AYYA";
@@ -442,4 +468,117 @@ bool isPalindrome_not_using_additionalArray(char *str){
     }
     // Both original and its reverse are the same
     return true;
+}
+
+
+/*
+        The idea here is to create a hashtable using arrays where each index
+        is corresponding to an alphabet, and we keep count of the number of
+        occurences of each alphabet in the given string.
+ 
+        The hashtable size is based on the given range of values in the give string.
+        i.e. if string is all lower case alphabets, then range of values is from 97-122 (ASCII code).
+        The number of values from 97 to 122 is 26, so you create an array of size 26, where index 0
+        corresponds to alphabet 'a', and index 1 corresponds to alphabet 'b' and so on.
+            For each index, if you add 97 to it, you can get the character it corresponds to, i.e
+            0+97 = 97 = 'a' and the value at index 0 corresponds to number of occurences of 'a'.
+ 
+        To get the index value of the current character in given string, you simply subtract 97 from
+        it. i.e. 'b'-97 = 1, because 'b' = 98 in ASCII code. When you have the index, use it to increment the count in the hashtable for the corresponding alphabet.
+ 
+ */
+// We're assuming the string has only lower case alphabets
+void find_lowercase_alphabet_duplicates_using_hastable_for_counting(char *str){
+    
+    // Create a hashtable of size 26, corresponding to ASCII of lower case alphabets (97-122)
+    int counter[26] ={0}; // Initialize all the elements to 0
+    
+    int i;
+    for(i=0;str[i]!='\0';i++){
+        // str[i]-97 will calculate the index corresponding to the current character of the string
+        counter[(str[i]-97)]++;
+    }
+    
+    // Print all the duplicate characters in the string
+    for(i=0;i<26;i++){
+        if(counter[i]>1){
+            // The character corresponding to the current index has duplicates
+            printf("Character \'%c\' has occured %d times.\n", (char)(i+97), counter[i]);
+        }
+    }
+}
+/*
+    The idea is same as above. The only difference is the range of values expected.
+    Upper case alphabets range: 65-90 (A-Z)
+    Therefore, hastable indexing -> (character_ASCII_code - 65)
+    The hashtable size is still fix, 26 characters in the alphabets
+ */
+// We're assuming the input is all upper case alphabets.
+void find_uppercase_alphabet_duplicates_using_hastable_for_counting(char *str){
+    
+    // Create a hashtable of size 26, corresponding to ASCII of lower case alphabets (97-122)
+    int counter[26] ={0}; // Initialize all the elements to 0
+    
+    int i;
+    for(i=0;str[i]!='\0';i++){
+        // str[i]-65 will calculate the index corresponding to the current character of the string
+        counter[(str[i]-65)]++;
+    }
+    
+    // Print all the duplicate characters in the string
+    for(i=0;i<26;i++){
+        if(counter[i]>1){
+            // The character corresponding to the current index has duplicates
+            printf("Character \'%c\' has occured %d times.\n", (char)(i+65), counter[i]);
+        }
+    }
+}
+
+/*
+    In this case, we have a total of 26+26= 52 character range, 'a'-'z' and 'A'-'Z'. Therefore,
+    hashtable size is 52.
+    Q: How do we index into the hashtable?
+        upper case alphabet range: 'A' - 'Z' -> 65-90 -> (index 0 - index 25)
+        lower case alphabet range: 'a' - 'z' -> 97-122 -> (index 26 - index 51)
+ 
+    Accesing the upper case alphabets from hashtable is easy, just subtract 65 from the character ASCII.
+    For lower case alphabets:
+            ASCII_lower - (what) = (Index in hashtable)
+            97 - x = 26 (for 'a') --> x = 97-26 = 71
+            98 - x = 27 (for 'b') --> x = 98-27 = 71
+            99 - x = 28 (for 'c') --> x = 99-28 = 71
+        Lower case alphabets Hashtable indexing formula -> (char_ASCII_Code - 71 = Hashtable Index)
+ */
+void find_upper_and_lowercase_alphabet_duplicates_using_hashtable_for_counting(char *str){
+    
+    // Create hashtable of 52, indices 0-25 for Upper case alphabets, indices 26-51 for lower case alphabets
+    int counter[52]={0}; // Initialize hashtable with 0
+    
+    int i;
+    for(i=0;str[i]!='\0';i++){
+        
+        // Different Hashtable index formula depending on if upper or lower case character
+        if(str[i]>='A' && str[i]<= 'Z'){
+            // Hashtable indexing formula -> index = (str[i]-65)
+            counter[(str[i]-65)]++;
+        }else if(str[i]>='a' && str[i]<='z'){
+            // Hashtable indexing formula -> index = (str[i]-71)
+            counter[(str[i]-71)]++;
+        }
+    }
+    
+    // Printing all the duplicates in the given string
+    for(i=0;i<52;i++){
+        if(counter[i]>1){
+            // Different Hashtable index formula depending on if the upper or lower case alphabet
+            if(i<26){
+                // Hashtable indexing formula for lower case alphabets -> index = (str[i]-65)
+                printf("Character \'%c\' is repeated %d times.\n", (char)(i+65),counter[i]);
+                
+            }else if(i>=26){
+                // Hashtable indexing formula for upper case alphabets -> index = (str[i]-71)
+                printf("Character \'%c\' is repeated %d times.\n", (char)(i+71),counter[i]);
+            }
+        }
+    }
 }
