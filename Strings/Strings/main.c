@@ -16,27 +16,42 @@ void toggle_upper_to_lower(char *str);
 int number_of_vowels(char *str);
 int number_of_consonant(char *str);
 int number_of_words(char *str);
+bool isValid(char *str);
 
 // Programs
 void get_string_length(void);
 void upper_to_lower(void);
 void toggle_lower_to_upper(void);
 void count_vowels_consanonts_words(void);
+void validate_string(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    count_vowels_consanonts_words();
+    validate_string();
     
     return 0;
 }
 
-// Tested with numbers & words. 
+// Tests passed. 
+void validate_string(void){
+    char str1[] ="JUnaidsjsne";
+    char str2[] ="Kjhfcjc?sjcn";
+    char str3[] ="123456789";
+    char str4[] ="Jndujnd 345562";
+    
+    printf("Is \'%s\' a valid string?: %d\n",str1, isValid(str1));
+    printf("Is \'%s\' a valid string?: %d\n",str2, isValid(str2));
+    printf("Is \'%s\' a valid string?: %d\n",str3, isValid(str3));
+    printf("Is \'%s\' a valid string?: %d\n",str4, isValid(str4));
+}
+
+// Tested with numbers & words.
 void count_vowels_consanonts_words(void){
     
     char sen[] ="My name is Junaid Khan.";
     char sen2[]="aaaaaaaaaa";
     char sen3[]="123455456";
-    printf("Number of vowels in %s : %d\n",sen3, number_of_vowels(sen3));
+    printf("Number of vowels in %s : %d\n",sen2, number_of_vowels(sen3));
     printf("Number of consonants in %s : %d\n",sen3, number_of_consonant(sen3));
     printf("Number of words in %s: %d\n",sen, number_of_words(sen));
 }
@@ -201,4 +216,34 @@ int number_of_words(char *str){
         }
     }
     return words; // Because you're counting spaces
+}
+
+bool isAlphabet(char ch){
+    if((ch>='a' && ch<='z') || (ch>='A' && ch<='Z')){
+        return true;
+    }
+    return false;
+}
+
+bool isNumber(char ch){
+    if(ch>='0' && ch<='9'){
+        return true;
+    }
+    return false;
+}
+/*
+        A string is valid if all its contents are either upper/lower alphabets or
+        numbers, else it is invalid. I.e. if there is any special character in the
+        string, the string is invalid.
+ */
+bool isValid(char *str){
+    int i;
+    for(i=0;str[i]!='\0';i++)
+    {
+        if(!(isAlphabet(str[i])) && !(isNumber(str[i]))){
+            // The character is not an alphabet or a number, string not valid.
+            return false;
+        }
+    }
+    return true;
 }
