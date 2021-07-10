@@ -6,24 +6,39 @@
 //
 
 #include <stdio.h>
+#include <stdbool.h>
 
 // String operations
 void print_string(char *str);
 int str_len(char *str);
 void change_to_upper(char *str);
 void toggle_upper_to_lower(char *str);
+int number_of_vowels(char *str);
+int number_of_consonant(char *str);
+int number_of_words(char *str);
 
 // Programs
 void get_string_length(void);
 void upper_to_lower(void);
 void toggle_lower_to_upper(void);
-
+void count_vowels_consanonts_words(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    toggle_lower_to_upper();
+    count_vowels_consanonts_words();
     
     return 0;
+}
+
+// Tested with numbers & words. 
+void count_vowels_consanonts_words(void){
+    
+    char sen[] ="My name is Junaid Khan.";
+    char sen2[]="aaaaaaaaaa";
+    char sen3[]="123455456";
+    printf("Number of vowels in %s : %d\n",sen3, number_of_vowels(sen3));
+    printf("Number of consonants in %s : %d\n",sen3, number_of_consonant(sen3));
+    printf("Number of words in %s: %d\n",sen, number_of_words(sen));
 }
 // Test passed: Only toggles characters, not affecting any symbols
 void toggle_lower_to_upper(void){
@@ -109,4 +124,81 @@ void toggle_upper_to_lower(char *str){
             str[i]-=32;
         }
     }
+}
+/*
+        Counting how many vowels are in the given string.
+        Vowels - a, e, i, o, u, A, E, I, O, U
+ */
+int number_of_vowels(char *str){
+    
+    int i, vcount=0;
+    for(i=0;str[i]!='\0';i++){
+        
+        if(str[i]=='a' ||
+           str[i]=='e' ||
+           str[i]=='i' ||
+           str[i]=='o' ||
+           str[i]=='u' ||
+           str[i]=='A' ||
+           str[i]=='E' ||
+           str[i]=='I' ||
+           str[i]=='O' ||
+           str[i]=='U' ){
+            vcount++;
+        }
+    }
+    return vcount;
+}
+
+bool linearSearch(char *str, char ch){
+    int i;
+    for(i=0;str[i]!='\0';i++){
+        if(str[i]==ch){
+            return true;
+        }
+    }
+    return false; // ch not found in the string
+}
+
+bool isVowel(char ch){
+    
+    char vowels[] ="aeiouAEIOU";
+    if(linearSearch(vowels,ch)){
+        return true;
+    }
+    return false;
+}
+/*
+        All the non-vowel alphabets.
+        You first ensure the character is an alphabet, then you check
+        if its not a vowel. If not a vowel then count incremented.
+ */
+int number_of_consonant(char *str){
+    int i, consonant_count=0;
+    for(i=0;str[i]!='\0';i++){
+        if((str[i]>='a' && str[i]<='z') || (str[i]>='A' && str[i]<='Z')){
+            // Character is an alphabet
+            if(!isVowel(str[i])){
+                consonant_count++;
+            }
+        }
+    }
+    return consonant_count;
+}
+
+/*
+    You count spaces between words to indicate number of words
+    in the given string.
+    Make sure you don't count consecutive whitespaces as words.
+        Only count a space if the previous character was not a space.
+ */
+int number_of_words(char *str){
+    
+    int i, words=0;
+    for(i=0;str[i]!='\0';i++){
+        if(str[i]==' ' && str[i-1]!=' '){
+            words++;
+        }
+    }
+    return words; // Because you're counting spaces
 }
