@@ -20,6 +20,9 @@ int number_of_words(char *str);
 bool isValid(char *str);
 void reverse_using_additionalArray(char *str);
 void reverse_not_using_additionalArray(char *str);
+bool isPalindrome_using_additionalArray(char *str);
+bool isPalindrome_not_using_additionalArray(char *str);
+
 
 // Programs
 void get_string_length(void);
@@ -28,12 +31,28 @@ void toggle_lower_to_upper(void);
 void count_vowels_consanonts_words(void);
 void validate_string(void);
 void reverse_string(void);
+void check_palindrome(void);
+
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    reverse_string();
+    check_palindrome();
     
     return 0;
+}
+
+// Test all passed.
+void check_palindrome(void){
+    char str1[]="AYYA";
+    char str2[]="Junaid";
+    char str3[]="MAMA  ";
+    printf("Is string \'%s\' a palindrome? %d\n", str1, isPalindrome_using_additionalArray(str1));
+    printf("Is string \'%s\' a palindrome? %d\n", str2, isPalindrome_using_additionalArray(str2));
+    printf("Is string \'%s\' a palindrome? %d\n", str3, isPalindrome_using_additionalArray(str3));
+    printf("\n");
+    printf("Is string \'%s\' a palindrome? %d\n", str1, isPalindrome_not_using_additionalArray(str1));
+    printf("Is string \'%s\' a palindrome? %d\n", str2, isPalindrome_not_using_additionalArray(str2));
+    printf("Is string \'%s\' a palindrome? %d\n", str3, isPalindrome_not_using_additionalArray(str3));
 }
 
 void reverse_string(void){
@@ -341,4 +360,86 @@ void reverse_not_using_additionalArray(char *str){
     }
     
     // NULL character already in the right place.
+}
+
+
+char *create_copy(char *str){
+    
+    // Get size of the string
+    int i;
+    for(i=0;str[i]!='\0';i++);
+    
+    // Allocate memory from the heap for
+    // a character array to store copy of str
+    char *copy = (char*)malloc(i*sizeof(char));
+    
+    // copy contents
+    for(i=0;str[i]!='\0';i++){
+        copy[i]=str[i];
+    }
+    // i is at '\0' on str
+    copy[i] = '\0'; // Now copy is a string
+    
+    return copy;
+}
+/*
+    In this method of palindrome checking, you create an additional character array to
+    store the reverse of the given string, then you compare the reverse with the given string.
+    If they match, its a palindrome, else its not.
+ */
+bool isPalindrome_using_additionalArray(char *str){
+    
+    // Need to know the size of the given string
+    int i;
+    for(i=0;str[i]!='\0';i++);
+    // i is at position of '\0'
+    
+    // Create a copy of the original string
+    char *copy = create_copy(str);
+    
+    // Reverse the copy of the string
+    reverse_not_using_additionalArray(copy);
+    
+    // copy is holding the revered string of the original string
+    // Now we check if the reversed string matches the original string
+    int j;
+    for(j=0;str[j]!='\0';j++){
+        if(str[j]!=copy[j]){
+            // free the dynamically allocated memory for copy
+            free(copy);
+            copy = NULL;
+            return false;
+        }
+    }
+    
+    // The reverse and original string are the same.
+    // free the dynamically allocated memory for copy
+    free(copy);
+    copy = NULL;
+    return true;
+}
+/*
+    In this method of palindrome checking, you don't need an additional character array.
+    You use two iterators, one starting from the front and the other from last character,
+    each iteration you check the front and back character, if they don't match, this is not a palindrome.
+    You repeat this process until front iterator crosses the back iterator or vice versa
+ */
+bool isPalindrome_not_using_additionalArray(char *str){
+    
+    // Get size of string
+    int i;
+    for(i=0;str[i]!='\0';i++);
+    // i is at the position of '\0'
+    i--; // i is now at last character
+    
+    int j; // for starting at the start of the string
+    // Keep comparing the two index values until they cross each other
+    for(j=0;j<i;j++,i--){
+        if(str[j]!=str[i]){
+            // not a palindrome, reverse not same as original
+            return false;
+        }
+    }
+    // Both original and its reverse are the same
+    return true;
 }
