@@ -42,6 +42,10 @@ void reverse_string(void){
     printf("Original string: %s\n",str2);
     reverse_using_additionalArray(str2);
     printf("Reverse String: %s\n",str2);
+    printf("Original string: %s\n",str2);
+    reverse_not_using_additionalArray(str2);
+    printf("Reverse String: %s\n",str2);
+    
 }
 // Tests passed.
 void validate_string(void){
@@ -311,4 +315,30 @@ void reverse_using_additionalArray(char *str){
     reverseString=NULL;
     
 }
-void reverse_not_using_additionalArray(char *str);
+
+/*
+    In this method of string reversal, you don't need an additional character array.
+    You use the given string's character array, use two iterators.
+    One starts at the last character of the string, and the other starts at the front.
+    Each iteration, you swap the characters, this continues until front and back iterator cross each
+    other.
+    
+ */
+void reverse_not_using_additionalArray(char *str){
+    
+    // Get to the last character of given string
+    int i;
+    for(i=0;str[i]!='\0';i++);
+    // i is at index of '\0'
+    i--; // Now i is at last character
+    
+    int j; // for traversing from front of string
+    char temp; // for swapping
+    for(j=0;i>j;i--,j++){
+        temp = str[j];
+        str[j] = str[i];
+        str[i] = temp;
+    }
+    
+    // NULL character already in the right place.
+}
