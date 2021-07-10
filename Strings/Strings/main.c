@@ -486,6 +486,9 @@ bool isPalindrome_not_using_additionalArray(char *str){
         To get the index value of the current character in given string, you simply subtract 97 from
         it. i.e. 'b'-97 = 1, because 'b' = 98 in ASCII code. When you have the index, use it to increment the count in the hashtable for the corresponding alphabet.
  
+        All hashtable method of finding the duplicates has a linear time complexity,
+        i.e. depending on your range of values expected in the given string, you create a hashtable
+        of that size and populate with count of each alphabet. 
  */
 // We're assuming the string has only lower case alphabets
 void find_lowercase_alphabet_duplicates_using_hastable_for_counting(char *str){
