@@ -9,6 +9,7 @@
 #include <stdlib.h> // For malloc function
 #include <math.h> // For floor operations in BinarySearch
 #include <stdbool.h> // for bool type
+#include <string.h> // for memset
 // creating a struct for an array
 
 struct dynamicArray{
@@ -74,6 +75,14 @@ bool is_memeber_of_sorted_set(int *arr, int len, int value);
 void find_single_missing_element_of_n_natural_numbers(int *arr, int len); // Sorted array
 void find_single_missing_element_of_natural_numbers(int *arr, int len); // Sorted array
 void find_multiple_missing_element_of_natural_numbers(int *arr, int len); // Sorted array
+void find_all_missing_numbers(int *arr, int len, int lowestNumber, int highestNumber); // could be used with both sorted and unsorted list of numbers
+
+
+// Finding duplicates in an array
+void find_duplicates_sorted_array_not_using_hashtable(int *arr, int len);
+void count_duplicates_sorted_array_not_using_hashtable(int *arr, int len);
+void count_duplicates_sorted_array_using_hashtable(int *arr, int len);
+
 
 // Programs
 void print_Array(int* arr, int length);
@@ -98,14 +107,24 @@ void get_difference_of_sorted_sets(void);
 void search_unsorted_list(void);
 void search_sorted_list(void);
 void missing_elements(void);
+void find_duplicates(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    missing_elements();
+    find_duplicates();
     return 0;
 }
 
+void find_duplicates(void){
+    
+    int arr1[]={1,2,3,4,5,5,6,7,8,9,9,9};
+    print_Array(arr1, 12);
+    count_duplicates_sorted_array_not_using_hashtable(arr1, 12);
+    find_duplicates_sorted_array_not_using_hashtable(arr1, 12);
+    count_duplicates_sorted_array_using_hashtable(arr1,12);
+}
+// Tests passed;
 void missing_elements(void){
     int arr1[] = {1,2,3,4,5,6,8,9,10};
     int arr2[] = {6,7,8,9,11,12,13};
@@ -116,6 +135,8 @@ void missing_elements(void){
     find_single_missing_element_of_natural_numbers(arr2, 7);
     print_Array(arr3, 7);
     find_multiple_missing_element_of_natural_numbers(arr3, 7);
+    print_Array(arr3, 7);
+    find_all_missing_numbers(arr3, 7, 6, 20);
 }
 // Tests: Passed
 void search_sorted_list(void){
@@ -1488,4 +1509,129 @@ void find_multiple_missing_element_of_natural_numbers(int *arr, int len){
             }
         }
     }
+}
+
+
+/*
+        In this method, we use a Hashtable which is the size of the highest possible
+        number in the given array.
+        The elements of arr are used to index into the Hashtable and increment that index of the hashtable.
+        After scanning the arr and updating the hashtable, we scan hashtable and find all the elements that are 0 in the hashtable.
+        
+        This procedure is fast, it has two for loops, one for updating hashtable by scanning given array and the other is for scanning hashtable to print all missing elements. Total workdone with O(n) because each loop takes n time -> o(n+n) = o(n).
+ 
+        NOTE:
+            Whenever there is searching to do, you can always use a Hashtable. Its faster but it requires memory. If you're constricted by memory size, then hashtable may not be the best option for searching.
+ */
+void find_all_missing_numbers(int *arr, int len, int lowestNumber, int highestNumber){
+    
+    // allocate memory for hashtable
+    int *hashtable = (int*)malloc(highestNumber*sizeof(int));
+    
+    // Scan given array and update hashtable
+    int i;
+    for(i=0;i<len;i++){
+        
+        // The element of arr is used to index into hashtable and increment it
+        hashtable[arr[i]]++;
+    }
+    
+    // Scan the hashtable and print all the missing elements
+    for(i=lowestNumber;i<(highestNumber-1);i++){
+        if(hashtable[i]==0){
+            // Number missing in given array
+            printf("Missing number is: %d\n",i);
+        }
+    }
+    // Return allocated memory back to heap.
+    free(hashtable);
+    hashtable=NULL;
+}
+
+/*
+    In this algorithm, you're using two iterators.
+    The two iterators, are used to keep count number of duplicates.
+ 
+    When you find a duplicate, you use the second iterator
+    to move forward until you find a new element that is not the same duplicate.
+        When you find new element using the second indexer, you print the count, Then you update your previous iterator to the element before second iterator you started, because the algorithm is based on checking if current element is same as next element.
+ 
+    The work done here is O(n) because you're only scanning the given list once,
+    and all the operations in the loop are of constant time.
+ */
+void count_duplicates_sorted_array_not_using_hashtable(int *arr, int len){
+    
+    int i,j;
+    for(i=0;i<len;i++){
+        if(arr[i]==arr[i+1]){
+            // Found a duplicate
+            // move j to the next element and check if its same as currentDuplicate
+            j=i+1;
+            // Check if next element is also the same duplicate as the one found at i
+            while(arr[i]==arr[j])j++; // Incrementing j until you reach a different element
+            // Found a new element, print the number of duplicates of the previous element
+            printf("Number %d is repeated %d times.\n",arr[i], j-i);
+            // Update i to the element before the new element at j
+            i = j-1;
+        }
+    }
+}
+
+/*
+    In this algorithm, you're using two iterators just like before,
+    and using an additional variable to store the lastDuplicate found, to avoid printing the same duplicate multiple times as you scan through the given list.
+ 
+    The work done in this function is just scanning through list, therefore time complexity is linear o(n)
+ */
+void find_duplicates_sorted_array_not_using_hashtable(int *arr, int len){
+    
+    int lastDuplicate =0; // Stores last duplicate found
+    int i;
+    for(i=0;i<len;i++){
+        
+        if(arr[i]==arr[i+1] && arr[i]!=lastDuplicate){
+            // found a new duplicate
+            // print it
+            printf("%d is duplicated.\n", arr[i]);
+            // update last duplicate
+            lastDuplicate=arr[i];
+        }
+    }
+}
+
+/*
+    In this method we create a Hashtable that is of size lastElement+1 (because array index starts at 0;
+    
+    Then we scan through the given array and use the elementValue to index into Hashtable and increment the value there.
+    
+    The work done here is scanning through given given, which is linear and then setting hashtable element value, which is constant time, finally
+    you scan hashtable and print the duplicates and their count, which is also linear.
+        Therefore, overall time taken is also linear.
+ 
+ */
+void count_duplicates_sorted_array_using_hashtable(int *arr, int len){
+    
+    // Allocate memory for the hashtable from heap
+    int size = arr[len-1]+1;
+    int *hashtable = (int*)calloc((arr[len-1]+1), sizeof(int)); // Calloc will allocate and initialize memory to 0
+
+    
+    // scan through given array and update hashtable
+    int i;
+    for(i=0;i<len;i++){
+        // increment count
+        hashtable[arr[i]]++;
+    }
+    
+    // Scan through hashtable and find duplicates and their count
+    for(i=0;i<arr[len-1]+1;i++){
+        if(hashtable[i]>1){
+            // Multiple occurence of the current number
+            printf("Number \'%d\' is repeated %d times.\n",i, hashtable[i]);
+        }
+    }
+    
+    // Return memory allocated from heap
+    free(hashtable);
+    hashtable=NULL;
 }
