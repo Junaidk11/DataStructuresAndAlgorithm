@@ -89,6 +89,10 @@ void count_duplicates_unsorted_array_using_hashtable(int *arr, int len);
 void find_pair_for_given_sum(int *arr,int len, int sum); // works for both sorted and unsorted list -> O(n)
 void find_pair_give_sorted_array(int *arr, int len, int sum); // Only works for sorted array -> O(n)
 
+// Find max and min in an array in single scan
+void find_max_min_in_single_scan(int *arr, int len);
+
+
 // Programs
 void print_Array(int* arr, int length);
 void append_to_array(void);
@@ -114,16 +118,24 @@ void search_sorted_list(void);
 void missing_elements(void);
 void find_duplicates(void);
 void find_pairs_for_given_sum(void);
-
+void find_min_max(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    find_pairs_for_given_sum();
+    find_min_max();
     return 0;
 }
 
-// Test passed. 
+void find_min_max(void){
+    int arr1[]={1,3,4,5,6,7,8};
+    int arr2[]={-10,11,45,100,22000,556,-1000};
+    print_Array(arr1, 7);
+    find_max_min_in_single_scan(arr1, 7);
+    print_Array(arr2, 7);
+    find_max_min_in_single_scan(arr2, 7);
+}
+// Test passed.
 void find_pairs_for_given_sum(void){
     
     int arr1[]={1,3,4,5,6,7,8}; // sorted
@@ -1820,4 +1832,38 @@ void find_pair_give_sorted_array(int *arr, int len, int sum){
             j--;
         }
     }
+}
+
+/*
+    The goal here is to show how you can find the max and min of a given list, while you scan the list.
+    The idea is to use two variables to store max and min. For each iteration, you update min if the current element
+    is smaller than existing min. If the current element is less than existing min it can't be greater than existing max. Therefore, you only update max, if the current element is not less than existing.
+ 
+    Note:
+        The work done is linear for all cases of arrays, i.e. not sorted, sorted in ascending order, sorted in descending order.
+        But, the number of comparisons done is minimal when the list sorted in descending order, because
+        in that case you only update the min each iteration.
+        The most number of comparisons is done when the given list is sorted in ascending order, because
+        you will check if the current element is less than current min before you check if its greater than you existing max, so two comparsions each iteration if the list is sorted in ascending order.
+ 
+        You could put a counter to check number of comparisons for a given sorted array and unsorted array, and compare the number of comparisons done. 
+ */
+void find_max_min_in_single_scan(int *arr, int len){
+    // Initialize min and max with first element
+    int max = arr[0], min=arr[0];
+    
+    // scan the list and update min and max
+    int i;
+    for(i=0;i<len;i++){
+        // check if min first
+        if(arr[i]<min){
+            // update min
+            min = arr[i];
+        }else if(arr[i]>max){
+            // update max
+            max = arr[i];
+        }
+    }
+    printf("Max is: %d, Min is: %d.\n",max, min);
+    
 }
