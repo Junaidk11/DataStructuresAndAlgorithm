@@ -82,6 +82,7 @@ void find_all_missing_numbers(int *arr, int len, int lowestNumber, int highestNu
 void find_duplicates_sorted_array_not_using_hashtable(int *arr, int len);
 void count_duplicates_sorted_array_not_using_hashtable(int *arr, int len);
 void count_duplicates_sorted_array_using_hashtable(int *arr, int len);
+void count_duplicates_unsorted_array_using_hashtable(int *arr, int len);
 
 
 // Programs
@@ -116,13 +117,17 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 
+// Test passed
 void find_duplicates(void){
     
     int arr1[]={1,2,3,4,5,5,6,7,8,9,9,9};
+    int arr2[]={2,5,1,1,7,9,8,4,4,8};
     print_Array(arr1, 12);
     count_duplicates_sorted_array_not_using_hashtable(arr1, 12);
     find_duplicates_sorted_array_not_using_hashtable(arr1, 12);
     count_duplicates_sorted_array_using_hashtable(arr1,12);
+    print_Array(arr2, 10);
+    count_duplicates_unsorted_array_using_hashtable(arr2,10);
 }
 // Tests passed;
 void missing_elements(void){
@@ -137,6 +142,7 @@ void missing_elements(void){
     find_multiple_missing_element_of_natural_numbers(arr3, 7);
     print_Array(arr3, 7);
     find_all_missing_numbers(arr3, 7, 6, 20);
+    
 }
 // Tests: Passed
 void search_sorted_list(void){
@@ -1612,7 +1618,7 @@ void find_duplicates_sorted_array_not_using_hashtable(int *arr, int len){
 void count_duplicates_sorted_array_using_hashtable(int *arr, int len){
     
     // Allocate memory for the hashtable from heap
-    int size = arr[len-1]+1;
+    // arr[len-1]+1 -> Size of Hashtable
     int *hashtable = (int*)calloc((arr[len-1]+1), sizeof(int)); // Calloc will allocate and initialize memory to 0
 
     
@@ -1628,6 +1634,65 @@ void count_duplicates_sorted_array_using_hashtable(int *arr, int len){
         if(hashtable[i]>1){
             // Multiple occurence of the current number
             printf("Number \'%d\' is repeated %d times.\n",i, hashtable[i]);
+        }
+    }
+    
+    // Return memory allocated from heap
+    free(hashtable);
+    hashtable=NULL;
+}
+
+/*
+    Assumption is that the arr is not sorted.
+    Work done here is just scanning through the entire list and updating max -> linear time, O(n)
+    Function returns largest element in the array
+ */
+int get_max(int *arr, int len){
+    
+    int currentMax=arr[0];
+    int i;
+    for(i=0;i<len;i++){
+        if(arr[i]>currentMax){
+            // Found a larger value
+            currentMax = arr[i];
+        }
+    }
+    return currentMax;
+
+}
+
+/*
+    In this method, we find the largest number in the given arr.
+    Then we create a hashtable of that size+1, because index starts at 0.
+    
+    Next, we scan through the given array, and using element to index into hashtable and increment its value.
+    Finally, we scan through the hashtable and print all the numbers that were repeated.
+    
+    In this algorithm the work done is: Scanning through the given array to update hashtable, done in linear time.
+                                        Scanning through the hashtable to print all the duplicates, done in linear time.
+                            Therefore, linear + linear is still linear.
+ 
+    There is another method to find duplicates in an array using two for loops, the time complexity of that is quadratic. So, I've skipped it.
+ */
+void count_duplicates_unsorted_array_using_hashtable(int *arr, int len){
+    // Get max element in the given array
+    int maxElement = get_max(arr, len);
+    
+    // Allocate memory for hashtable of size maxElement+1 because indexing starts at 0
+    // Calloc will initialize the memory with 0
+    int *hashtable = (int *)calloc(maxElement+1, sizeof(int));
+    
+    // Scan through the given array and index into hashtable to update
+    int i;
+    for(i=0;i<len;i++){
+        hashtable[arr[i]]++;
+    }
+    
+    // Scan through hashtable and print all duplicates
+    for(i=0;i<maxElement+1;i++){
+        if(hashtable[i]>1){
+            // Found a duplicate
+            printf("\'%d\' is repeated %d times.\n",i, hashtable[i]);
         }
     }
     
