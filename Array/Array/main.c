@@ -70,6 +70,11 @@ bool is_memeber_of_unsorted_set(int *arr, int len, int value);
 bool is_memeber_of_sorted_set(int *arr, int len, int value);
 
 
+// Finding missing elements in an array
+void find_single_missing_element_of_n_natural_numbers(int *arr, int len); // Sorted array
+void find_single_missing_element_of_natural_numbers(int *arr, int len); // Sorted array
+void find_multiple_missing_element_of_natural_numbers(int *arr, int len); // Sorted array
+
 // Programs
 void print_Array(int* arr, int length);
 void append_to_array(void);
@@ -92,14 +97,26 @@ void get_difference_of_unsorted_sets(void);
 void get_difference_of_sorted_sets(void);
 void search_unsorted_list(void);
 void search_sorted_list(void);
+void missing_elements(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    get_difference_of_unsorted_sets();
+    missing_elements();
     return 0;
 }
 
+void missing_elements(void){
+    int arr1[] = {1,2,3,4,5,6,8,9,10};
+    int arr2[] = {6,7,8,9,11,12,13};
+    int arr3[] ={6,7,9,10,13,16,20};
+    print_Array(arr1, 9);
+    find_single_missing_element_of_n_natural_numbers(arr1, 9);
+    print_Array(arr2, 7);
+    find_single_missing_element_of_natural_numbers(arr2, 7);
+    print_Array(arr3, 7);
+    find_multiple_missing_element_of_natural_numbers(arr3, 7);
+}
 // Tests: Passed
 void search_sorted_list(void){
     int arr1[]={3,5,7,9,11};
@@ -1357,4 +1374,118 @@ bool is_memeber_of_sorted_set(int *arr, int len, int value){
         return true;
     }
     return false;
+}
+
+
+/*
+        The array is assumed to have the first n natural numbers.
+        The natural numbers start at 1.
+        
+        We can find the missing element of a sorted array of n natural numbers
+        by getting the sum of all the elements and comparing it with the
+        expected sum. The difference between the sums will give you the missing number.
+        
+        sum of n natural numbers = n(n+1)/2
+ 
+        The time complexity is simply the work done in the function,
+        the work done here is summing all the elements printing the missing element.
+        For summing you're going through the entire array so O(n)
+ */
+void find_single_missing_element_of_n_natural_numbers(int *arr, int len){
+    
+    // n would be the last nummber of the natural numbers in arr
+    int expectedSum = (arr[len-1]*(arr[len-1]+1))/2;
+    int i, sum=0;
+    for(i=0;i<len;i++){
+        sum +=arr[i];
+    }
+    if(sum<expectedSum){
+        printf("First Missing number is: %d\n", expectedSum-sum);
+    }else{
+        printf("No missing number.\n");
+    }
+    
+}
+
+/*
+    In this function the natural numbers don't start at 1. Could start at any value;
+    The key idea here is to use the index of the array to find the missing element.
+ 
+    E.g.
+        If the natural numbers start are: 6,7,8,10,11,12
+            The difference between each element and index should be 6 because you
+            start at natural numbers at 6.
+                6-0 = 6
+                7-1 = 6
+                8-2 = 6
+                9-3 = 6
+                10-4= 6
+                and so on.
+ 
+        Therefore, if you find a element in the array where the difference is
+        not 6, then you know an element is missing, the missing element is simpling
+        the (Index + the difference).
+ 
+        Note: You could count the number of missing elements,
+                but you can only find the first missing element with this method. Because, as you scan through the arr after you've found the missing element, the differences can't be used to find the missing element with the index.
+            The difference between the calculated difference between current array element and index and expected difference tells you how many elements are missing.
+            
+ */
+void find_single_missing_element_of_natural_numbers(int *arr, int len){
+
+    int difference = arr[0];
+    int i;
+    for(i=0;i<len;i++){
+        if((arr[i]-i)!=difference){
+            // Found the missing element
+            // you could count the number of missing elements,
+            // but you can only find the first missing element with this method.
+            printf("First missing element is: %d\n", i+difference);
+            return;
+        }
+    }
+}
+
+/*
+    The difference between the calculated difference between current array element and index and expected difference tells you how many elements are missing.
+ 
+    Therefore, the code is similar to finding a single missing element of the natural numbers, if there are multiple missing elements, you need to update your expected difference to the calculated current difference so that you only print the missing elements.
+ 
+    E.g.
+            6, 7, 8, 9, 11, 12, 15, 16, 17, 18, 19
+    
+    Starting expected difference -> 6 (because arr[0] - index0 = 6)
+    This difference is maintained until index 3.
+    At index 4, the calculated difference is 11-4 = 7, which means we're missing one element. Print this missing element using (currentIndex + expectedDifference) 4+6 = 10, now we increment our expectedDifference for
+        the remaing elements until it matches the current calculated difference.
+        Therefore, expected difference now is 7
+    This difference is maintained until index 5.
+    At index 6, the calculated difference is 9, which is two more than expected
+    , therefore, we're missing two elements, print those elements using the currentIndex and increment expectedDifference: print 6+7=13, expectedDifference is now incremented to 8.
+        print 6+8=14, expectedDifference is now incremented to 9, matches the currentDifference, move to next index now.
+    The difference of 9 is now maintained till the end of the array. And We've printed
+    all the missing elements in the natural numbers array
+ 
+    Note:           The work done here is simply scanning the array, the while loop
+                used to increment the expectedDifference to match currentDifference
+                takes negligible time.
+ */
+void find_multiple_missing_element_of_natural_numbers(int *arr, int len){
+  
+    int expectedDifference = arr[0]; // first element minus index 0
+
+    int i;
+    for(i=0;i<len;i++){
+        // scanning through array
+        if((arr[i]-i)!=expectedDifference){
+            // current Difference doesn't match expected,
+            // missing elements
+            while((arr[i]-i)!=expectedDifference){
+                // print missing elements and update expectedDifference
+                // until it matches the new difference
+                printf("Missing elements is: %d\n",i+expectedDifference);
+                expectedDifference++;
+            }
+        }
+    }
 }
