@@ -85,6 +85,10 @@ void count_duplicates_sorted_array_using_hashtable(int *arr, int len);
 void count_duplicates_unsorted_array_using_hashtable(int *arr, int len);
 
 
+// Find a pair in given array that add to given sum
+void find_pair_for_given_sum(int *arr,int len, int sum); // works for both sorted and unsorted list -> O(n)
+void find_pair_give_sorted_array(int *arr, int len, int sum); // Only works for sorted array -> O(n)
+
 // Programs
 void print_Array(int* arr, int length);
 void append_to_array(void);
@@ -109,14 +113,29 @@ void search_unsorted_list(void);
 void search_sorted_list(void);
 void missing_elements(void);
 void find_duplicates(void);
+void find_pairs_for_given_sum(void);
+
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    find_duplicates();
+    find_pairs_for_given_sum();
     return 0;
 }
 
+// Test passed. 
+void find_pairs_for_given_sum(void){
+    
+    int arr1[]={1,3,4,5,6,7,8}; // sorted
+    int arr2[]={3,5,2,7,6,10}; // unsorted
+    print_Array(arr1, 7);
+    find_pair_for_given_sum(arr1, 7, 10);
+    print_Array(arr2, 6);
+    find_pair_for_given_sum(arr2, 7, 10);
+    print_Array(arr1, 7);
+    find_pair_give_sorted_array(arr1, 7, 10);
+    
+}
 // Test passed
 void find_duplicates(void){
     
@@ -1699,4 +1718,106 @@ void count_duplicates_unsorted_array_using_hashtable(int *arr, int len){
     // Return memory allocated from heap
     free(hashtable);
     hashtable=NULL;
+}
+
+/*
+    There are multiple ways to achieve this.
+        One is: Using two nested loops -> this will give you time complexity of O(n^2)
+        Second is: Using hashtable -> which will give you linear time complexity -> the fastest method
+ 
+    We're assuming the list has no duplicates, if the list has duplicates, you can remove the duplicates
+    and perform the same procedure.
+ 
+    So, the idea with Hashtable is: You find the largest number in the give index,
+    then you create a hashtable of largestNumber+1, because indexing starts at 0.
+ 
+    Then scan through the given list, and use the element of list to index into the hashtable
+    and set that value. Now, for the current element, determine what number is needed to get the desired sum.
+    The needed number can be used to index into hashtable and check if it was found in the given list, if it was
+    then we have found a pair that can give you the desired sum. If the desired number needed at the current element
+    of given list is not found in the hashtable, you move to the next index. This way you can print all the possible
+    pair available to get the given sum.
+ 
+    
+ */
+// We assume the list has no duplicates.
+void find_pair_for_given_sum(int *arr, int len, int sum){
+    
+    
+    // Find the largest number in the list
+    int maxNumber = get_max(arr, len);
+    
+    // Allocate memory for hashtable of size maxNumber+1
+    int *hashtable = (int *)calloc(maxNumber+1, sizeof(int));
+    
+    // Scan through given list, update hashtable, find pairs
+    int i,number_needed;
+    for(i=0;i<len;i++){
+        
+        // Don't update hashtable first, because we calculate the number needed based on current element
+        // if the number needed is the same number found in list, then we're getting a result that assumes
+        // the list has duplicates -> but we said list has not duplicates.
+        
+        // calculate number needed to reach desired sum
+        number_needed = sum - arr[i];
+        
+        // check if the needed number was found in the hashtable
+        // we're assuming there are no duplicates, so all hashtable values should be either 0 or 1
+        // hashtable indices cannot be negative -> could check if the number_needed is sensible.
+        if(number_needed>=0 && number_needed<maxNumber){
+            if(hashtable[number_needed]){
+                // number was found in the list
+                printf("The pair of numbers to get \'%d\' are \'%d\' and \'%d\'.\n", sum, arr[i], number_needed);
+            }
+        }
+        
+        // Update hashtable with current element
+        hashtable[arr[i]]++;
+    }
+    
+    // Return memory allocated from heap for hash table
+    free(hashtable);
+    hashtable=NULL;
+    
+}
+
+/*
+    This algorithm is different compared to the Hashtable method, although same time complexity, this method
+    saves space in comparison to Hashtable method.
+ 
+    The idea stems from the fact that in a sorted array, the small values are on one side and the large values
+    are on the other side (side depends on ascending or descending sort). Also, the sum of two numbers, usually
+    involves one large number and one small number to give you the sum.
+ 
+        Assuming list sorted in ascending order:
+        Therefore, we can use two iterators, one starting at the front and one at the end of the list. At each iteration, you add the elements at front and end, if the sum is greater than desired sum, then you
+            move only the iterator at the end, because you want to decrease the larger number to get the desired
+            sum. If the sum of elements at the current positions of the two iterators is less than desired sum, then
+            you move the iterator at the front to the next element (i.e. you want increase the smaller number). If you find two elements (one from front, the other from back) that add up to desired sum, then you move
+            both iterators (one goes forward, the other goes backwards).
+            This process repeated until the two iterators meet at in the middle, no more pairs.
+ 
+    Note: The work done here is just scanning the list, partially from lower half to the middle, and partially from upper half to the midde -> therefore work done is linear.
+ */
+void find_pair_give_sorted_array(int *arr, int len, int sum){
+    // One iterator starts at front, the other at the last element
+    int i=0,j=len-1;
+    while(i<j){
+        // repeat until i==j, both at same element, no more pairs
+        if((arr[i]+arr[j])>sum){
+            // current sum greater than desired
+            // move iterator at the end back, to get a smaller number
+            j--;
+        }else if( (arr[i]+arr[j])<sum){
+            // current sum less than desired
+            // move the iterator at the front ahead, to get a larger number
+            i++;
+        }else{
+            // The current elements meet the desired sum
+            printf("Numbers %d and %d = %d.\n", arr[i], arr[j], sum);
+            // move i forward and j backward
+            i++;
+            j--;
+        }
+    }
 }
