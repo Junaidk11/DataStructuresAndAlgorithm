@@ -36,7 +36,15 @@ bool isAnagram(char *str1, char *str2);
 bool isAnagram_using_search(char *str1, char *str2);
 
 
+// Permutation of a give string
+// level -> State-space representation of all permutations of given string
+void permuation_of_given_string(char *str, int level);
 
+// Sliding Window Problems
+char* minWindowSubstring(char *searchString, char *chars);
+
+// create substring
+char* create_substring(char str[], int LowerIndex, int len);
 
 // Programs
 void get_string_length(void);
@@ -48,13 +56,41 @@ void reverse_string(void);
 void check_palindrome(void);
 void find_duplicates(void);
 void check_anagram(void);
+void print_permuations(void);
+void slidingWindow_problems(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    check_anagram();
+    slidingWindow_problems();
     
-    return 0;
+     return 0;
+}
+
+
+void slidingWindow_problems(void){
+    char str[] ="donutsandwafflemakemehungry";
+    char target[]="flea";
+    char str1[]="whoopiepiesmakemyscalegroan" ;
+    char target1[]="roam";
+    printf("Search String \'%s\' for minimum substring that contains all characters of \'%s\'.\n", str, target);
+    printf("Minimum substring is: \'%s\' \n",minWindowSubstring(str, target));
+    
+    printf("Search String \'%s\' for minimum substring that contains all characters of \'%s\'.\n", str1, target1);
+    printf("Minimum substring is: \'%s\' \n",minWindowSubstring(str1, target1));
+    
+}
+void print_permuations(void){
+    
+    char str1[] = "ABC";
+    char str2[] = "CAB1";
+    char str3[] = "123";
+    permuation_of_given_string(str1, 0);
+    printf("\n");
+    permuation_of_given_string(str2, 0);
+    printf("\n");
+    permuation_of_given_string(str3, 0);
+    
 }
 // Tests passed: Tried lower case letters, mix and match with lower, upper and numbers, changed sizes.
 void check_anagram(void){
@@ -753,5 +789,207 @@ bool isAnagram_using_search(char *str1, char *str2){
         copy=NULL;
         return true;
     }
+    
+}
+
+
+
+/*
+        Permutation is all possible strings using the characters of the given string.
+            
+        The permutations of all the characters in the given string can be represented using a
+        state-space tree. The procedure used is called Brute Force, which looks at all the possible
+        solutions. Brute force can be achieved in many ways, we will look at Backtracking method,
+        where you explore one option and then you comeback and explore others in the level. Backtracking can be implemented recursively and iteratively.
+        We will look at recursive implementation.
+ 
+        You have two static arrays, one to store the leaf node result and the other
+        is to store the flag corresponding to visited node (in this case the taken character from the given string).
+        
+        On each function call, you first check if the current character in the string is null, if it
+        is then you print the result stored in the result array.Else, you scan through the visited node flag array to find character not taken yet. You can take the character and store it in the result array, set the flag corresponding to this character in the visited flag array and call the function again to jump to the next level of the state-space tree.
+ 
+        The argument 'k' is the level of the state-space tree representing all possible permutations
+        of the given character string. The last level of the state-space tree is equal to the size of the string, which is (number of characters in the string + null character). Therefore, you can use this 'k' to determine when you've found a possible permuation of the given string.
+        
+        Summary: You use a visited node flag array to keep track of the character taken in the previous recursive call, this helps you decide which character is available to taken. The result array is used to store the character taken at current call, before calling the function again. When you return from the function call, you have to clear the flag of character last taken, and continue scanning the visited flag array to find the next character available to take.
+ 
+        The max number of possible characters in the given string is usually given, use
+        that to create a static array.
+            Number of permutations is factorial of number of characters in the string
+            
+ */
+void permuation_of_given_string(char *str, int level){
+    
+    // Create two arrays, one for keeping track of character taken and one for result
+    static int character_taken_flag[100]={0};
+    static char permutation[100]; // Result array
+    
+    if(str[level]=='\0'){
+        // You reached the leaf node, print the result
+        // after you set the '\0' in the character array to make it string
+        permutation[level]='\0';
+        printf("Permuations: \'%s\'\n",permutation);
+    }else{
+        // Scan through the flag array and find the available character
+        // copy it over the permutation char array, set flag in the flag array,
+        // jump to next level of state-space tree representation of possible permutation
+        int i;
+        for(i=0;str[i]!='\0';i++){
+            // Travelling through the given string
+            
+            if(character_taken_flag[i]!=1){
+                // Character is available
+                // Take it
+                permutation[level] = str[i];
+                // Set flag to indicate you took the character
+                character_taken_flag[i]=1;
+                // Jump to next level of state-space representation of possible permutation
+                permuation_of_given_string(str, level+1);
+                // When you return from the next level, after exploring that branch, clear the flag, before continuing scan
+                character_taken_flag[i]=0;
+            }
+        }
+    }
+}
+
+/*
+     Creates a substring from str using the upper and lower indices given.
+ */
+char* create_substring(char str[], int LowerIndex, int len){
+    
+    // Allocate memory from the heap
+    // +1 is added because indices start from 0, 1 extra space to convert char array to string
+    char* substring = (char*)malloc((len+1)*sizeof(char));
+    
+    // Scan str and get the characters needed
+    int i,k; // K needed scan through new string, and i needed to scan throught given string
+    for(i=LowerIndex,k=0; k<len;i++,k++){
+        // copy the characters from str to substring
+        substring[k]=str[i];
+    }
+    // Add NULL to form a string
+    // k is at 'NULL' position, add string terminator
+    substring[k]='\0';
+    
+    // return substring
+    return substring;
+    
+}
+/*
+    The Questions: Find the minimum substring of searchString that contains all the characters
+    in second parameter.
+ 
+    The best way to do it is using a sliding window with two iterators, left and right.
+        The right iterator expands the window until you have a substring that contains all the chars
+        of second parameter. The length of the substring found is compared to the previously found
+        minimum length substring, if the current subtring (that contains all chars of second string)is shorter than previous, you update your variables to hold the start and end indices of the shorted substring indices.
+            After finding a valid substring, you try to shrink the window size by moving the left iterator, and check if the resulting substring is still a valid substring (contains all chars of second parameter). You keep shrinking until you don't have a valid string or you've reached the end of the searchString. Once you don't have a valid substring anymore and you haven't reached the end of searchString, you expand your window again by moving the right iterator until you have valid substring or you've reached end of searchString. You repeat this process till left and right reach the end of searchString.
+    
+    Therefore, the idea of sliding window is simply moving the two pointers to shrink and expand
+    window, analyze the string in the window, update your result holders, and try to better
+    as you make your way by scanning the given searchString.
+    
+    In sliding window technique, you only process each char of searchString once (because you create
+    a hashmap that gets updated as you shrink and expand your window), therefore the work done is linear, as it depends on the input size.
+
+ 
+ */
+// Assuming searchString has only lowercase alphabets -> ASCII: 97-122
+// Hashmap -> simple int array of size 26 -> because indexing starts at 0
+// Hash function: 97 -x = 0-> x=97
+// For indexing into hashmap: ASCII_CODE -97
+// For converting index to ASCII -> index+97
+char* minWindowSubstring(char *searchString, char *searchingFor){
+    
+    
+    // Create a hashmap for the frequency of characters in SearchingFor
+    // We're assuming we only have lowercase alphabets in both strings
+    int* hashmap = (int *)calloc(26,sizeof(int));
+    
+    // Populate the hashmap
+    int i;
+    for(i=0;searchingFor[i]!='\0';i++){
+        hashmap[(searchingFor[i]-97)]++;
+    }
+    
+    // Store number of unique chars in searchingFor string
+    int count_unique_chars = i;
+    
+
+    // two iterators to scan the searchString
+    // The two iterators start at the front of the string
+    int left=0, right=0;
+    
+    // Result variables
+    int minLeft=0,minRight=0, minWindowSize=1000;
+    
+    
+    // scan through the given searchString
+    // The left iterator is used to shrink the window size for improving size -> the outer loop
+    // The right iterator is used to expand the window to get a valid substring -> Inner loop
+    
+    while(searchString[left]!='\0'){
+        
+        // Use left iterator, to find valid substrings that contain chars of
+        // of searchingFor string
+        // First check if the current character in searchingString is one of the
+        // characters required
+        if(hashmap[(searchString[left]-97)]>0){
+            // found one of the required characters
+            // decrement unique chars needed in a valid substring
+            count_unique_chars--;
+        }
+        
+        // Update hashmap of searchingFor string to account for current
+        // character,
+        hashmap[(searchString[left]-97)]--;
+        
+        // move left iterator forward
+        left++;
+        
+        // check if we found a valid substring
+        while(count_unique_chars==0){
+            
+            // Check if the minimum length of the string is better than our previous
+            // minimum left we found
+            // plus 1 because indexing starts at 0
+            if((left-right)<minWindowSize){
+                //found a shorter substring
+                //Record the start and end indices of this shorter valid substring
+                minRight = right;
+                minLeft = left;
+                minWindowSize = (left-right);
+            }
+            
+            // We move the right iterator forward to see if we can do better
+            // than our current minWindow
+            // We need to update the hashtable of searchingFor string
+            // before we shrink the window, because the character current
+            // position of right could be one of the characters we're looking for
+            hashmap[(searchString[right]-97)]++;
+            
+            // Check if you've lost one of the characters desired
+            if(hashmap[(searchString[right]-97)]>0){
+                // lost one of the characters needed
+                count_unique_chars++;
+            }
+            // Now we shrink the window
+            right++;
+        }
+            
+    }
+    
+    // At this point, you scanned the entire search string
+    // and found a substring of searchString that has all the
+    // characters of string searchingFor
+    if(minWindowSize==0){
+        // Found no subtring in searchingString that has all chars of searchingFor
+        return "";
+    }
+    
+    // Return Subtring of searchingString found
+    char *substring = create_substring(searchString, minRight, minWindowSize);
+    return substring;
     
 }
