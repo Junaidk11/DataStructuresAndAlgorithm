@@ -16,8 +16,8 @@ struct Node{
 // Operations
 struct Node* createNode(int data);
 void create_list(struct Node** headptr, int size);
-void display_list(struct Node* headptr);
-
+void display_list_iterative(struct Node* headptr);
+void display_list_recursive(struct Node* headptr);
 
 // Test Programs
 int user_input(void);
@@ -44,7 +44,9 @@ void create_and_display_linkedlist(void){
     // Create head of the linkedlist
     struct Node* head = NULL;
     create_list(&head, 3);
-    display_list(head);
+    display_list_iterative(head);
+    display_list_recursive(head);
+    printf("\n");
     
     
 }
@@ -126,7 +128,7 @@ struct Node* createNode(int data){
     point to the same list.
     
  */
-void display_list(struct Node* headptr){
+void display_list_iterative(struct Node* headptr){
     
     printf("Linkedlist contents are: ");
     
@@ -145,4 +147,44 @@ void display_list(struct Node* headptr){
     }
 #endif
     printf("\n");
+}
+
+/*
+    In this function, the linkedlist is traversed recursively.
+    The work done here is simply printing, and we're visiting each node once, therefore, the time
+    taken is O(n).
+    The number of recursive calls for the linkedlist of n nodes is always n+1, because the
+    recursion stops at NULL. Therefore, the space complexity is O(n) but n+1 activation records
+    are created in stack.
+ 
+    The time taken to traverse the list recursively and iteratively is the same -> O(n).
+    However, recursive traversal takes more space in stack than an iterative traversal.
+ 
+    Moreover, with recursion you can print the linkedlist in reverse by first going to the next node
+    and printing/processing the current node when you return from the next node.
+    
+ */
+void display_list_recursive(struct Node* headptr){
+    
+    // Recursion base case
+    if(headptr!=NULL){
+#if 1
+        // For printing/process the nodes in reverse
+        // i.e. last node processed first, first node
+        // processed last
+        
+        // Process next node first
+        display_list_recursive(headptr->next);
+        // process the current node on return
+        printf("%d ",headptr->data);
+#elif 0
+        // For printing/processing the current node first
+        
+        // process the current node first
+        printf("%d ", headptr->data);
+        // Process next node
+        display_list_recursive(headptr->next);
+        
+#endif
+    }
 }
