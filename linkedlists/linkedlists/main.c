@@ -38,14 +38,14 @@ int user_input(void){
     return data;
 }
 
-// Test passed. 
+// Test passed.
 void create_and_display_linkedlist(void){
 
+    // Create head of the linkedlist
     struct Node* head = NULL;
-    create_list(&head, 10);
+    create_list(&head, 3);
     display_list(head);
     
-    // Create an iterator for growing the linked list
     
 }
 
@@ -115,18 +115,34 @@ struct Node* createNode(int data){
 }
 
 /*
-    Traverse a linkedlist and print the data of each node.
+    Traverse a linkedlist given the headpointer and print the data of each node.
+ 
+    The headptr in this function argument is not the same address of the headptr
+    in the main function -> i.e. the pointer to the function is passed by value.
+    
+    So, you can use the given headptr to traverse the list without having to create
+    an iterator pointer to traverse the list, i.e. you won't lose the head of the list because
+    the actual headptr address is different from the headptr used in this function, although both
+    point to the same list.
+    
  */
 void display_list(struct Node* headptr){
     
-    // Create an iterator, to traverse the given linkedlist
-    struct Node* iterator = headptr;
     printf("Linkedlist contents are: ");
+    
+#if 1
     // Using while loop
-    while(iterator!=NULL){
+    while(headptr!=NULL){
         // Print data of current node and move to next node
-        printf("%d ", iterator->data);
-        iterator = iterator->next;
+        printf("%d ", headptr->data);
+        headptr = headptr->next;
     }
+#elif 0
+    // Using for-lopp
+    for(;headptr!=NULL;headptr=headptr->next){
+        // Print data of current node and move to next node
+        printf("%d ", headptr->data);
+    }
+#endif
     printf("\n");
 }
