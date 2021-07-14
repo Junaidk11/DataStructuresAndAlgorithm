@@ -23,6 +23,7 @@ int list_size(struct Node* headptr);
 int sum(struct Node* headptr);
 int max(struct Node* headptr);
 struct Node* searchList(struct Node* headptr, int key);
+struct Node* improved_SearchList(struct Node** headptr, int key);
 
 // Test Programs
 int user_input(void);
@@ -57,6 +58,11 @@ void create_and_display_linkedlist(void){
     printf("Sum of all nodes: %d\n", sum(head));
     printf("Max element in the list is: %d\n", max(head));
     printf("Address of Node with \'%d\': %p \n", 4, searchList(head, 4));
+    display_list_iterative(head); // before improved search
+    printf("Address of Node with \'%d\': %p \n", 4, improved_SearchList(&head, 4));
+    display_list_iterative(head); // after improved search
+    printf("Address of Node with \'%d\': %p \n", 3, improved_SearchList(&head, 3));
+    display_list_iterative(head); // after improved search
     printf("\n");
     
 }
@@ -397,4 +403,47 @@ struct Node* searchList(struct Node* headptr, int key){
     return searchList(headptr->next, key);
 
 #endif
+}
+
+
+/*
+    This is essentially the same as a Linear search. A linear search can be improved
+    by moving the key that is found in the list to the front of the list so that if you look for the
+    same key again, it will be found in less number of comparison relative to previous search of the same key.
+    
+    Since variables in C are passed by value, the head pointer of the list should be passed by reference
+    so that you can move the node with the key to the front of the list.
+ */
+struct Node* improved_SearchList(struct Node** headptr, int key){
+    
+    // Two pointers to traverse the list as you look for the key in the list.
+    // The two pointers will be used to move the node with the key to the front of the list
+    // Forward pointer moves ahead as it looks for the node and backward pointer follows
+    struct Node *forward = (*headptr), *follower = NULL;
+    
+    while(forward!=NULL){
+        
+        if(forward->data==key){
+            // key found in the list
+            // the previous node is updated to point to the current node's next
+            follower->next = forward->next;
+            
+            // the current node should now point to the existing first node
+            forward->next = (*headptr);
+            
+            // Update head pointer of the list to the new first now, which
+            // is the node with the key value
+            (*headptr) = forward;
+            
+            // return the address of the node, which is your first node,
+            // could return (*headptr) or return forward, both pointing to the same first node
+            return (*headptr);
+        }
+        // Key not found, move the follower to where forward is first,
+        // then move forward to the next node
+        follower = forward;
+        forward = forward->next;
+    }
+    
+    return NULL;
 }
