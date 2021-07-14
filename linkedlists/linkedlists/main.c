@@ -6,6 +6,7 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>  // For MAX and MIN integer values
 
 // Define Node structure
 struct Node{
@@ -15,10 +16,12 @@ struct Node{
 
 // Operations
 struct Node* createNode(int data);
-void create_list(struct Node** headptr, int size);
+void create_list(struct Node** headptr);
 void display_list_iterative(struct Node* headptr);
 void display_list_recursive(struct Node* headptr);
 int list_size(struct Node* headptr);
+int sum(struct Node* headptr);
+int max(struct Node* headptr);
 
 // Test Programs
 int user_input(void);
@@ -44,13 +47,14 @@ void create_and_display_linkedlist(void){
 
     // Create head of the linkedlist
     struct Node* head = NULL;
-    create_list(&head, 3);
+    create_list(&head);
     display_list_iterative(head);
+    printf("Reverse list print: ");
     display_list_recursive(head);
     printf("\n");
     printf("List size is: %d\n",list_size(head));
-    
-    
+    printf("Sum of all nodes: %d\n", sum(head));
+    printf("Max element in the list is: %d\n", max(head));
     
 }
 
@@ -72,7 +76,7 @@ void create_and_display_linkedlist(void){
         you pass the exact address of the 'headptr' to store the nodes created in this function.
      
  */
-void create_list(struct Node** headptr_address, int size){
+void create_list(struct Node** headptr_address){
     
     // Headptr should be pointing to nothing to create a list of given 'size'
     // single dereferencing, you're accessing the address stored in the pointer pointed to by
@@ -84,6 +88,11 @@ void create_list(struct Node** headptr_address, int size){
         return;
     }else{
         
+        // Get list size
+        printf("Enter list length: \n");
+        int size;
+        // Don't add \n in scanf
+        scanf("%d",&size);
         // Create first node of the list
         int input = user_input();
         (*headptr_address) = createNode(input);
@@ -236,4 +245,101 @@ int list_size(struct Node* headptr){
         return (list_size(headptr->next) + 1);
     }
 #endif
+}
+
+/*
+    In this function you want to return the sum of all the nodes in the list.
+    This can be achieved iteratively and recursively. The time complexity of both will be linear
+    because you visit each node only once. The same complexity of the iterative implementaton would
+    be constant and the recursive implmentation will be linear because n+1 activation records are
+    created to get the sum.
+    
+    In recursive method, you process the next node first before the current, making your way
+    to NULL, which is your base case. Then on your way back to the first call, you add the add of
+    last node to the base case, return to second last node and add its data to the sum of last node,
+    repeating this procedure, you make your way to the first node.
+ 
+    Note:
+        headptr can be used to traverse the list because
+        it holds the address of the first node, its not the same pointer that
+        as the headptr in caller function because in C all variables are passed by value,
+        i.e. only the variable's value is passed to the function, not the Physical variable itself.
+ */
+int sum(struct Node* headptr){
+    
+#if 0
+    // Iterative implementation
+    int sum =0;
+    while(headptr!=NULL){
+        // Add data of current node to the sum
+        sum+= headptr->data;
+        
+        // Move to the next node
+        headptr = headptr->next;
+    }
+    return sum;
+#elif 1
+
+    // Recursive Implementation
+    if(headptr==NULL){
+        // Reached base case,
+        // the pointer points to NULL, which is where the last node was pointing
+        return 0;
+    }else{
+        
+        // Move to the next node, and add the current node's data when you
+        // return from it
+        return (sum(headptr->next) + headptr->data);
+    }
+#endif
+
+}
+
+/*
+    This function returns the maximum element in the linkedlist.
+    Returning the value, but we can easily return address of the node that contains the
+    max element
+ */
+int max(struct Node* headptr){
+    
+#if 0
+    // Iterative Implementation
+    
+    // Place holder maximum int in the given linked list
+    // give the current max the minimum possible integer of your system
+    // In C, need to include limits.h header file
+    int current_max = INT_MIN;
+    
+    // Use the headptr to traverse the list
+    while(headptr!=NULL){
+        if(headptr->data>current_max){
+            // current node's value is greater than previously
+            // found max
+            current_max = headptr->data;
+        }
+        // Move to the next node
+        headptr = headptr->next;
+    }
+    return current_max;
+
+#elif 1
+    // Recursive implementation
+    // Basically, you traverse to the end of the list
+    // in the base case you return the minimum possible value of int
+    // then you check that with the last node's data, and return the largest among them
+    // to the second last node, repeating this as you make your way to the first node.
+    int data;
+    if(headptr==NULL){
+        // Reached base case
+        return INT_MIN;
+    }else{
+        // Get next node's data
+        data = max(headptr->next);
+        
+        // check if next node's value is greater than current nodes
+        // Using ternary operator
+        return (data>headptr->data? data:headptr->data);
+    }
+#endif
+    
 }
