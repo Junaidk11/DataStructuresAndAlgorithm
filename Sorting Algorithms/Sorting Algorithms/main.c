@@ -10,7 +10,7 @@
 // Algorithm
 void mergeSort(int *arr, int leftIndex, int rightIndex);
 
-// Test function
+// Test Programs
 void print_array(int arr[], int len);
 void merge_Sort(void);
 
@@ -30,7 +30,7 @@ void print_array(int arr[], int len){
     printf("\n");
     
 }
-
+// Tests Passed
 void merge_Sort(void){
     
     int arr[]={1,5,4,6,3,34,24};
