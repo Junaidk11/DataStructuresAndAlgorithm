@@ -18,6 +18,7 @@ struct Node* createNode(int data);
 void create_list(struct Node** headptr, int size);
 void display_list_iterative(struct Node* headptr);
 void display_list_recursive(struct Node* headptr);
+int list_size(struct Node* headptr);
 
 // Test Programs
 int user_input(void);
@@ -47,6 +48,8 @@ void create_and_display_linkedlist(void){
     display_list_iterative(head);
     display_list_recursive(head);
     printf("\n");
+    printf("List size is: %d\n",list_size(head));
+    
     
     
 }
@@ -187,4 +190,50 @@ void display_list_recursive(struct Node* headptr){
         
 #endif
     }
+}
+
+/*
+    In this function, you count the number of nodes in the list and return the count,
+    which is the size of the list.
+    
+    Just like display, this function can be written recursively and iteratively. The time
+    complexity of both is O(n) because each node is visited once. The space complexity
+    however is constant for an iterative implementation and is O(n) for recursive implementation
+    because n+1 activation records will be created to traverse the entire list from first node to
+    NULL.
+
+ */
+int list_size(struct Node* headptr){
+    
+#if 0
+    // Iterative implementation: Time - o(n) and Space - o(1)
+    int length = 0;
+    // head points to the first node
+    while(headptr!=NULL){
+        // Pointing to a node
+        // Increment count
+        length++;
+        
+        // Move ahead
+        headptr = headptr->next;
+    }
+    // return length of the list
+    return length;
+#elif 1
+    
+    // Recursive Implementation: Time - o(n) , Space -> o(n+1) = o(n)
+    if(headptr==NULL){
+        // Base case
+        // Reach end of list
+        return 0;
+    }else{
+        // Move to the next node and add 1 on return
+        // So, if you draw the recursion spannning tree
+        // the count starts at the base case (i.e. NULL, the node after last node)
+        // and makes it way back to first call with increments by 1
+        
+        // final size.
+        return (list_size(headptr->next) + 1);
+    }
+#endif
 }
