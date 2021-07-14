@@ -22,6 +22,7 @@ void display_list_recursive(struct Node* headptr);
 int list_size(struct Node* headptr);
 int sum(struct Node* headptr);
 int max(struct Node* headptr);
+struct Node* searchList(struct Node* headptr, int key);
 
 // Test Programs
 int user_input(void);
@@ -55,6 +56,8 @@ void create_and_display_linkedlist(void){
     printf("List size is: %d\n",list_size(head));
     printf("Sum of all nodes: %d\n", sum(head));
     printf("Max element in the list is: %d\n", max(head));
+    printf("Address of Node with \'%d\': %p \n", 4, searchList(head, 4));
+    printf("\n");
     
 }
 
@@ -342,4 +345,56 @@ int max(struct Node* headptr){
     }
 #endif
     
+}
+
+/*
+    In a linkedlist, you have to use linear search, where you visit each node
+    and check if its data matches your key. You can't use binary search in a linkedlist because
+    there is no midpoint in the linked list, because data is not stored contiguously in memory.
+ 
+ */
+struct Node* searchList(struct Node* headptr, int key){
+   
+#if 0
+    // Iterative Implementation
+    while(headptr!=NULL){
+        
+        // Check if current node's data matches your key
+        if(headptr->data == key){
+            // Found the key, return address of current node
+            return headptr;
+        }
+        
+        // Move to the next node, key not found in the current node
+        headptr = headptr->next;
+    }
+    
+    // Key not found in the list
+    return NULL;
+#elif 1
+    // Recursive implementation
+    // You check if the current node's data matches the key
+    // if it doesn't, then you call search on next node as headptr
+    // this way you recursively traverse to the end of the list,
+    // which is your base case, if you reached base case then
+    // you haven't found the key in the list
+    
+    if(headptr==NULL){
+        // Base case, you've reached the end of the list
+        // key not found in the list
+        return NULL;
+    }
+    
+    // Not the end of the list, check the give node's data
+    if(headptr->data == key){
+        // key found in the current node
+        // don't need to search the rest of the list
+        // return the node address
+        return headptr;
+    }
+    
+    // Key not matching the current node's data, check next node
+    return searchList(headptr->next, key);
+
+#endif
 }
