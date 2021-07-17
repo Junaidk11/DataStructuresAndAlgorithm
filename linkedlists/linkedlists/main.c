@@ -25,15 +25,17 @@ int max(struct Node* headptr);
 struct Node* searchList(struct Node* headptr, int key);
 struct Node* improved_SearchList(struct Node** headptr, int key);
 void insert_node(struct Node** headptr, int position, int data);
+void insert_last(struct Node** headptr, struct Node** lastptr, int data);
 
 // Test Programs
 int user_input(void);
 void create_and_display_linkedlist(void);
 void insert_new_node(void);
+void insert_last_for_creating_a_list(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    insert_new_node();
+    insert_last_for_creating_a_list();
     
     return 0;
 }
@@ -47,6 +49,28 @@ int user_input(void){
 }
 
 
+// Tests passed : only adding element to the end of the list.
+void insert_last_for_creating_a_list(void){
+    
+    // Store pointer to the front and end of the list
+    struct Node *headptr = NULL, *lastptr = NULL;
+    
+    int numberOfNodes =0;
+    printf("How many nodes do you want to add?\n");
+    scanf("%d",&numberOfNodes);
+    int i;
+    for(i=0;i<numberOfNodes;i++){
+        int nodeData =0;
+        printf("Enter node data.\n");
+        scanf("%d", &nodeData);
+        insert_last(&headptr, &lastptr, nodeData);
+        display_list_iterative(headptr);
+    }
+}
+
+// Tests passed: Adding element anywhere in the list, nodes in the list are to from 1 to last node.
+//               The spaces between the nodes are referenced as 0-(lastnode-1). Therefore, index = 0 is adding node before first
+//               node, i.e. adding to the front of the list. 
 void insert_new_node(void){
     
     // Create a list head pointer
@@ -544,5 +568,39 @@ void insert_node(struct Node** headptr, int position, int data){
             // new node is now at "position"
             forward->next = newNode;
         }
+    }
+}
+
+/*
+    In this function, we can create an entire linked list by inserting an element only at the end.
+    This only works if you only add new nodes ONLY at the end of the existing list.
+ 
+    Without this function, to add a node to the end of the list,
+    you would need to traverse the list to the last node and
+    then update the links between the new node and the last node, this takes maximum time to insert new node in the lsit -> o(n)
+ 
+    However, if you maintain a pointer to the last node of a list, then you can add a new node to the end of the list in
+    constant time -> o(1), the only downfall is extra space used to store pointer to the last node, as always to improve time, you
+    have to give up space.
+ */
+void insert_last(struct Node** headptr, struct Node** lastptr, int data){
+    
+    
+    // Create the new node
+    struct Node* newNode = createNode(data);
+    
+    // Check if current list is empty
+    // Both head and last are at the same place
+    if((*headptr)==NULL){
+        // both head and last node pointer point to the new node
+        (*headptr)=(*lastptr)=newNode;
+    }else{
+        
+        // update links between new node and the last node
+        // i.e. current last node is now linked to the newNode
+        (*lastptr)->next = newNode;
+        
+        // newNode is the updated last node
+        (*lastptr)=newNode;
     }
 }
