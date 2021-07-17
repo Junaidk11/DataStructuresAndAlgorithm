@@ -26,16 +26,19 @@ struct Node* searchList(struct Node* headptr, int key);
 struct Node* improved_SearchList(struct Node** headptr, int key);
 void insert_node(struct Node** headptr, int position, int data);
 void insert_last(struct Node** headptr, struct Node** lastptr, int data);
+void insert_node_sorted_list(struct Node** headptr, int data);
 
 // Test Programs
 int user_input(void);
 void create_and_display_linkedlist(void);
 void insert_new_node(void);
 void insert_last_for_creating_a_list(void);
+void insert_node_in_a_sorted_list(void);
+
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    insert_last_for_creating_a_list();
+    insert_node_in_a_sorted_list();
     
     return 0;
 }
@@ -48,6 +51,38 @@ int user_input(void){
     return data;
 }
 
+
+// Tests Passed:  Adding new node to the front of the list. Adding the new node somewhere b/w first and last node. Adding new node to the end of the list. 
+void insert_node_in_a_sorted_list(void){
+    
+    // Declare list head
+    struct Node *headptr = NULL;
+    
+    // create a list
+    create_list(&headptr);
+    
+    // Print list created
+    display_list_iterative(headptr);
+    
+    // take user input where to add the new node
+    int data;
+    
+    // Going to test three insertion position: 1) Before the first element,2) Inertion somewhere between first and last node, 3) After the last node
+    int i;
+    for(i=0; i<3; i++){
+        
+        printf("Enter data to add to the sorted list.\n");
+        scanf("%d",&data);
+        
+        // Add a new node to the list
+        insert_node_sorted_list(&headptr, data);
+        
+        // Print updated list
+        display_list_iterative(headptr);
+    
+    }
+    
+}
 
 // Tests passed : only adding element to the end of the list.
 void insert_last_for_creating_a_list(void){
@@ -70,7 +105,7 @@ void insert_last_for_creating_a_list(void){
 
 // Tests passed: Adding element anywhere in the list, nodes in the list are to from 1 to last node.
 //               The spaces between the nodes are referenced as 0-(lastnode-1). Therefore, index = 0 is adding node before first
-//               node, i.e. adding to the front of the list. 
+//               node, i.e. adding to the front of the list.
 void insert_new_node(void){
     
     // Create a list head pointer
@@ -603,4 +638,70 @@ void insert_last(struct Node** headptr, struct Node** lastptr, int data){
         // newNode is the updated last node
         (*lastptr)=newNode;
     }
+}
+
+/*
+    In this function you add a new node in a sorted list.
+    
+    The idea: Use two pointers to the list, one is moving forward and the second is following. The forward pointer will find the position to insert.
+              The follower will help insert the new node.
+    
+    The minimum time taken to insert would be o(1) if the node is being inserted after/before the first node.
+    The maximum time taken would be o(n) because the two pointers will traverse the list to find the position to insert the new node.
+ 
+    The double pointer is used for scenario where the given data is less than current first node, then you need to add a new node to the front of the list,
+    which would require updating the list's head pointer.
+    
+ */
+// Assuming the list is sorted in ascending order
+void insert_node_sorted_list(struct Node** headptr, int data){
+    
+    // check if the given data is less than or equal to the first node
+    // if it is, then you add new node to the front of the list.
+    if(data <= (*headptr)->data){
+        // Add new node to the front of the list
+        // headptr pointer stores the actual address of head pointer of the given linkedlist
+        insert_node(headptr, 0,  data);
+    }else{
+        
+        // The new node will be somewhere after the first node.
+        
+        // Declare two pointers to traverse the list.
+        struct Node *forward = (*headptr), *follower = NULL;
+        
+        // Traverse the list and find the position to insert new node
+        // Termination is if you reach end of list or you find a node with data greater than given data for new node
+        while((forward!=NULL) && (forward->data < data)){
+            // Follower will move to where forward is
+            follower = forward;
+            
+            // forward will move to the next node
+            forward = forward->next;
+        }
+        
+        // check if your forward is a valid node to insert the new node before
+        // We do this check because we're adding new node to the end of the list
+        if(forward!=NULL){
+            
+            // Create the new node
+            struct Node *newNode = createNode(data);
+            
+            // update links between new node and follower
+            
+            // New node will link to the node with data greater than
+            newNode->next = forward;
+            
+            // follower will link to the new node because its data is less than the new node
+            follower->next = newNode;
+        }else{
+            
+            // the new node should be added to the end of the list as its value is greater than the last node in the list
+            // the "follower" is at the last node in the list (i.e. pointing to it, because forward is at NULL
+            // follower is a pointer to the last node in the list and we already have the head pointer of the list ->  use insert to last function written before
+            insert_last(headptr, &follower, data);
+        }
+        
+    }
+    
+    
 }
