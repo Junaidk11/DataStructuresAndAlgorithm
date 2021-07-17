@@ -24,14 +24,16 @@ int sum(struct Node* headptr);
 int max(struct Node* headptr);
 struct Node* searchList(struct Node* headptr, int key);
 struct Node* improved_SearchList(struct Node** headptr, int key);
+void insert_node(struct Node** headptr, int position, int data);
 
 // Test Programs
 int user_input(void);
 void create_and_display_linkedlist(void);
+void insert_new_node(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    create_and_display_linkedlist();
+    insert_new_node();
     
     return 0;
 }
@@ -44,6 +46,28 @@ int user_input(void){
     return data;
 }
 
+
+void insert_new_node(void){
+    
+    // Create a list head pointer
+    struct Node* headptr = NULL;
+    
+    // Create a list
+    create_list(&headptr);
+    
+    // Print the new list
+    display_list_iterative(headptr);
+    
+    // Add new Node to the list
+    int index, data;
+    printf("\n\nWhere to add new node? Note: Position 0 indicates before first node.\n First input should be index, second input should be data. \n");
+    scanf("%d", &index);
+    scanf("%d", &data);
+    insert_node(&headptr, index, data);
+    
+    // Print updated list
+    display_list_iterative(headptr);
+}
 // Test passed.
 void create_and_display_linkedlist(void){
 
@@ -446,4 +470,79 @@ struct Node* improved_SearchList(struct Node** headptr, int key){
     }
     
     return NULL;
+}
+
+
+/*
+    In this function, you're adding a new node to the linkedlist at any given position.
+ 
+    The position is indices to indicate where to insert the new node.
+    All nodes in the given linkedlist start from 1 to the last node. Therefore, a position = 0, means insert new node at the front,
+    a position =1 mean insert new node after first node etc.
+    
+    The minimum time to insert a node in the given linkedlist is taken when you're inserting the node before or after the
+    node, i.e. O(1). This is because you don't have to traverse the list to find the position, simply updating links between the
+    new node and the node at the first position in the list.
+ 
+    The maximum time to insert is if you insert a new node after the last node in the linked list. In this case, you need to
+    traverse the list by moving a pointer n times to get to the end of the list and then updating the links between the new node and
+    the last node.  Therefore, time taken is o(n).
+ 
+    Note, if the given position of insertion is 'k', then the traversing pointer (aka iterator) will shift k-1 times to come to the node
+    after which you want to insert the new node.
+ 
+    Therefore, insertion anywhere in the middle of the list takes O(k-1) time, which is simply o(k), i.e. linear time.
+
+    Note: The double pointer needed to store the head pointer address of the list as we're going to update the list
+    
+ */
+void insert_node(struct Node** headptr, int position, int data){
+    
+    // Create two pointers, one for traversing the list and the other to hold address of new node
+    struct Node *forward = (*headptr), *newNode;
+    
+    if(position == 0){
+        // Inserting the new node at the front, i.e before the first node
+        
+        // Create new node
+        newNode = createNode(data);
+        
+        // Update links between newNode and existing first node
+        
+        // New node is linked to the existing first node
+        newNode->next = forward;
+        
+        // headpointer of the list is now pointing to the new first node
+        (*headptr) = newNode;
+    }else if(position>0){
+        
+        // Inserting the new node anywhere other than before first node
+        
+        // Jump to the node in the list, after this node we add the new node
+        int i;
+        
+        // Two loop termination conditions, the second one is added to tackle
+        // the scenario where the given list has 5 nodes and the position given is 10 -> which is non-existing
+        for(i=0; i<position-1 && forward!=NULL; i++){
+            
+            // Mover forward in the list to the correct node
+            forward = forward->next;
+        }
+        
+        // Before you create the new node and update the links, check if list traverser is pointing
+        // to a valid node in the list, could check with if(forward) or if(forward!=NULL) b/c NULL=0=false
+        if(forward!=NULL){
+            
+            // Create new node
+            newNode = createNode(data);
+            
+            // update the link between new node and the existing node at "position"
+            
+            // New node linked to the next node in the list, i.e. node at "position+1"
+            newNode->next = forward->next;
+            
+            // new node is now at "position"
+            forward->next = newNode;
+        }
+    }
 }
