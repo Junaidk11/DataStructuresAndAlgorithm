@@ -27,6 +27,7 @@ struct Node* improved_SearchList(struct Node** headptr, int key);
 void insert_node(struct Node** headptr, int position, int data);
 void insert_last(struct Node** headptr, struct Node** lastptr, int data);
 void insert_node_sorted_list(struct Node** headptr, int data);
+void delete_node(struct Node **headptr, int index);
 
 // Test Programs
 int user_input(void);
@@ -34,11 +35,13 @@ void create_and_display_linkedlist(void);
 void insert_new_node(void);
 void insert_last_for_creating_a_list(void);
 void insert_node_in_a_sorted_list(void);
+void delete_node_at_given_index(void);
+
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    insert_node_in_a_sorted_list();
+    delete_node_at_given_index();
     
     return 0;
 }
@@ -50,6 +53,41 @@ int user_input(void){
     scanf("%d", &data);
     return data;
 }
+
+// Tests passed: Deleting first node, deleting any node other than first node, not deleting given index is out of bounds of list length.
+void delete_node_at_given_index(void){
+    
+    // Declare head pointer of the list
+    struct Node *headptr = NULL;
+    
+    // Create a list
+    create_list(&headptr);
+    
+    // Print the list
+    display_list_iterative(headptr);
+    
+    printf("Deleting node at index: %d \n", 1);
+    // Delete first node
+    delete_node(&headptr, 1);
+    
+    // print updated list
+    display_list_iterative(headptr);
+
+    printf("Deleting node at index: %d \n", 3);
+    // Delete a node somewhere other than first
+    delete_node(&headptr, 3);
+    
+    // print updated list
+    display_list_iterative(headptr);
+    
+    printf("Deleting node at index: %d \n", 10);
+    // Give an index greater than list size
+    delete_node(&headptr, 10);
+    
+    // print updated list
+    display_list_iterative(headptr);
+}
+
 
 
 // Tests Passed:  Adding new node to the front of the list. Adding the new node somewhere b/w first and last node. Adding new node to the end of the list. 
@@ -704,4 +742,70 @@ void insert_node_sorted_list(struct Node** headptr, int data){
     }
     
     
+}
+
+
+/*
+ 
+    In this function you delete the node at the given index.
+    Note: Nodes are indexed 1 onwards.
+    
+    Two scenarios of deleting a node:
+            1) Delete the first node -> means updating head pointer
+            2) Delete anywhere after the first node, doesn't require updating the head pointer
+ 
+    Analysis:
+            Deleting the first node is done in constant time. -> o(1)
+            Deleting the last node takes the maximum time. -> o(n)
+            You need two pointers to delete a node, one to find the node to delete, the other is used to update link of the node before the node you want to delete.
+                Therefore, you only update one link in the list to delete a node.
+ */
+void delete_node(struct Node **headptr, int index){
+    
+    // Check if the list is empty, if so, can't delete a node
+    if(headptr==NULL){
+        return;
+    }
+    
+    // Create two pointers, one is moving forward to find the node to delete and the other is following (used for updating link)
+    struct Node *forward = (*headptr), *follower = NULL;
+    
+    // Check if its the first node or some other node in the list.
+    if(index==1){
+        // Deleting first node
+        // Move headptr to the link pointed to by the first node (i.e. where forward is currently pointing to
+        (*headptr) = forward->next;
+        
+        // Deallocate memory appointed to first node
+        // Note, you could return the data in this node before deleting it
+        free(forward);
+        return;
+        
+    }else{
+        
+        // Move the 'forward' and 'follower' pointers until 'forward' reaches the 'index' node of the list
+        int i;
+        for(i=1; i<index && forward!=NULL; i++){
+        
+            // Move follower to where forward is
+            follower = forward;
+            // Move forward pointer to the next node
+            forward = forward->next;
+        }
+        
+        // Now forward should be pointing to the node that you want to delete and follower should
+        // be at node behind it
+        if(forward!=NULL){
+            
+            // Link node at 'index-1' to the node at 'index+1'
+            follower->next = forward->next;
+            
+            // Deallocate memory for the node at 'index'
+            free(forward);
+            return;
+        }
+        
+    }
+    // If you reached here then the 'index' given was larger than the length of the list -> no node deleted
+    return;
 }
