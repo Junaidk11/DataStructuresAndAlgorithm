@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>  // For MAX and MIN integer values
+#include <stdbool.h> // for bool definition
 
 // Define Node structure
 struct Node{
@@ -28,6 +29,7 @@ void insert_node(struct Node** headptr, int position, int data);
 void insert_last(struct Node** headptr, struct Node** lastptr, int data);
 void insert_node_sorted_list(struct Node** headptr, int data);
 void delete_node(struct Node **headptr, int index);
+bool isSorted(struct Node *headptr);
 
 // Test Programs
 int user_input(void);
@@ -36,12 +38,14 @@ void insert_new_node(void);
 void insert_last_for_creating_a_list(void);
 void insert_node_in_a_sorted_list(void);
 void delete_node_at_given_index(void);
+void check_if_list_sorted(void);
+
 
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    delete_node_at_given_index();
+    check_if_list_sorted();
     
     return 0;
 }
@@ -53,6 +57,31 @@ int user_input(void){
     scanf("%d", &data);
     return data;
 }
+
+// Tests passed: Checked with a sorted list and an unsorted list
+void check_if_list_sorted(void){
+    
+    // Two list pointers, one list will be sorted and the other will not be sorted
+    struct Node *headptr1 = NULL, *headptr2=NULL;
+    
+    // Create sorted list
+    printf("Create a sorted list - list1\n");
+    create_list(&headptr1);
+    display_list_iterative(headptr1);
+    printf("\n");
+    
+    // Create an unsorted list
+    printf("Create a sorted list - list2 \n");
+    create_list(&headptr2);
+    display_list_iterative(headptr1);
+    printf("\n");
+    
+    // Check if list sorted
+    printf("Is list1 sorted? %d \n",isSorted(headptr1));
+    printf("Is list2 sorted? %d \n",isSorted(headptr2));
+    
+}
+
 
 // Tests passed: Deleting first node, deleting any node other than first node, not deleting given index is out of bounds of list length.
 void delete_node_at_given_index(void){
@@ -808,4 +837,47 @@ void delete_node(struct Node **headptr, int index){
     }
     // If you reached here then the 'index' given was larger than the length of the list -> no node deleted
     return;
+}
+
+/*
+        In this function you're checking of the given linked list is sorted.
+ 
+        The idea is to use a pointer to traverse the list and a variable to store the data of the previous node as you move forward.
+            At each node, you check if the current data is less than previous node's data (which is stored in a variable), if true
+            you move forward else you return false to indicate list not sorted - assuming the list should be sorted in ascending order.
+        
+        This checking algorithm has a max time of o(n) if the list is sorted because you traverse full list.
+        And minimum time could be the second node itself is not in the correct order so could algorithm executes at constant time.
+ 
+        Overall, you don't need extra pointers because the headptr can be used to traverse the list since its a copy of the original headptr
+        therefore you won't lose the head of the list outside of this function call.
+*/
+bool isSorted(struct Node *headptr){
+    
+    // Check if list is empty, if it is then return false
+    if(headptr==NULL){
+        return false;
+    }
+    
+    // Assign lowest value of integer to place holder of node data
+    // we're checking if the list sorted in ascending order
+    int previousNodeData = INT_MIN;
+    
+    while(headptr!=NULL){
+        
+        // Check for false condition to terminate loop - i.e. condition where the list would not sorted in ascending order
+        if(headptr->data < previousNodeData){
+            // list not sorted in ascending order
+            return false;
+        }
+        
+        // store current node's data
+        previousNodeData = headptr->data;
+        
+        // move to next node
+        headptr = headptr->next;
+    }
+    
+    // If you reached here the list is sorted in ascending order
+    return true;
 }
