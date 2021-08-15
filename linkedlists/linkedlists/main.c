@@ -31,6 +31,7 @@ void insert_node_sorted_list(struct Node** headptr, int data);
 void delete_node(struct Node **headptr, int index);
 bool isSorted(struct Node *headptr);
 void remove_duplicates(struct Node *headptr);
+void reversing_linkedlist_via_elements(struct Node *headptr);
 
 // Test Programs
 int user_input(void);
@@ -41,19 +42,38 @@ void insert_node_in_a_sorted_list(void);
 void delete_node_at_given_index(void);
 void check_if_list_sorted(void);
 void removeDuplicates(void);
-
-
+void reverselist(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    removeDuplicates();
+    reverselist();
     
     return 0;
 }
 
+// Reversing list by reversing list node data -> test passed.
+void reverselist(void){
+    
+    // Declare head pointer of the list
+    struct Node *headptr = NULL;
+    
+    // Create a list
+    create_list(&headptr);
+    
+    // Print the list
+    display_list_iterative(headptr);
+    
+    printf("Reversing list by reversing node data.\n");
+    
+    reversing_linkedlist_via_elements(headptr);
+    
+    // Print result
+    display_list_iterative(headptr);
+    
+}
 // Tests passed: Checked with no duplicates, checked with list with all duplicates.
-// Note: To remove duplicates, the list has to be sorted first, if not sorted, will miss duplicates: i.e. 8,6,8,4,4 -> will give 8,6,8,4 
+// Note: To remove duplicates, the list has to be sorted first, if not sorted, will miss duplicates: i.e. 8,6,8,4,4 -> will give 8,6,8,4
 void removeDuplicates(void){
     // Declare head pointer of the list
     struct Node *headptr = NULL;
@@ -943,4 +963,66 @@ void remove_duplicates(struct Node *headptr){
             nextNode = currentNode->next;
         }
     }
+}
+
+
+// There are TWO ways to reverse a linkedlist: 1) Reverse the elements in the linkedlist, 2) Reverse the links in the linked list
+
+/*
+    For reversing the linkedlist elements, you use an additional array, which is the size of the linkedlist,
+    copy all the elements of the list over to the array first.
+    
+    Then you scan the array from the back and insert the elements into the list from the front i.e. node 1 now has the data of last node and etc..
+ 
+    To get the size of the list, you scan list - so loop repeated n times, The copy of the list data over to the auxillary array (i.e. additional array) takes n (because you traverse full list
+    ,then copy the array data back to linkedlist takes n (you traverse list again).
+    therefore, the total time taken is 3n - i.e. o(3n) -> o(n)
+ 
+    Moreover, reversing linkedlist by reversing node data requires extra space -> i.e. the auxillary array
+ */
+void reversing_linkedlist_via_elements(struct Node *headptr){
+    
+    // Used for traversing the list
+    // Need the headptr later so can't use it to scan list
+    struct Node *nodeptr = headptr;
+    
+    // First we need to know the size of the list -> for auxillary array
+    int i;
+    i=0;
+    while(nodeptr!=NULL){
+        i++;
+        nodeptr=nodeptr->next;
+    }
+    
+    // Create an auxillary array
+    int list_data[i+1];
+    
+    // Reset nodeptr to the first node and iterator
+    nodeptr = headptr;
+    i=0;
+    
+    // Traverse list and copy data over to the auxillary array
+    while(nodeptr!=NULL){
+        // copy data over
+        list_data[i]=nodeptr->data;
+        
+        // Move nodeptr to next node and increment i
+        nodeptr= nodeptr->next;
+        i++;
+    }
+    
+    // Reset nodeptr back to first node and move i to the last element in the array
+    nodeptr = headptr;
+    i--;
+    
+    // Now we copy the data in auxillary array from the back to the list
+    while(nodeptr!=NULL){
+        // Copy last element of array to the front of the array
+        nodeptr->data = list_data[i];
+        
+        // Move nodeptr forward and decrement i
+        nodeptr = nodeptr->next;
+        i--;
+    }
+
 }
