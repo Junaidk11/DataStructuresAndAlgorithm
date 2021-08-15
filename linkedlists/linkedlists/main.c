@@ -30,6 +30,7 @@ void insert_last(struct Node** headptr, struct Node** lastptr, int data);
 void insert_node_sorted_list(struct Node** headptr, int data);
 void delete_node(struct Node **headptr, int index);
 bool isSorted(struct Node *headptr);
+void remove_duplicates(struct Node *headptr);
 
 // Test Programs
 int user_input(void);
@@ -39,16 +40,39 @@ void insert_last_for_creating_a_list(void);
 void insert_node_in_a_sorted_list(void);
 void delete_node_at_given_index(void);
 void check_if_list_sorted(void);
+void removeDuplicates(void);
 
 
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    check_if_list_sorted();
+    removeDuplicates();
     
     return 0;
 }
+
+// Tests passed: Checked with no duplicates, checked with list with all duplicates.
+// Note: To remove duplicates, the list has to be sorted first, if not sorted, will miss duplicates: i.e. 8,6,8,4,4 -> will give 8,6,8,4 
+void removeDuplicates(void){
+    // Declare head pointer of the list
+    struct Node *headptr = NULL;
+    
+    // Create a list
+    create_list(&headptr);
+    
+    // Print the list
+    display_list_iterative(headptr);
+    
+    printf("Removing duplicates.\n");
+    
+    remove_duplicates(headptr);
+    
+    // print resulting list
+    display_list_iterative(headptr);
+    
+}
+
 
 int user_input(void){
     int data;
@@ -880,4 +904,43 @@ bool isSorted(struct Node *headptr){
     
     // If you reached here the list is sorted in ascending order
     return true;
+}
+
+
+/*
+    The list has to be sorted to remove duplicates from it.
+    The idea is to use to 2 pointers: the two pointers point to two consecutive nodes, i.e. current node and its nextt
+        Check if the current and next node have the same data. If they do, then you remove the second node by making current node point to
+        what the next is point to, else you update the two pointers as traversing the list.
+    The procedure continues until the second pointer points to null because we're always removing the second node (if current and next have same data)
+    
+    Time complexity is always O(n) because you will always traverse the entire list. Moreover, you need two additional list pointers.
+ */
+void remove_duplicates(struct Node *headptr){
+    
+    // Declare two pointers for two consecutive nodes
+    struct Node* currentNode = headptr;
+    struct Node* nextNode  = currentNode->next;
+    
+    
+    while(nextNode!=NULL){
+        // Check if the two nodes have same data
+        if(currentNode->data == nextNode->data){
+            // Remove the second node
+            
+            // update current node's next
+            currentNode->next = nextNode->next;
+            
+            // delete next node
+            free(nextNode);
+            
+            // Update next node pointer too where current node is pointing
+            nextNode = currentNode->next;
+        }else{
+            // The two nodes have different data
+            // update the two node pointers
+            currentNode = nextNode;
+            nextNode = currentNode->next;
+        }
+    }
 }
