@@ -36,6 +36,9 @@ void reversing_linkedlist_via_links(struct Node **headptr);
 void reversing_linkedlist_via_links_recursively(struct Node **headptr);
 void concatenate_two_list (struct Node *headptr1, struct Node *headtptr2);
 void merge_twolist(struct Node *headptr1, struct Node *headptr2, struct Node **result);
+bool isLoop(struct Node *headptr);
+void middle_node_of_list(struct Node *headptr);
+
 
 // Test Programs
 int user_input(void);
@@ -49,17 +52,80 @@ void removeDuplicates(void);
 void reverselist(void);
 void concantenate_two_list(void);
 void merged_two_list(void);
+void checkForLoop(void);
+void return_middle_node(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    merged_two_list();
+    return_middle_node();
     
     return 0;
 }
 
+// Tested with odd and even number of nodes. Passed both.
+void return_middle_node(void){
+    // Declare head pointer of the list
+    struct Node *headptr = NULL;
+    
+    // Create a list
+    create_list(&headptr);
+    
+    // Print the list
+    display_list_iterative(headptr);
+    
+    middle_node_of_list(headptr);
+    free(headptr);
 
-// Merge test passed. 
+}
+
+
+// Tests passed
+void checkForLoop(void){
+    
+    struct Node *headptr = NULL;
+    struct Node *headptr1 = NULL;
+    
+    // Create a list
+    create_list(&headptr);
+    create_list(&headptr1);
+    
+    // print list before creating a loop
+    display_list_iterative(headptr);
+    display_list_iterative(headptr1);
+    
+    // ================= Creating a loop =================
+    // using two pointers to create a loop
+    
+    struct Node *nodeptr1 = headptr;
+    
+    // Move this pointer to the last node of the created list
+    while(nodeptr1->next!=NULL){
+        nodeptr1 = nodeptr1->next;
+    }
+    // Move this pointer to the third node
+    int count = 3;
+    struct Node *nodeptr2 = headptr;
+    while(count!=0){
+        nodeptr2=nodeptr2->next;
+        count--;
+    }
+    
+    // Now point the last node pointed to by nodeptr1 to the node pointed to by nodeptr2
+    nodeptr1->next = nodeptr2;
+    
+    // ================= Creating a loop =================
+    
+    printf("The list has a loop? %d \n", isLoop(headptr));
+    printf("The list has a loop? %d \n", isLoop(headptr1));
+    
+    
+    // Return allocated memory
+    free(headptr);
+    
+}
+
+// Merge test passed.
 void merged_two_list(void){
     // Declare head pointer of the list
     struct Node *headptr1 = NULL, *headptr2 = NULL, *headptr3 = NULL;
@@ -1328,4 +1394,86 @@ void merge_twolist(struct Node *headptr1, struct Node *headptr2, struct Node **r
         // list 2 has nodes left
         lastNode->next = headptr2;
     }
+}
+
+/*
+    A list is a loop if there is no NULL in the list. A list is linear if you traverse the list and reach NULL.
+ 
+    
+    The idea here is to use two pointers to traverse the list. Initially, both pointers will start at first node.
+    Then, One pointer will traverse faster than the other(i.e. forward by 1 node and follower moves ahead by 2 nodes)
+        If the list is linear, the two scanners will never meet and the fast scanner will reach NULL first.
+        If there is a loop, the two scanners will meet again and we can conclude the list has a loop.
+    
+    This idea is extended from a circular track with two cars moving at different speeds to cover some number of tracks.
+ 
+    Analysis of this: You need two additional pointers to traverse the list.
+                      In terms of time complexity, its o(n) because you will traverse the list depending on the number of its nodes. Definitely if there is a loop you will
+                        scan multiple times but those will not be orders of n but multiples of n, i.e. o(3n) -> o(n)
+ */
+bool isLoop(struct Node *headptr){
+    
+    // Declare 2 pointers to scan the list
+    struct Node *forward = headptr, *follower = headptr;
+    
+    // The scanning repeats until one of the scanners reaches NULL (follower will reach first always)
+    // or until follower and forward meet again while scanning
+    do{
+        
+        // Move forward pointer by 1 node, i.e one step
+        forward = forward->next;
+        
+        // Move follower by two nodes
+            // first step
+        follower = follower->next;
+        
+            // for second step CHECK before you take the step if the follower has reached NULL
+        follower = (follower!=NULL)? follower->next:NULL;
+        
+    }while((forward && follower) && (forward!=follower));
+    
+    // Now check which of the two while conditions stopped the scanning
+    if(forward==follower){
+        // The two traversing pointers met again after initialization, there is a loop
+        return true;
+    }else{
+        // One of the traversing pointers reached NULL, the list is linear i.e. there is no loop
+        return false;
+    }
+    
+}
+
+/*
+    The goal is to find the middle node of the list in a single scan of the list, i.e. time complexity of o(n)
+ 
+    You can acheive this by using two pointers to traverse the list:
+                The forward pointer moves by two nodes and the follower moves by 1 node.
+                This way when the forward pointer reaches the end of the list (i.e. NULL) the follower will be pointing at the middle node because the forward pointer
+                is moving at twice the speed of follower pointer
+    
+ */
+void middle_node_of_list(struct Node *headptr){
+    
+    struct Node *forward = headptr, *follower = headptr;
+    
+    while(forward!=NULL){
+        
+        // Move forward by two steps, i.e. two nodes
+            // First step
+        forward = forward->next;
+            
+            // Check if you reached end before taking next step
+        if(forward!=NULL){
+            forward = forward->next;
+        }
+        
+        // Move follower ahead by 1 step iff the forward pointer hasn't reached the end of the list
+        
+        if(forward!=NULL){
+            follower = follower->next;
+        }
+    }
+    
+    // At this point the follower should be pointing to your middle node
+    printf("Data of the middle node: %d\n", follower->data);
 }
