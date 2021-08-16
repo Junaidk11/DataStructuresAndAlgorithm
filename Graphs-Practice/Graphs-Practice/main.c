@@ -39,6 +39,7 @@ bool isEmpty(struct QUEUE *pQueue);
 
 // Graph traversal Algorithms
 void BFS(int startingNode);
+void DFS(int startingNode);
 
 
 
@@ -102,5 +103,52 @@ void BFS(int startingNode){
         }
         
     }
+    
+}
+
+/*
+    Depth-First search is like pre-order traversal of a tree.
+    In this graph traversing method, you visit a vertex and start exploring its adjacent nodes. When you visit an adjacent node, you
+    suspend the previous vertex and start exploring this adjacent node. So, the idea is to visit and explore the adjacent
+    nodes of a vertex at the same time (unlike BFS, where you visit an adjacent node of a vertex and then add it to Queue
+    for exploration later).
+    
+    For exploring an adjacent node of a vertex at visiting time, you suspend the previous vertex by pushing it on to a Stack, so that you
+    can come back to it when you're done visiting and exploring all the adjacent nodes of the current node you're at - you can implement
+    a stack DS for this or just implement DFS recursively which automatically uses a stack.
+ 
+    Analytically, this graph traversal method takes o(n) because the work done is simply visiting all the nodes of the graph once. However,
+    when you implement the algorithm in code, the time taken depends on the DS use for representing the graph - if Adjacency matrix used,
+    the time will be o(n^2) and if adjacency list used the time will be o(vertices + edges) = o(n) - same conclusion applies to BFS.
+ */
+void DFS(int startingNode){
+    
+    // First check if the given startingNode is not already visited
+    if(visited[startingNode]==0){
+        
+        // Starting node not visited, so we mark it as visited first
+        visited[startingNode]=1;
+        
+        // Process/print the data of the current Vertex
+        printf("%d ", startingNode);
+        
+        // Now we start exploring the adjacent nodes of this node, which is the row corresponding to this starting node in the
+        // adjacency matrix above
+        int i;
+        // exploring the row
+        for(i=1; i<NUMBER_OF_VERTICES+1; i++){
+            
+            // check if there is an edge with the current Vertex and the node hasn't been visited
+            if(graph_adj_matrix[startingNode][i]==1 && visited[i]==0){
+                
+                // We found an edge and the node connected to this edge hasn't been visited yet
+                // therefore, call DFS on this node - this will suspend the current vertex (i.e. push it to a stack, and start exploring
+                // this node)
+                DFS(i);
+            }
+            
+        }
+    }
+    
     
 }
