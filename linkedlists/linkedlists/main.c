@@ -33,6 +33,7 @@ bool isSorted(struct Node *headptr);
 void remove_duplicates(struct Node *headptr);
 void reversing_linkedlist_via_elements(struct Node *headptr);
 void reversing_linkedlist_via_links(struct Node **headptr);
+void reversing_linkedlist_via_links_recursively(struct Node **headptr);
 
 // Test Programs
 int user_input(void);
@@ -54,7 +55,7 @@ int main(int argc, const char * argv[]) {
 }
 
 // Reversing list by reversing list node data -> test passed.
-// Reversing list reversing list node links -> test passed. 
+// Reversing list reversing list node links -> test passed.
 void reverselist(void){
     
     // ===========================   Reversing list by changing node data ===========================
@@ -95,6 +96,27 @@ void reverselist(void){
     display_list_iterative(headptr1);
     
     free(headptr1);
+    
+    // ===========================   Reversing list by changing node links using recursion ===========================
+    // Declare head pointer of the list
+    struct Node *headptr2 = NULL;
+    
+    // Create a list
+    create_list(&headptr2);
+    
+    // Print the list
+    display_list_iterative(headptr2);
+    
+    printf("Reversing list by reversing node links.\n");
+    
+    reversing_linkedlist_via_links_recursively(&headptr2);
+    
+    // print result
+    
+    display_list_iterative(headptr2);
+    
+    free(headptr2);
+   
     
 }
 // Tests passed: Checked with no duplicates, checked with list with all duplicates.
@@ -1087,4 +1109,41 @@ void reversing_linkedlist_via_links(struct Node **headptr){
     
     // Update the headptr of the list to the new first node, which is where the currentNode is pointing.
     *headptr = currentNode;
+}
+
+
+
+void reverse_recursion(struct Node *follower, struct Node *forward, struct Node **headptr){
+    
+    if(forward!=NULL){
+        // Not the end of the list
+        // recursively move ahead of the list
+        reverse_recursion(forward, forward->next, headptr);
+        
+        // On return, the *forward node's next should point to where the follower is pointing
+        forward->next = follower;
+        
+    }else{
+        // base case, forward = NULL, i.e. end of list reached. Therefore, follower is pointer to the last node, which should be your first node now
+        *headptr = follower;
+    }
+}
+
+/*
+    In this method, we're reversing the list by updating the links between nodes. We're using recursion here to do this.
+    We're using two pointers, one is traversing the list and the other is following it.
+ 
+    The two pointers are moving forward at each call until the front pointer reaches NULL, at this point you update your head pointer to
+    point to where the follower is pointing -> i.e. the base case for recursion
+    
+    Next, on return of every recursive call, the front pointer (which is ahead of the follower) will update is node's next to the node pointed to by the follower pointer.
+ 
+    Therefore, first you move ahead recursively and then on return the links are updated
+ */
+void reversing_linkedlist_via_links_recursively(struct Node **headptr){
+    
+    struct Node *frontptr = *headptr;
+    struct Node *follower = NULL;
+    
+    reverse_recursion(follower, frontptr, headptr);
 }
