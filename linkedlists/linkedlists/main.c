@@ -38,6 +38,7 @@ void concatenate_two_list (struct Node *headptr1, struct Node *headtptr2);
 void merge_twolist(struct Node *headptr1, struct Node *headptr2, struct Node **result);
 bool isLoop(struct Node *headptr);
 void middle_node_of_list(struct Node *headptr);
+void intersection_of_two_lists(struct Node *headptr1, struct Node *headptr2);
 
 
 // Test Programs
@@ -54,14 +55,65 @@ void concantenate_two_list(void);
 void merged_two_list(void);
 void checkForLoop(void);
 void return_middle_node(void);
+void intersection_of_two_list(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    return_middle_node();
+    intersection_of_two_list();
     
     return 0;
 }
+
+// Test with unsorted lists -> Passed
+// Test with sorted lists -> Passed, but needs more testing.
+// Test with not intersecting list ->
+void intersection_of_two_list(void){
+    
+    // declare two list head pointers
+    struct Node *headptr1 = NULL;
+    struct Node *headptr2 = NULL;
+    
+    // Create a list
+    create_list(&headptr1);
+    create_list(&headptr2);
+    
+    // Print the list
+    display_list_iterative(headptr1);
+    display_list_iterative(headptr2);
+    
+    // Test with No intersection between the two list
+    // Find the intersection of the two list
+    intersection_of_two_lists(headptr1, headptr2);
+    
+    // ================= Creating an intersection =================
+    struct Node *nodeptr1 = headptr1, *nodeptr2 = headptr2;
+    
+    // Move to the last node of second list
+    while(nodeptr2->next!=NULL){
+        nodeptr2=nodeptr2->next;
+    }
+    
+    // Move fourth node of list 1, which means move 3 times (think of the arrow between the nodes)
+    // second node has 1 arrow from first, 4th node as three arrows from the first node
+    nodeptr1 = nodeptr1->next->next->next;
+    
+    // Link list 2's last to the fourth node of list 1 to create an intersection between the two
+    nodeptr2->next = nodeptr1;
+    // ================= Creating an intersection =================
+    
+    // Print the lists again to just check if the intersection was created successfully
+    display_list_iterative(headptr1);
+    display_list_iterative(headptr2);
+    
+    // Find the intersection of the two list
+    intersection_of_two_lists(headptr1, headptr2);
+    
+    free(headptr1);
+    free(headptr2);
+    
+}
+
 
 // Tested with odd and even number of nodes. Passed both.
 void return_middle_node(void){
@@ -1476,4 +1528,94 @@ void middle_node_of_list(struct Node *headptr){
     
     // At this point the follower should be pointing to your middle node
     printf("Data of the middle node: %d\n", follower->data);
+}
+
+
+int getNumberOfNodes(struct Node *head){
+    
+    int i;
+    for(i=0;head!=NULL;i++){
+        head=head->next;
+    }
+    return i;
+}
+/*
+    The idea here is to find the difference in size of the two list. You start comparison from the point where the two lists have the same
+    number of nodes left. This is give by the difference in sizes -> use this to traverse the larger list from the first node to the node where the
+    the two list will have same number of nodes left. Next, you traverse the two list together and compare to find the first common node between the two.
+    NOTE: The common node should have the same address in both list. This is the intersection point of the two lists.
+ 
+    Analysis:
+            Each list is traversed once to get the size of each list. Since there is an intersection of the two lists here, we denote it with o(m+n)
+            where m and n corresponds to the sizes of the two respective lists. Therefore, time complexity here is linear. 
+ */
+void intersection_of_two_lists(struct Node *headptr1, struct Node *headptr2){
+    
+    // Get size of the two lists
+    int count_list1, count_list2, difference;
+    
+    count_list1 = getNumberOfNodes(headptr1);
+    count_list2 = getNumberOfNodes(headptr2);
+    
+    // The difference of nodes between the two
+    difference = abs(count_list1 - count_list2);
+    
+    // Traverse the longer list from first node till "difference" nodes, so that both lists have equal number of nodes left
+    if(count_list1 > count_list2){
+        // List 1 is longer, so traverse list 1
+        while(difference!=0){
+            headptr1 = headptr1->next;
+            difference--;
+        }
+        // Now both list 1 and list 2 have same number of remaining nodes
+        // find the common node between the two by comparing node address, print this node's data
+        while(headptr1!=NULL || headptr2!=NULL){
+            if(headptr1==headptr2){
+                // found the first common node
+                printf("The intersection node of the two list is: %d\n", headptr1->data);
+                return;
+            }else{
+                // Move both list traversing pointers ahead
+                headptr1 = headptr1->next;
+                headptr2 = headptr2->next;
+            }
+        }
+    }else if (count_list1 < count_list2){
+        // List 2 is longer, so traverse list 2
+        while(difference!=0){
+            headptr2 = headptr2->next;
+            difference--;
+        }
+        // Now both list 1 and list 2 have same number of remaining nodes
+        // find the common node between the two by comparing node address, print this node's data
+        while(headptr1!=NULL || headptr2!=NULL){
+            if(headptr1==headptr2){
+                // found the first common node
+                printf("The intersection node of the two list is: %d\n", headptr1->data);
+                return;
+            }else{
+                // Move both list traversing pointers ahead
+                headptr1 = headptr1->next;
+                headptr2 = headptr2->next;
+            }
+        }
+    }else{
+        // Both lists are same size
+        // find the common node between the two by comparing node address, print this node's data
+        while(headptr1!=NULL || headptr2!=NULL){
+            if(headptr1==headptr2){
+                // found the first common node
+                printf("The intersection node of the two list is: %d\n", headptr1->data);
+                return;
+            }else{
+                // Move both list traversing pointers ahead
+                headptr1 = headptr1->next;
+                headptr2 = headptr2->next;
+            }
+        }
+    }
+    
+    // If you reach here, there is no intersection between the two lists
+    printf("No intersection between the two list.\n");
+    
 }
