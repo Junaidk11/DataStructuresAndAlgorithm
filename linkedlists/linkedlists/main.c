@@ -34,6 +34,7 @@ void remove_duplicates(struct Node *headptr);
 void reversing_linkedlist_via_elements(struct Node *headptr);
 void reversing_linkedlist_via_links(struct Node **headptr);
 void reversing_linkedlist_via_links_recursively(struct Node **headptr);
+void concatenate_two_list (struct Node *headptr1, struct Node *headtptr2);
 
 // Test Programs
 int user_input(void);
@@ -45,15 +46,43 @@ void delete_node_at_given_index(void);
 void check_if_list_sorted(void);
 void removeDuplicates(void);
 void reverselist(void);
+void concantenate_two_list(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    reverselist();
+    concantenate_two_list();
     
     return 0;
 }
 
+
+// Concatenation test passed. 
+void concantenate_two_list(void){
+    
+    // Declare head pointer of the list
+    struct Node *headptr1 = NULL, *headptr2 = NULL;
+    
+    // Create a list
+    create_list(&headptr1);
+    create_list(&headptr2);
+    
+    
+    // Print the lists
+    printf("The two lists are: \n");
+    display_list_iterative(headptr1);
+    display_list_iterative(headptr2);
+    
+    printf("Concatenate second to the first list.\n");
+    
+    concatenate_two_list(headptr1, headptr2);
+    
+    // Print result
+    display_list_iterative(headptr1);
+    
+    free(headptr1);
+    
+}
 // Reversing list by reversing list node data -> test passed.
 // Reversing list by reversing list node links -> test passed.
 // Reversing list by reversing list node links using recursion -> test passed.
@@ -1147,4 +1176,27 @@ void reversing_linkedlist_via_links_recursively(struct Node **headptr){
     struct Node *follower = NULL;
     
     reverse_recursion(follower, frontptr, headptr);
+}
+
+
+/*
+    This function will append the second list to the first list.
+ 
+    The idea is to traverse to the end of the first list and make its last node point to the first node of the second list.
+ 
+    You can remove the second list's headptr if you want - your choice.
+ 
+    Time complexity of this is o(n) because you have to scan the first list to the end.
+ */
+void concatenate_two_list (struct Node *headptr1, struct Node *headtptr2){
+    
+    // The headptrs are passed by value, so we can use them to traverse the list without affecting the original headptr
+    
+    // We move forward until the current node's next is not NULL, i.e. we want to stop at the last node of the list
+    while(headptr1->next!=NULL){
+        headptr1 = headptr1->next;
+    }
+    
+    // Now point the last node (which is pointed to by headptr1) to the first node of the second node.
+    headptr1->next = headtptr2;
 }
