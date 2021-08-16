@@ -55,7 +55,8 @@ int main(int argc, const char * argv[]) {
 }
 
 // Reversing list by reversing list node data -> test passed.
-// Reversing list reversing list node links -> test passed.
+// Reversing list by reversing list node links -> test passed.
+// Reversing list by reversing list node links using recursion -> test passed.
 void reverselist(void){
     
     // ===========================   Reversing list by changing node data ===========================
