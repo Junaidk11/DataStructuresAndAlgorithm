@@ -35,6 +35,7 @@ void reversing_linkedlist_via_elements(struct Node *headptr);
 void reversing_linkedlist_via_links(struct Node **headptr);
 void reversing_linkedlist_via_links_recursively(struct Node **headptr);
 void concatenate_two_list (struct Node *headptr1, struct Node *headtptr2);
+void merge_twolist(struct Node *headptr1, struct Node *headptr2, struct Node **result);
 
 // Test Programs
 int user_input(void);
@@ -47,17 +48,43 @@ void check_if_list_sorted(void);
 void removeDuplicates(void);
 void reverselist(void);
 void concantenate_two_list(void);
+void merged_two_list(void);
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    concantenate_two_list();
+    merged_two_list();
     
     return 0;
 }
 
 
-// Concatenation test passed. 
+// Merge test passed. 
+void merged_two_list(void){
+    // Declare head pointer of the list
+    struct Node *headptr1 = NULL, *headptr2 = NULL, *headptr3 = NULL;
+    
+    // Create a list
+    create_list(&headptr1);
+    create_list(&headptr2);
+    
+    
+    // Print the lists
+    printf("The two sorted lists are: \n");
+    display_list_iterative(headptr1);
+    display_list_iterative(headptr2);
+    
+    printf("Merging two sorted list.\n");
+    
+    merge_twolist(headptr1, headptr2, &headptr3);
+    
+    // Print result
+    display_list_iterative(headptr3);
+    
+    free(headptr3);
+}
+
+// Concatenation test passed.
 void concantenate_two_list(void){
     
     // Declare head pointer of the list
@@ -1199,4 +1226,106 @@ void concatenate_two_list (struct Node *headptr1, struct Node *headtptr2){
     
     // Now point the last node (which is pointed to by headptr1) to the first node of the second node.
     headptr1->next = headtptr2;
+}
+
+/*
+    In this function, we're merging two sorted lists. In comparison to merging two arrays, linkedlist don't need an additional list.
+ 
+    You only need two pointers to keep track of the start and end of the resultant list.
+ 
+    The idea is to initially compare the first node of the two list, the smaller of the two is the starting node of the resulting merged list,
+    i.e. you move the last and headptr point to this first node. Also move the respective list scanning pointer to the next node (i.e. point to the second node of that list now)
+    
+    After first node determined, the steps are repeated and only the last node pointer is updated as the result list grows.
+    Steps are:
+            The smaller node among the current node pointers of the two list is pointed to by the "last node pointer" of the result list.
+            Then update "last node pointer" to point to the new node added. Make this newly appended node's next point to NULL, followed by updating this node's respective list
+            scanner to point to the next node.
+            
+            Repeat the steps before until you reach the end of one of the two lists.
+ 
+    When you reach the end of one of the list, the "last node pointer" is simply updated to point to the node pointed to by the list that hasn't reached its end.
+ 
+    
+    Analysis:   No need for any additional list to merge in comparison to arrays.
+                Time complexity is o(m+n) i.e. m is the number of nodes in list 1 and n is the number of nodes in list 2, m+n is used to indicate this algorithm had
+                some sort of merging. You usually don't use two variables to indicate complexity but in this case you use it to indicate that merging took place in this algorithm.
+        
+ */
+void merge_twolist(struct Node *headptr1, struct Node *headptr2, struct Node **result){
+    
+    // Declare a pointer to point to the last node of the merge result
+    *result = NULL;
+    struct Node *lastNode = NULL;
+    
+    // Determine the first node of the resultant merge list
+    if(headptr1->data < headptr2->data){
+        // First list first node is smaller, its the first node
+        
+        // The resultant list pointers are updated to point here
+        *result = headptr1;
+        lastNode = headptr1;
+        
+        // Update list pointer to the next node in its list
+        headptr1 = headptr1->next;
+        
+        // The lastNode's next is set to NULL, this is the first node in the merged list
+        lastNode->next = NULL;
+    
+    }else{
+        // Second list first node is smaller, its the first node
+        
+        // The resultant list pointers are updated to point here
+        *result = headptr2;
+        lastNode = headptr2;
+        
+        // Update list pointer to the next node in its list
+        headptr2 = headptr2->next;
+        
+        // The lastNode's next is set to NULL, this is the first node in the merged list
+        lastNode->next = NULL;
+        
+    }
+    
+    // Now, the repeated steps until you reach the end of one of the list
+    while(headptr1!=NULL && headptr2!=NULL){
+        
+        if(headptr1->data < headptr2->data){
+            // List 1's current node is smaller than list 2's, append this node to the merged list using the LastNode
+            lastNode->next = headptr1;
+            
+            // Move lastNode pointer to the newly appended node
+            lastNode = headptr1;
+            
+            // update list 1 pointer to next node of this list
+            headptr1 = headptr1->next;
+            
+            // update the link of new appended node of the merged list to NULL, as it is the last node of the list
+            lastNode->next=NULL;
+            
+        }else{
+            // List 2's current node is smaller than list 1's, append this node to the merged list using the LastNode
+            lastNode->next = headptr2;
+            
+            // Move lastNode pointer to the newly appended node
+            lastNode = headptr2;
+            
+            // update list 2 pointer to next node of this list
+            headptr2 = headptr2->next;
+            
+            // update the link of new appended node of the merged list to NULL, as it is the last node of the list
+            lastNode->next=NULL;
+        }
+    }
+    
+    // At this point, one of the lists has reached the end.
+    // Find the list with nodes left and using the lastNode pointer of the mergedList to point to it.
+    
+    if(headptr1!=NULL){
+        // list 1 has nodes left
+        lastNode->next = headptr1;
+    }else{
+        // list 2 has nodes left
+        lastNode->next = headptr2;
+    }
 }
