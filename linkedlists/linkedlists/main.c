@@ -32,6 +32,7 @@ void delete_node(struct Node **headptr, int index);
 bool isSorted(struct Node *headptr);
 void remove_duplicates(struct Node *headptr);
 void reversing_linkedlist_via_elements(struct Node *headptr);
+void reversing_linkedlist_via_links(struct Node **headptr);
 
 // Test Programs
 int user_input(void);
@@ -53,8 +54,10 @@ int main(int argc, const char * argv[]) {
 }
 
 // Reversing list by reversing list node data -> test passed.
+// Reversing list reversing list node links -> test passed. 
 void reverselist(void){
     
+    // ===========================   Reversing list by changing node data ===========================
     // Declare head pointer of the list
     struct Node *headptr = NULL;
     
@@ -70,6 +73,28 @@ void reverselist(void){
     
     // Print result
     display_list_iterative(headptr);
+    
+    free(headptr);
+    
+    // ===========================   Reversing list by changing node links ===========================
+    // Declare head pointer of the list
+    struct Node *headptr1 = NULL;
+    
+    // Create a list
+    create_list(&headptr1);
+    
+    // Print the list
+    display_list_iterative(headptr1);
+    
+    printf("Reversing list by reversing node links.\n");
+    
+    reversing_linkedlist_via_links(&headptr1);
+    
+    // print result
+    
+    display_list_iterative(headptr1);
+    
+    free(headptr1);
     
 }
 // Tests passed: Checked with no duplicates, checked with list with all duplicates.
@@ -1025,4 +1050,41 @@ void reversing_linkedlist_via_elements(struct Node *headptr){
         i--;
     }
 
+}
+
+/*
+    Reversing the linked list by changing the links is preferred over moving data of nodes because copying data takes times (maybe not in our current case
+    because we're only changing an integer, but in other applications a node could have more data. Therefore, moving all that data will take time and space.)
+ 
+    You can reverse a list by reversing the links between the nodes using sliding pointer method. The sliding pointer method requires 3 node pointers.
+    The 3 pointers are pointing to 3 consecutive nodes in the list. The middle node's  link is changed by making point to the previous node.
+    
+    i.e. first nodeptr = first node, second and third are NULL at start, at each iteration the third ptr is updated to point to second, the second ptr is updated to point
+    to first, and the first is updated to point to the next node --------> SLIDING POINTER
+        After sliding, the middle ptr node's next is updated to point to the third node ptr, i.e. the previous node.
+            This process is repeated until the first nodeptr reaches the end of the list -> i.e. end of list, you stop here
+ 
+*/
+void reversing_linkedlist_via_links(struct Node **headptr){
+    
+    // Declare and initialize the 3 sliding pointers
+    struct Node *nextNode = *headptr;
+    struct Node *currentNode = NULL, *previousNode = NULL;
+    
+    while(nextNode!=NULL){
+        
+        // Slide the three pointers first, because the *current is the node who's link is reversed to previous
+        previousNode = currentNode;
+        currentNode = nextNode;
+        nextNode = nextNode->next;
+        
+        // Reverse link of currentNode to the previous node
+        currentNode->next = previousNode;
+    }
+    
+    // At this point the 3 sliding pointers are as:
+    // nextNode = NULL, currentNode = EndOfOriginalList, previousNode = secondLastNodeOfOriginalList
+    
+    // Update the headptr of the list to the new first node, which is where the currentNode is pointing.
+    *headptr = currentNode;
 }
