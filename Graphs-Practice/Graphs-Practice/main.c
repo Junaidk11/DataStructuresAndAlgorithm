@@ -13,15 +13,17 @@
 // Also nodes are numbered from 1-7. Therefore, row and column 0 are empty
 #define NUMBER_OF_VERTICES 7
 int graph_adj_matrix [NUMBER_OF_VERTICES+1][NUMBER_OF_VERTICES+1] = {
-    {0},
-    {0,0,1,1,1},
-    {0,1,0,1},
-    {0,1,1,0,1,1},
-    {0,1,0,1,0,1},
+    {0,0,0,0,0,0,0,0},
+    {0,0,1,1,1,0,0,0},
+    {0,1,0,1,0,0,0,0},
+    {0,1,1,0,1,1,0,0},
+    {0,1,0,1,0,1,0,0},
     {0,0,0,1,1,0,1,1},
-    {0,0,0,0,0,1},
-    {0,0,0,0,0,1}
+    {0,0,0,0,0,1,0,0},
+    {0,0,0,0,0,1,0,0}
 };
+
+
 
 // An array to keep track of Vertices visited
 int visited[8] = {0};
@@ -45,6 +47,18 @@ void DFS(int startingNode);
 
 int main(int argc, const char * argv[]) {
     
+    // @todo: Implement Queue DS and test BFS
+    
+    // DFS with starting node as 1
+   
+    printf("\nDFS Starting vertex: 1\n");
+    DFS(1);
+    /*printf("\nDFS Starting vertex: 4\n");
+    DFS(4);
+    printf("\nDFS Starting vertex: 5\n");
+    DFS(5);*/
+    
+    return 0;
 }
 
 
@@ -65,6 +79,7 @@ int main(int argc, const char * argv[]) {
                 A queue DS to push nodes into the queue when you're exploring a node's adjacent nodes.
                
  */
+/*
 void BFS(int startingNode){
     
     // Print/Process the given starting node
@@ -105,7 +120,7 @@ void BFS(int startingNode){
     }
     
 }
-
+*/
 /*
     Depth-First search is like pre-order traversal of a tree.
     In this graph traversing method, you visit a vertex and start exploring its adjacent nodes. When you visit an adjacent node, you
@@ -123,21 +138,23 @@ void BFS(int startingNode){
  */
 void DFS(int startingNode){
     
+    // static declaration of visited array - to make its content available between function calls
+    static int dfs_visited[NUMBER_OF_VERTICES+1]={0};
+    int i;
     // First check if the given startingNode is not already visited
-    if(visited[startingNode]==0){
+    if(dfs_visited[startingNode]==0){
         
         // Starting node not visited, so we mark it as visited first
-        visited[startingNode]=1;
+        dfs_visited[startingNode]=1;
         
         // Process/print the data of the current Vertex
         printf("%d ", startingNode);
         
         // Now we start exploring the adjacent nodes of this node, which is the row corresponding to this starting node in the
         // adjacency matrix above
-        int i;
+        
         // exploring the row
         for(i=1; i<NUMBER_OF_VERTICES+1; i++){
-            
             // check if there is an edge with the current Vertex and the node hasn't been visited
             if(graph_adj_matrix[startingNode][i]==1 && visited[i]==0){
                 
