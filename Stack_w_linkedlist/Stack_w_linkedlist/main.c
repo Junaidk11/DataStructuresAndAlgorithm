@@ -11,15 +11,17 @@
 
 /*
    Node structure for creating stack contents. Here we're assuming the node data is of type int, could be changed as desired.
+    
+    // Changed data to char
  */
 typedef struct NODE node;
 struct NODE {
-    int data;
+    char data;
     node *next;
 };
 
 // Node Operations
-node* create_node(int data);
+node* create_node(char data);
 
 /*
     The stack holds pointer to the top element of the Stack.
@@ -34,25 +36,40 @@ typedef struct STACK{
 // Stack Operation
 void STACK_Init(stack *s);
 void STACK_display(stack s);
-void STACK_push(stack *s, int data);
-int STACK_pop(stack *s);
-int STACK_peak(stack s, int position);
+void STACK_push(stack *s, char data);
+char STACK_pop(stack *s);
+char STACK_peak(stack s, char position);
 int STACK_isEmpty(stack s);
 int STACK_isFull(void);
 
-
-
 // Program functions
 void STACK_ADT_test(void);
+void TEST_parenthesis_matching(void);
 
+// Stack Applications
+int parenthesis_matching(char* str);
 
 int main(int argc, const char * argv[]) {
     
-    STACK_ADT_test();
+    TEST_parenthesis_matching();
     return 0;
 }
+// Function testing different inputs to parenthesis matching function - passed for all inputs
+void TEST_parenthesis_matching(void){
+    
+    // Test inputs
+    char *input1 ="((a+b)*(c+d))";
+    char *input2 ="(((a+b)*(c+d))";
+    char *input3 ="((a+b)*(c+d)))";
+   
+    // Function call
+    printf("Parenthesis in %s match? %d\n", input1, parenthesis_matching(input1));
+    printf("Parenthesis in %s match? %d\n", input2, parenthesis_matching(input2));
+    printf("Parenthesis in %s match? %d\n", input3, parenthesis_matching(input3));
+    
+}
 
-// Function testing all the operations of the stack implemented using a linkedlist -
+// Function testing all the operations of the stack implemented using a linkedlist - Passed, tested with integer 'data'
 void STACK_ADT_test(void){
     
     stack integerNumbers;
@@ -101,7 +118,7 @@ void STACK_ADT_test(void){
 // =========== Node Operation Implementation ===========
 
 // Allocate memory for a node and initialize it
-node* create_node(int data){
+node* create_node(char data){
     
     node *temp = (node *)malloc(sizeof(node));
     if(temp){
@@ -123,7 +140,7 @@ void STACK_Init(stack *s){
 }
 
 // This function is used to push new elements on to the stack iff memory for a new node can be allocated - i.e. stack is not full
-void STACK_push(stack *s, int data){
+void STACK_push(stack *s, char data){
     
     // Request memory for a new node
     node *newNode = create_node(data);
@@ -161,9 +178,10 @@ void STACK_display(stack s){
 }
 
 // Remove the top of the stack and update top pointer to the next node iff the stack is not empty -> i.e. top!=NULL
-int STACK_pop(stack *s){
+char STACK_pop(stack *s){
     // Place holder for value popped from the stack
-    int x = INT_MIN;
+    //int x = INT_MIN;
+    char x=' ';
     
     if(s->top){
         
@@ -186,11 +204,12 @@ int STACK_pop(stack *s){
     // This will return top data from stack or will return INT_MIN if the stack was empty
     return x;
     
+    
 }
 
 // This function will move the top pointer to the position given and return its data.
 // The stack is passed by value so its a copy of the original stack created in main.
-int STACK_peak(stack s, int position){
+char STACK_peak(stack s, char position){
     
     // Move top pointer to the position given
     int i;
@@ -206,7 +225,7 @@ int STACK_peak(stack s, int position){
     }
     
     // The stack is empty, return this
-    return INT_MIN;
+    return ' ';
 }
 // Check if the top pointer of the stack is not NULL
 int STACK_isEmpty(stack s){
@@ -237,3 +256,65 @@ int STACK_isFull(void){
     return 1;
 }
 // =========== Stack Operation Implementation ===========
+
+
+
+// =========== Stack Applications  ===========
+/*
+    input = ((a+b) * (c-d))
+    output = true, i.e. each opening bracket has a closing bracket
+  
+    input = (((a+b) * (c-d))
+    output = false, one opening bracket has no closing bracket
+ 
+    The idea is to scan the given string and push every opening bracket into the stack. For every closing bracket,
+    you pop the top most element of the stack. At the end of the string if the stack is empty, then the parenthesis are
+    matched, i.e. every opening bracket has a closing bracket.
+ 
+    You only push and pop when you encounter brackets in the given string, every other character is skipped.
+    
+    Possible situations:
+        1) all parenthesis match - i.e. reached end of string and stack is empty
+        2) One opening bracket in stack but reached the end of the string - i.e. stack is not empty
+        3) One closing bracket encountered in string but the stack is empty.
+ 
+    NOTE: This method doesn't check if the given string is parenthesize correctly, it only checks if the parenthesis
+            match. i.e. ((a+)b * (c-d))  -> parenthesis match but the string is not correctly parenthesized.
+
+ */
+int parenthesis_matching(char* str){
+    
+    // Declare a stack
+    stack opening_brackets;
+    STACK_Init(&opening_brackets);
+    
+    // Scan through the given string
+    int i;
+    for(i=0;str[i]!='\0'; i++){
+        
+        if(str[i]=='('){
+            // The character is an opening bracket, push it to stack
+            STACK_push(&opening_brackets, str[i]);
+            
+        }else if(str[i]==')'){
+            // The character is a closing bracket, pop a bracket from the stack
+            
+            // pop from stack iff stack not empty
+            if(!STACK_isEmpty(opening_brackets)){
+                STACK_pop(&opening_brackets);
+            }else{
+                // Stack has no opening brackets, so mismatch found
+                return 0;
+            }
+        }
+    }
+    
+    // At this point the string completely scanned, if the stack is not empty, parenthesis not match
+    if(STACK_isEmpty(opening_brackets)){
+        return 1;
+    }
+    // Stack not empty, there is an opening bracket not matched in the given string
+    return 0;
+}
+
+// =========== Stack Applications  ===========
