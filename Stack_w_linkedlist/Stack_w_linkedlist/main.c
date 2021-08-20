@@ -62,12 +62,14 @@ void TEST_parenthesis_matching(void){
     char *input2 ="(((a+b)*(c+d))";
     char *input3 ="((a+b)*(c+d)))";
     char *input4 ="{([a+b]*[c-d])/5}";
+    char *input5 ="{([a+b)*[c-d})/5}";
    
     // Function call
     printf("Parenthesis in %s match? %d\n", input1, parenthesis_matching(input1));
     printf("Parenthesis in %s match? %d\n", input2, parenthesis_matching(input2));
     printf("Parenthesis in %s match? %d\n", input3, parenthesis_matching(input3));
     printf("Parenthesis in %s match? %d\n", input4, parenthesis_matching(input4));
+    printf("Parenthesis in %s match? %d\n", input5, parenthesis_matching(input5));
     
 }
 
