@@ -23,12 +23,14 @@ typedef struct _STACK_{
 
 // Stack Operations
 void STACK_Init(stack *s);
+void STACK_diplay(stack s);
 void STACK_push(stack *s,int data);
 int STACK_pop(stack *s);
 int STACK_peak(stack s, int position);
 int STACK_stackTop(stack s);
 int STACK_isEmpty(stack s);
 int STACK_isFull(stack s);
+
 
 
 // Program functions
@@ -48,8 +50,8 @@ void stack_ADT_Test(void){
     // initialize stack
     STACK_Init(&integerStack);
     
-    // Check if stack is empty
-    printf("Stack is empty? %d \n", STACK_isEmpty(integerStack));
+    // Print stack contents
+    STACK_diplay(integerStack);
     
     // Add elements to the stack
     STACK_push(&integerStack, 9);
@@ -57,6 +59,9 @@ void stack_ADT_Test(void){
     STACK_push(&integerStack, 7);
     STACK_push(&integerStack, 5);
     STACK_push(&integerStack, 4);
+    
+    // Print stack contents
+    STACK_diplay(integerStack);
     
     // Check if stack is full
     printf("Stack is full? %d \n", STACK_isFull(integerStack));
@@ -71,6 +76,9 @@ void stack_ADT_Test(void){
     
     // Pop elements from the stack
     printf("Removed top element of the stack is: %d \n", STACK_pop(&integerStack));
+    
+    // Print stack contents
+    STACK_diplay(integerStack);
     
 }
 
@@ -87,6 +95,22 @@ void STACK_Init(stack *s){
     
     // Set top to outside stack array
     s->top = -1;
+}
+
+// Display Stack contents
+void STACK_diplay(stack s){
+    
+    // Check if stack is empty
+    if(STACK_isEmpty(s)){
+        printf("Stack is empty.\n");
+    }else{
+        printf("Stack contents from top to bottom are: ");
+        int i;
+        for(i=s.top; i>=0; i--) {
+            printf("%d ",s.stack[i]);
+        }
+        printf("\n");
+    }
 }
 
 // Push given data to stack top iff the stack is not full
