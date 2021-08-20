@@ -61,11 +61,13 @@ void TEST_parenthesis_matching(void){
     char *input1 ="((a+b)*(c+d))";
     char *input2 ="(((a+b)*(c+d))";
     char *input3 ="((a+b)*(c+d)))";
+    char *input4 ="{([a+b]*[c-d])/5}";
    
     // Function call
     printf("Parenthesis in %s match? %d\n", input1, parenthesis_matching(input1));
     printf("Parenthesis in %s match? %d\n", input2, parenthesis_matching(input2));
     printf("Parenthesis in %s match? %d\n", input3, parenthesis_matching(input3));
+    printf("Parenthesis in %s match? %d\n", input4, parenthesis_matching(input4));
     
 }
 
@@ -259,8 +261,26 @@ int STACK_isFull(void){
 
 
 
+/*
+    This is a helper function to check if the closing bracket is same type as its opening bracket
+    i.e.        [ ] = true, { } = true, ( ) = true, everything else is false
+ */
+int bracket_matched(char closing_bracket, char opening_bracket){
+    
+    if((opening_bracket == '[' && closing_bracket == ']')
+       || (opening_bracket == '{' && closing_bracket == '}')
+       || (opening_bracket == '(' && closing_bracket == ')')){
+        
+        // Its one of the correct matches of closing and opening
+        return 1;
+    }
+       // Opening and closing brackets are not of same type
+       return 0;
+    
+}
 // =========== Stack Applications  ===========
 /*
+    
     input = ((a+b) * (c-d))
     output = true, i.e. each opening bracket has a closing bracket
   
@@ -280,6 +300,9 @@ int STACK_isFull(void){
  
     NOTE: This method doesn't check if the given string is parenthesize correctly, it only checks if the parenthesis
             match. i.e. ((a+)b * (c-d))  -> parenthesis match but the string is not correctly parenthesized.
+ 
+    Update:
+            Code changed for input with different kinds of brackets : i.e. '(', '{', '['
 
  */
 int parenthesis_matching(char* str){
@@ -288,20 +311,31 @@ int parenthesis_matching(char* str){
     stack opening_brackets;
     STACK_Init(&opening_brackets);
     
+    // Place holder for the opening bracket popped from the stack
+    char popped;
+    
     // Scan through the given string
     int i;
     for(i=0;str[i]!='\0'; i++){
         
-        if(str[i]=='('){
+        if(str[i]=='(' || str[i]=='{' || str[i]=='['){
             // The character is an opening bracket, push it to stack
             STACK_push(&opening_brackets, str[i]);
             
-        }else if(str[i]==')'){
+        }else if(str[i]==')' || str[i]=='}' || str[i]==']'){
             // The character is a closing bracket, pop a bracket from the stack
             
             // pop from stack iff stack not empty
             if(!STACK_isEmpty(opening_brackets)){
-                STACK_pop(&opening_brackets);
+                
+                // get popped bracked from stack
+                popped = STACK_pop(&opening_brackets);
+                
+                if(!bracket_matched(str[i], popped)){
+                    // the opening bracket doesn't match the closing bracket found
+                    return 0;
+                }
+                
             }else{
                 // Stack has no opening brackets, so mismatch found
                 return 0;
