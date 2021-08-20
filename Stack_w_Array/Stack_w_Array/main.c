@@ -41,6 +41,7 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 
+// Testing all the Stack operations - test passed!
 void stack_ADT_Test(void){
    
     stack integerStack;
