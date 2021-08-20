@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 
 /*
    Node structure for creating stack contents. Here we're assuming the node data is of type int, could be changed as desired.
@@ -39,20 +40,49 @@ void STACK_display(stack s);
 void STACK_push(stack *s, char data);
 char STACK_pop(stack *s);
 char STACK_peak(stack s, char position);
+char STACK_top(stack s);
 int STACK_isEmpty(stack s);
 int STACK_isFull(void);
 
 // Program functions
 void STACK_ADT_test(void);
 void TEST_parenthesis_matching(void);
+void TEST_infix_to_postfix(void);
 
 // Stack Applications
 int parenthesis_matching(char* str);
+char* infix_to_postfix(char *infix, int size);
 
 int main(int argc, const char * argv[]) {
     
-    TEST_parenthesis_matching();
+    TEST_infix_to_postfix();
     return 0;
+}
+
+// All tests passed
+void TEST_infix_to_postfix(void){
+    
+    // Test inputs
+    char *input1 ="a+b";  // postix = ab+  -> passed
+    
+    /*
+     NOTES:
+     
+        char *input2 ="a+b*c-d/e";
+     
+     Postfix = a+[bc*]-d/e -> a+[bc*]-[de/] -> [abc*+]-[de/] -> [abc*+de/-] = result -> NOT passed because compiler doesn't read '\' as \, gives warning if in isOperand you put '\' without escape sequence.
+     Therefore, using '/' to indicate '\'
+    */
+    char *input2 ="a+b*c-d/e"; // Postfix = a+[bc*]-d\e -> a+[bc*]-[de\] -> [abc*+]-[de\] -> [abc*+de\-] = result -> Passed
+    char *input3 ="a+b+c*d"; // postix = a+b+[cd*] -> [ba+]+[cd*] -> [ab+cd*+] -> passed
+    char *input4 ="a+b*c"; // postfix = abc*+ -> passed
+    
+    // Function tests
+    printf("Postfix of infix %s is: %s \n", input1, infix_to_postfix(input1, 3));
+    printf("Postfix of infix %s is: %s \n", input2, infix_to_postfix(input2, 9));
+    printf("Postfix of infix %s is: %s \n", input3, infix_to_postfix(input3, 7));
+    printf("Postfix of infix %s is: %s \n", input4, infix_to_postfix(input4, 5));
+    
 }
 // Function testing different inputs to parenthesis matching function - passed for all inputs
 void TEST_parenthesis_matching(void){
@@ -94,6 +124,8 @@ void STACK_ADT_test(void){
     
     // Display stack
     STACK_display(integerNumbers);
+    
+    
     
     // Peak stack
     printf("Stack element at position 1: %d\n", STACK_peak(integerNumbers, 1));
@@ -231,6 +263,17 @@ char STACK_peak(stack s, char position){
     // The stack is empty, return this
     return ' ';
 }
+// Returns top element of the stack
+char STACK_top(stack s){
+    
+    if(s.top){
+        // top pointer is not NULL, i.e. stack not empty
+        return s.top->data;
+    }
+    // Return space if nothing there
+    return ' ';
+}
+
 // Check if the top pointer of the stack is not NULL
 int STACK_isEmpty(stack s){
     if(s.top){
@@ -352,5 +395,135 @@ int parenthesis_matching(char* str){
     // Stack not empty, there is an opening bracket not matched in the given string
     return 0;
 }
+/*
+    In Mathematics infix expressions are easily to evaluate - using BODMAS for precedance.
+ 
+    In Programming, if you follow BODMAS, you will have to scan the expression each time and find the highest precedence
+    operator and evaluate it - this time consuming. Therefore, you convert the infix expression to postfix expression.
+    In postfix form, the expression is evaluated in a single scan.
+ 
+    infix = left_operand operator right_operand
+    postfix = left_operand right_operand operator
+    prefix  = operator left_operand right_operand
+ 
+    Examples:   infix = a+b*c, before converting to its post or prefix, parenthesize it based on precedence (if you don't,
+                compiler will do based on table below). Therefore, infix = (a+(b*c))
+                    
+                    Postfix = 1) first inner bracket:  (a+[bc*]) -> square brackets used to indicate which is converted first
+                              2) now outter operator: [abc*+] -> this postfix result
+ 
+                    Infix = 1) first inner bracket:  (a+[*bc])
+                            2) now outter operator:  [+a*bc] -> prefix results
+ 
+ 
+    In a computer, the operator precedence is the following order of increasing precedence:
+    
+        operator            | precedence  |  Associativity
+        - +                 |      1      |     Left-to-Right
+        * /                 |      2      |     Left-to-Right
+        Unary operators     |      3      |     Right-to-Left
+        ()                  |      5      |     Left-to-Right
+        Operands            |      6      |     Left-to-Right
+ 
+    Notes:  All Unary operators have higher precedence than binary operators.
+            If expression has same operators of same precedence only then you go for the associativity property to group
+                determine which one is evaluated first.
+ 
+    The idea for converting an infix expression to postfix:
+        
+        Use a stack to push and pop operators found when scanning the infix expression.
+        You push an operator to stack iff the current top element's precedence is lower, else you pop the top of the
+            stack and add it to postfix expression until stack top element is  lower in precedence to
+            operator of the infix expression - this is when you push the current operator of the infix expression
+            to the stack. Therefore, you only move to the next char of infix after you've pushed
+            the current operator of the infix to the stack.
+        Operands of the infix expression are always added to the postfix expression and only operators are
+        pushed and popped from stack.
+ 
+    You create a function to return precedence (i.e. creating the table above) - use this to determine if you push to
+    stack or pop from stack.
+        
+ */
 
+// Assuming the infix expression will have lower case operands and only the following operators
+// Compiler giving erros with '\' for division, so using '/' instead
+int isOperand(char ch){
+    if( ch=='+' || ch=='-' || ch=='/' || ch=='*' )
+    {
+       return 0;
+    }
+    return 1;
+}
+
+// Returns precedence of the operator - based on table above
+// Compiler giving erros with '\' for division, so using '/' instead
+int precedance(char ch){
+    if(ch=='+' || ch=='-'){
+        return 1;
+    }else if (ch=='*' || ch=='/' )
+    {
+        return 2;
+    }
+    // unknown precedence
+    return -1;
+}
+char* infix_to_postfix(char *infix, int size){
+    
+    // Declare a stack
+    // Using a linkedlist stack, don't need to declare size
+    stack operator_stack;
+    STACK_Init(&operator_stack);
+    
+    // Create a char string to store postfix result - +1 for null char
+    char *postfix = (char *)malloc(size*sizeof(char)+1);
+        
+    // variables to scan the infix and postfix expressions
+    int i=0, j=0;
+    
+    while(infix[i]!='\0'){
+        
+        
+       
+        if(isOperand(infix[i])){
+            // Current infix character is an operand - add it to postfix expression
+            postfix[j] = infix[i];
+            j++;
+            i++;
+        }else{
+            
+            // Current infix character is an operator
+            
+            // Push operator to the stack if it has higher precedance than current top operator of stack,
+            // else pop top and add to postfix expression until stack is either empty or until top of stack
+            // has lower precedence operator than current infix operator
+            
+            // Top of stack
+            //printf("Top operator in stack %c.\n", STACK_top(operator_stack));
+            if( precedance(infix[i]) > precedance(STACK_top(operator_stack)) ){
+                
+                // operator has higher precedance
+                // push to the top of stack
+                STACK_push(&operator_stack, infix[i]);
+                i++;
+            }else{
+                // operator has same or lower precedence, pop stack until top of stack precedence is lower or
+                // stack is empty - add the popped data to postfix, don't move to next char in infix
+                postfix[j] = STACK_pop(&operator_stack);
+                j++;
+            }
+        }
+    }
+    
+    // Add this point, the entire infix expression has been scanned. Pop whatever is in stack and add it to postfix expre
+    while(!STACK_isEmpty(operator_stack)){
+        postfix[j] = STACK_pop(&operator_stack);
+        j++;
+    }
+    
+    // Add Null character as last element of postfix
+    postfix[j] = '\0';
+    
+    // return postfix expression
+    return postfix;
+}
 // =========== Stack Applications  ===========
