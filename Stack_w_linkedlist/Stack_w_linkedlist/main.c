@@ -9,61 +9,47 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include "integer_stack.h"
+#include "char_stack.h"
 
-/*
-   Node structure for creating stack contents. Here we're assuming the node data is of type int, could be changed as desired.
-    
-    // Changed data to char
- */
-typedef struct NODE node;
-struct NODE {
-    char data;
-    node *next;
-};
-
-// Node Operations
-node* create_node(char data);
-
-/*
-    The stack holds pointer to the top element of the Stack.
-    Since the nodes are allocated memory from the Heap, the size of the stack is limited by heap allocating memory when requested.
-        This can be used to determine if the stack is full by looking at the output of malloc call for new node creation.
- */
-typedef struct STACK{
-    node *top;
-}stack;
-
-
-// Stack Operation
-void STACK_Init(stack *s);
-void STACK_display(stack s);
-void STACK_push(stack *s, char data);
-char STACK_pop(stack *s);
-char STACK_peak(stack s, char position);
-char STACK_top(stack s);
-int STACK_isEmpty(stack s);
-int STACK_isFull(void);
 
 // Program functions
 void STACK_ADT_test(void);
 void TEST_parenthesis_matching(void);
 void TEST_infix_to_postfix_ONLY_L2R_ASSOCIATIVITY(void);
 void TEST_infix_to_postfix_BOTH_L2R_R2L_ASSOCIATIVITY(void);
+void TEST_evaluate_expression(void);
 
 
 // Stack Applications
 int parenthesis_matching(char* str);
 char* infix_to_postfix(char *infix, int size);  // No brackets, only Left-to-right associativity operators
 char* infix_to_postfix_2(char *infix, int size); // Brackets and both left-to-right, and right-to left associativity operators
+int evaluate_expression(char *infix, int size);
 
 int main(int argc, const char * argv[]) {
     
-    TEST_infix_to_postfix_BOTH_L2R_R2L_ASSOCIATIVITY();
+    TEST_evaluate_expression();
     return 0;
 }
 
+// Test passed for both
+void TEST_evaluate_expression(void){
+    
+    // Test Inputs
+    char *input1 = "5+2";
+    char *input2 = "3*5+6/2-4";
+    
+    // Function results
+    
+    // Function tests
+    printf("Evaluation of expression %s is: %d \n", input1, evaluate_expression(input1,3));
+    printf("Evaluation of expression %s is: %d \n", input2, evaluate_expression(input2,9));
 
-// All tests passed 
+
+}
+
+// All tests passed
 void TEST_infix_to_postfix_BOTH_L2R_R2L_ASSOCIATIVITY(void){
     
     // Test inputs with only L-to-R associativity operators
@@ -179,162 +165,6 @@ void STACK_ADT_test(void){
     printf("Is stack full? %d \n", STACK_isFull());
     
 }
-
-
-// =========== Node Operation Implementation ===========
-
-// Allocate memory for a node and initialize it
-node* create_node(char data){
-    
-    node *temp = (node *)malloc(sizeof(node));
-    if(temp){
-        // Memory allocation successfull, initialize it with data and return pointer
-        temp->data = data;
-        return temp;
-    }
-    
-    // Memory allocation not successfull i.e. stack overflow
-    return NULL;
-}
-// =========== Node Operation Implementation ===========
-
-// =========== Stack Operation Implementation ===========
-
-// Simple initialization of the stack's top pointer
-void STACK_Init(stack *s){
-    s->top=NULL;
-}
-
-// This function is used to push new elements on to the stack iff memory for a new node can be allocated - i.e. stack is not full
-void STACK_push(stack *s, char data){
-    
-    // Request memory for a new node
-    node *newNode = create_node(data);
-    
-    // Check if memory successfully allocated
-    if(newNode){
-        // Memory allocated successfully.
-        
-        // Add new node to the front of the Stack
-        newNode->next = s->top;
-        
-        // update top of the stack
-        s->top = newNode;
-    }else{
-        // Memory allocation for new node not successfull
-        printf("Stack overflow.\n");
-    }
-}
-
-// Diplay the content of the stack, the stack is passed by value, so its a copy
-// The stack is passed by value so its a copy of the original stack created in main, HOWEVER, the "top" pointer inside stack copy
-// is pointer to the original head of the stack, so don't move that - HENCE the need for *temp at start.
-void STACK_display(stack s){
-    
-    while(s.top!=NULL){
-        
-        // Print current node data
-        printf("%d ", s.top->data);
-        
-        // Move top pointer to the next element
-        s.top = s.top->next;
-        
-    }
-    printf("\n");
-}
-
-// Remove the top of the stack and update top pointer to the next node iff the stack is not empty -> i.e. top!=NULL
-char STACK_pop(stack *s){
-    // Place holder for value popped from the stack
-    //int x = INT_MIN;
-    char x=' ';
-    
-    if(s->top){
-        
-        // Stack is not empty
-        
-        // Temporay pointer for updating deleting node that is popped
-        node *temp =  s->top;
-        
-        // Get the data in top element of stack
-        x = temp->data;
-        
-        // Update top to the next element of the stack
-        s->top = s->top->next;
-        
-        // Return the allocated memory of the node removed from stack
-        free(temp);
-        temp = NULL;
-    }
-    
-    // This will return top data from stack or will return INT_MIN if the stack was empty
-    return x;
-    
-    
-}
-
-// This function will move the top pointer to the position given and return its data.
-// The stack is passed by value so its a copy of the original stack created in main.
-char STACK_peak(stack s, char position){
-    
-    // Move top pointer to the position given
-    int i;
-    for(i=1; i<position && s.top!=NULL; i++){
-        // Move top pointer to the next node in the stack
-        s.top = s.top->next;
-    }
-    
-    // Check if the top is pointing to a valid node before you return the data of the node
-    if(s.top){
-        // Valid node, return its data
-        return s.top->data;
-    }
-    
-    // The stack is empty, return this
-    return ' ';
-}
-// Returns top element of the stack
-char STACK_top(stack s){
-    
-    if(s.top){
-        // top pointer is not NULL, i.e. stack not empty
-        return s.top->data;
-    }
-    // Return space if nothing there
-    return ' ';
-}
-
-// Check if the top pointer of the stack is not NULL
-int STACK_isEmpty(stack s){
-    if(s.top){
-        // top pointer is not NULL, i.e. stack is not empty
-        return 0;
-    }
-    return 1;
-}
-
-// Try allocating memory for a node from heap, if not successfull, the stack is full
-int STACK_isFull(void){
-    
-    // Allocate memory for a node with random data
-    node *temp = create_node(1);
-    
-    // Check if memory allocation successful
-    if(temp){
-        // Memory allocated successfully
-        // Return the allocated memory
-        free(temp);
-        
-        // Return false because stack is not full i.e. was able to allocate memory from heap
-        return 0;
-    }
-    
-    // Unable to allocate memory from heap - return true to indicate stack is full
-    return 1;
-}
-// =========== Stack Operation Implementation ===========
-
-
 
 /*
     This is a helper function to check if the closing bracket is same type as its opening bracket
@@ -476,7 +306,6 @@ int parenthesis_matching(char* str){
  */
 
 // Assuming the infix expression will have lower case operands and only the following operators
-// Compiler giving erros with '\' for division, so using '/' instead
 int isOperand(char ch){
     if( ch=='+' || ch=='-' || ch=='/' || ch=='*' )
     {
@@ -486,7 +315,6 @@ int isOperand(char ch){
 }
 
 // Returns precedence of the operator - based on table above
-// Compiler giving erros with '\' for division, so using '/' instead
 int precedance(char ch){
     if(ch=='+' || ch=='-'){
         return 1;
@@ -603,7 +431,6 @@ char* infix_to_postfix(char *infix, int size){
         lower than top of stack operator's inside precedence -> add operands to the postfix expression directly -> for brackets the outside and inside precedence will be equal,
         in this case only pop the opening bracket from the stack, don't have to add it to the postfix expression.
  
-        NOTE::   Using '/' for '\' because compiler giving error.
             
  
  */
@@ -729,6 +556,111 @@ char* infix_to_postfix_2(char *infix, int size){
     postfix[j]='\0';
     
     return postfix;
+    
+}
+
+/*
+    In computers, infix expressions are first converted to postfix expression and then evaluated - this way the expression is evaluated in a single scan.
+    
+    Assuming we have the postfix expresion, you evaluate this as follows:
+            As you scan the postfix expression, Operands are pushed into stack and whenever you get an operator, you pop two operands and perform operation, followed
+                by pushing the result on to the stack again.
+        
+    Note:
+            The first operand popped from the stack is the right operand and the second operand is the left operand.
+ */
+int convert_to_integer(char ch){
+    
+    if(ch=='1'){
+        return 1;
+    }else if(ch=='2'){
+        return 2;
+    }else if(ch=='3'){
+        return 3;
+    }else if(ch=='4'){
+        return 4;
+    }else if(ch=='5'){
+        return 5;
+    }else if(ch=='6'){
+        return 7;
+    }else if(ch=='8'){
+        return 8;
+    }else if(ch=='9'){
+        return 9;
+    }
+    
+    // Number not defined
+    return -1;
+}
+int evaluate(int left_operand,int right_operand, char operator){
+    
+    if(operator=='+'){
+        return (left_operand+right_operand);
+    }else if(operator=='-'){
+        return (left_operand-right_operand);
+    }else if(operator=='*'){
+        return (left_operand*right_operand);
+    }else if(operator=='/'){
+         return (left_operand/right_operand);
+    }
+    
+    // For Operator not defined
+    return 0;
+    
+}
+int evaluate_expression(char *infix, int size){
+    
+    
+    // Declare and initialize stack
+    int_stack operand_stack;
+    INT_STACK_Init(&operand_stack);
+    
+    // Postfix expression
+    char *postfix = NULL;
+    
+    // Place holders for operands and result
+    int right_operand, left_operand;
+    int operation_result;
+    
+    // convert infix expression to postfix
+    postfix = infix_to_postfix_2(infix, size);
+    
+    // variable to scan through postfix
+    int i =0;
+    
+    // Scan postfix until you reach end
+    while(postfix[i]!='\0'){
+        
+        // check if current char is operand
+        
+        if(isOperand(postfix[i])){
+            
+            // is operand
+            // Push the operand to the stack
+            INT_STACK_push(&operand_stack, convert_to_integer(postfix[i]));
+            
+            // Move to next char in the postfix expression
+            i++;
+        }else{
+            
+            // is operator, pop two operands from the stack
+            // Get right and left operands from stack
+            right_operand = INT_STACK_pop(&operand_stack);
+            left_operand =  INT_STACK_pop(&operand_stack);
+            
+            // Evaluate the operation
+            operation_result = evaluate(left_operand,right_operand, postfix[i]);
+            
+            // Push result of the operation to the stack
+            INT_STACK_push(&operand_stack, operation_result);
+            
+            // Move to next char in postfix expression
+            i++;
+        }
+    } // End of postfix expression scan
+    
+    // Expression result is in the stack
+    return INT_STACK_pop(&operand_stack);
     
 }
 // =========== Stack Applications  ===========
