@@ -47,20 +47,49 @@ int STACK_isFull(void);
 // Program functions
 void STACK_ADT_test(void);
 void TEST_parenthesis_matching(void);
-void TEST_infix_to_postfix(void);
+void TEST_infix_to_postfix_ONLY_L2R_ASSOCIATIVITY(void);
+void TEST_infix_to_postfix_BOTH_L2R_R2L_ASSOCIATIVITY(void);
+
 
 // Stack Applications
 int parenthesis_matching(char* str);
-char* infix_to_postfix(char *infix, int size);
+char* infix_to_postfix(char *infix, int size);  // No brackets, only Left-to-right associativity operators
+char* infix_to_postfix_2(char *infix, int size); // Brackets and both left-to-right, and right-to left associativity operators
 
 int main(int argc, const char * argv[]) {
     
-    TEST_infix_to_postfix();
+    TEST_infix_to_postfix_BOTH_L2R_R2L_ASSOCIATIVITY();
     return 0;
 }
 
+
+// All tests passed 
+void TEST_infix_to_postfix_BOTH_L2R_R2L_ASSOCIATIVITY(void){
+    
+    // Test inputs with only L-to-R associativity operators
+    char *input1 = "a+b"; // Postfix = ab+ = result -> passed
+    char *input2 ="a+b*c-d/e"; // Postfix = a+[bc*]-d/e -> a+[bc*]-[de/] -> [abc*+]-[de/] -> [abc*+de/-] = result -> Passed
+    char *input3 ="a+b+c*d"; // postix = a+b+[cd*] -> [ba+]+[cd*] -> [ab+cd*+] -> Passed
+    char *input4 ="a+b*c"; // postfix = abc*+ -> passed
+    char *input5 ="a+b!"; // Postfix = a+[b!] -> [ab!+] -> passed
+    
+    // Test input with brackets, L-to-R and R-to-L associativity operators
+    char *input6 = "((a+b)*c)-d^e^f"; // Postix = ([ab+]*c)-d^e^f -> [ab+c*]-d^e^f -> [ab+c*]-d^[ef^] -> [ab+c*]-[def^^] -> [ab+c*def^^-] = Result -> Passed
+    
+    
+    // Function tests
+    printf("Postfix of infix %s is: %s \n", input1, infix_to_postfix_2(input1, 3));
+    printf("Postfix of infix %s is: %s \n", input2, infix_to_postfix_2(input2, 9));
+    printf("Postfix of infix %s is: %s \n", input3, infix_to_postfix_2(input3, 7));
+    printf("Postfix of infix %s is: %s \n", input4, infix_to_postfix_2(input4, 5));
+    printf("Postfix of infix %s is: %s \n", input5, infix_to_postfix_2(input5, 4));
+    printf("Postfix of infix %s is: %s \n", input6, infix_to_postfix_2(input6, 15));
+    
+}
+
+
 // All tests passed
-void TEST_infix_to_postfix(void){
+void TEST_infix_to_postfix_ONLY_L2R_ASSOCIATIVITY(void){
     
     // Test inputs
     char *input1 ="a+b";  // postix = ab+  -> passed
@@ -76,6 +105,7 @@ void TEST_infix_to_postfix(void){
     char *input2 ="a+b*c-d/e"; // Postfix = a+[bc*]-d\e -> a+[bc*]-[de\] -> [abc*+]-[de\] -> [abc*+de\-] = result -> Passed
     char *input3 ="a+b+c*d"; // postix = a+b+[cd*] -> [ba+]+[cd*] -> [ab+cd*+] -> passed
     char *input4 ="a+b*c"; // postfix = abc*+ -> passed
+    
     
     // Function tests
     printf("Postfix of infix %s is: %s \n", input1, infix_to_postfix(input1, 3));
@@ -525,5 +555,180 @@ char* infix_to_postfix(char *infix, int size){
     
     // return postfix expression
     return postfix;
+}
+
+/*
+    This function is similar to the previous infix to postfix, the only difference is that:
+        Previous function only works for operators that have right-to-left associativity and it doesn't work with brackets
+    
+    This function works for all operators, including brackets and left-to-right and right-to-left associativity.
+    
+    The idea is similar to the previous function: Using a stack and a precedence table to pop/push operators to/from stack and send
+    operands directly to the postfix expression. The precedence table for this function is setup such that operators with Left-to-right
+    associativity have a lower precedence outside the stack (i.e. in infix expression) and greater precedence when they're inside the
+    stack. Similarly, operators withh right-to-left associativity have a higher precedence outside the stack and greater precedence
+    when inside the stack.
+ 
+    The limited operators and their "out and in" stack precedence are shown below: (you can add more as needed based on the associativtity
+    of the desired operator)
+ 
+    In a computer, the operator precedence is the following order of increasing precedence:
+ 
+     operator            | Outside Stack precedence | Inside Stack precedence    |  Associativity
+     - +                 |      1                   |        2                   |     Left-to-Right
+     * /                 |      3                   |        4                   |     Left-to-Right
+     ^                   |      6                   |        5                   |     Right-to-Left
+     (                   |      7                   |        0                   |     Left-to-Right
+     )                   |      0                   |        ?                   |     Left-to-Right
+     
+ 
+    Notes:  The operators with l-to-r associativity have increasing precedence from outside to inside stack
+            The operators with r-to-l associativity have decreasing precendce from inside to outside stack
+            Closing brackets are never pushed to the stack. In and out precedence are only equal when you have opening bracket at top of stack and found a closing in infix,
+                you pop the bracket and move on to next character in the infix, i.e. don't add brackets to the postfix expression.
+            You can add more operators to the table above by determining if its associativity and assigning precedence correctly.
+ 
+    The general code idea:
+                Scan through the given infix expression, if the current character is an operand, add it to postfix string, else if the outside precedence of
+                    the current operator (i.e. from infix) is higher than the in-stack precedence of the top element of the stack - you push the current operator
+                    to the stack and move to the next character.
+                When you come across an operator in the infix expression who's outside stack precedence is lower than
+                    the precedence of the top element of stack, you pop the top element of the stack and add it to the postfix expression - you repeat this until the top
+                    of stack has lower in-stack precendence operator than the current operator of infix expression. At this point, you push the current operator to the stack at this point and move to the next character of the infix expression.
+                When you come across an operator in the infix expression who'se outside stack precedence is equal to the top of the stack operator precedence (which is only
+                    possible if you come across a closing bracket and the stack has an opening bracket at the top of the element) -> in this case you pop top of the stack only (i.e.
+                    don't add this operator to the postfix expression, and you only move to the next character of the infix expression, leaving the postfix string where it is.
+ 
+        Scan the infix -> push operators with higher outside stack precedence than in-stack top element precedence -> pop and add to postfix expression if outside precedence
+        lower than top of stack operator's inside precedence -> add operands to the postfix expression directly -> for brackets the outside and inside precedence will be equal,
+        in this case only pop the opening bracket from the stack, don't have to add it to the postfix expression.
+ 
+        NOTE::   Using '/' for '\' because compiler giving error.
+            
+ 
+ */
+
+int isOperand_2(char ch){
+    if( ch=='+' || ch=='-' || ch=='/' || ch=='*' || ch=='^' || ch=='(' || ch==')')
+    {
+       return 0;
+    }
+    return 1;
+}
+/*
+    Inside stack precedence of operators -> add more operators as needed - make sure to assign precendence based on associativity - read notes above
+    
+ */
+int in_stack_precedence(char ch){
+    
+    if(ch == '+' || ch=='-'){
+        return 2;
+    }else if(ch == '*' || ch=='/'){
+        return 4;
+    }else if(ch == '^'){
+        return 5;
+    }else if(ch == '('){
+        return 0;
+    }
+    
+    // Precedence not defined
+    return -1;
+}
+
+/*
+    Outside stack precedence of operators -> add more operators as needed - make sure to assign precendence based on associativity - read notes above
+ */
+int out_stack_precedence(char ch){
+    
+    if(ch == '+' || ch=='-'){
+        return 1;
+    }else if(ch == '*' || ch=='/'){
+        return 3;
+    }else if(ch == '^'){
+        return 6;
+    }else if(ch == '('){
+        return 7;
+    }else if(ch == ')'){
+        return 0;
+    }
+    
+    // Precedence not defined
+    return -1;
+}
+char* infix_to_postfix_2(char *infix, int size){
+    
+    
+    // Declare and initiliaze a stack
+    stack operator_stack;
+    STACK_Init(&operator_stack);
+    
+    // Allocate memory for postfix expression
+    char *postfix = (char *)malloc(size*sizeof(char)+1);
+    
+    // Variables to scan infix and postfix
+    int i=0, j=0;
+    
+    // Scan till the end of the infix expression
+    while(infix[i]!='\0'){
+        
+        // Check if current infix expression char is operand or operator
+        if(isOperand_2(infix[i])){
+            
+            // Is an operand
+            
+            // Add operands to the stack
+            postfix[j]=infix[i];
+            
+            // Move to next spot of both expressions
+            i++;
+            j++;
+            
+        }else{
+            
+            // Is an operator
+            
+            // Check for outside-stack precedence with in-stack precedence
+            if(out_stack_precedence(infix[i]) > in_stack_precedence(STACK_top(operator_stack))){
+                
+                // Outside stack operator precedence higher
+                //  Push the operator to the stack
+                STACK_push(&operator_stack, infix[i]);
+                
+                // Move to next char of infix
+                i++;
+            }else if(out_stack_precedence(infix[i]) < in_stack_precedence(STACK_top(operator_stack))){
+                
+                // Outside stack operator precedence is lower
+                // Pop from stack and add to postfix expression
+                
+                postfix[j]=STACK_pop(&operator_stack);
+        
+                // Move to next spot on postfix expression ONLY
+                j++;
+            }else{
+                
+                // Outside stack operator and top of stack operator precendences are equal -> i.e. closing bracket found in infix, and opening bracket at top of stack
+                
+                // Pop the stack ONLY, don't add to the postfix expression
+                STACK_pop(&operator_stack);
+        
+                // Move to next spot on infix expression ONLY
+                i++;
+            }
+        }
+    } // End of infix expression scan
+    
+    // If stack not empty, pop all the elements and add it to the postfix
+    while(!STACK_isEmpty(operator_stack)){
+        
+        postfix[j] = STACK_pop(&operator_stack);
+        j++;
+    }
+    
+    // Add null character to string and return postfix string
+    postfix[j]='\0';
+    
+    return postfix;
+    
 }
 // =========== Stack Applications  ===========
