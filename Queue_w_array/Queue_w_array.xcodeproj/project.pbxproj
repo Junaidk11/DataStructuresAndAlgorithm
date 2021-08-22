@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2249D39826D23D5100BE8A69 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2249D39726D23D5100BE8A69 /* main.c */; };
 		2249D3A026D244FB00BE8A69 /* integer_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 2249D39F26D244FB00BE8A69 /* integer_queue.c */; };
+		2249D3A326D254DA00BE8A69 /* integer_circular_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 2249D3A226D254DA00BE8A69 /* integer_circular_queue.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		2249D39726D23D5100BE8A69 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		2249D39E26D244FB00BE8A69 /* integer_queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = integer_queue.h; sourceTree = "<group>"; };
 		2249D39F26D244FB00BE8A69 /* integer_queue.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = integer_queue.c; sourceTree = "<group>"; };
+		2249D3A126D254DA00BE8A69 /* integer_circular_queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = integer_circular_queue.h; sourceTree = "<group>"; };
+		2249D3A226D254DA00BE8A69 /* integer_circular_queue.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = integer_circular_queue.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +66,8 @@
 				2249D39726D23D5100BE8A69 /* main.c */,
 				2249D39E26D244FB00BE8A69 /* integer_queue.h */,
 				2249D39F26D244FB00BE8A69 /* integer_queue.c */,
+				2249D3A126D254DA00BE8A69 /* integer_circular_queue.h */,
+				2249D3A226D254DA00BE8A69 /* integer_circular_queue.c */,
 			);
 			path = Queue_w_array;
 			sourceTree = "<group>";
@@ -123,6 +128,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2249D3A326D254DA00BE8A69 /* integer_circular_queue.c in Sources */,
 				2249D3A026D244FB00BE8A69 /* integer_queue.c in Sources */,
 				2249D39826D23D5100BE8A69 /* main.c in Sources */,
 			);
