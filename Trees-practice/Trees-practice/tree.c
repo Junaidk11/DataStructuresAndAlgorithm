@@ -26,7 +26,78 @@ tree_node* create_treenode(int data){
     return newNode;
 }
 
+
+
 // ======= Tree Node Functions ========
+
+// ======= Tree Traversal Functions ========
+
+/*
+    
+     Process root/parent node, then recursive call on left-child, followed by recursive call on right-child
+            think of a line at the left side of each node, then trace from root node going left, print/process the node you come across
+            first
+ 
+    The tree_node pointer is passed by value, so we can use it to traverse the tree as it is not the original tree root pointer
+ */
+void pre_order(tree_node* node){
+    if(node!=NULL){
+        
+        // Process/Print current node
+        printf("%d ",node->data);
+        
+        // Recursive call on left-subtree
+        pre_order(node->left_child);
+        
+        // Recursive call on right-subtree
+        pre_order(node->right_child);
+    }
+}
+/*
+     Recursive call on left-child,  Process root/parent node, followed by recursive call on right-child:
+            think of a line at the bottom of each node, then trace from root node going left, print/process the node you come across
+            first
+                                    
+ 
+    The tree_node pointer is passed by value, so we can use it to traverse the tree as it is not the original tree root pointer
+ */
+void in_order(tree_node* node){
+    if(node!=NULL){
+        
+        // Recursive call on left-subtree
+        in_order(node->left_child);
+        
+        // Process/Print current node
+        printf("%d ",node->data);
+        
+        // Recursive call on right-subtree
+        in_order(node->right_child);
+    }
+}
+
+/*
+     Recursive call on left-child, then recursive call on right-child, followed by Processing root/parent node,
+            think of a line at the right of each node, then trace from root node going left, print/process the node you come across
+            first
+                                    
+ 
+    The tree_node pointer is passed by value, so we can use it to traverse the tree as it is not the original tree root pointer
+ */
+void post_order(tree_node* node){
+    if(node!=NULL){
+        
+        // Recursive call on left-subtree
+        post_order(node->left_child);
+        
+        // Recursive call on right-subtree
+        post_order(node->right_child);
+        
+        // Process/Print current node
+        printf("%d ",node->data);
+    }
+}
+
+// ======= Tree Traversal Functions ========
 
 // ======= Queue Node Functions ========
 queue_node* QUEUE_createNode(tree_node *address){

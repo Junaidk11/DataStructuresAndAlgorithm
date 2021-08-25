@@ -43,6 +43,11 @@ struct QUEUE{
 
 // Tree Node Operations
 tree_node* create_treenode(int data);
+void pre_order(tree_node* node);
+void in_order(tree_node* node);
+void post_order(tree_node* node);
+
+
 
 
 // Queue Node Functions
