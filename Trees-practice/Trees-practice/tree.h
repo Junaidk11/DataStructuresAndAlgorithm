@@ -46,7 +46,7 @@ tree_node* create_treenode(int data);
 
 
 // Queue Node Functions
-queue_node* QUEUE_NODE_createNode(tree_node *address);
+queue_node* QUEUE_createNode(tree_node *address);
 
 // Queue Operations
 void QUEUE_initialize(queue *q);

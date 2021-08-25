@@ -29,7 +29,7 @@ tree_node* create_treenode(int data){
 // ======= Tree Node Functions ========
 
 // ======= Queue Node Functions ========
-queue_node* QUEUE_NODE_createNode(tree_node *address){
+queue_node* QUEUE_createNode(tree_node *address){
     
     // Allocate memory for node in heap
     queue_node *newNode  = (queue_node *)malloc(sizeof(queue_node));
@@ -115,7 +115,7 @@ tree_node* QUEUE_dequeue(queue *q){
 void QUEUE_enqueue(queue *q, tree_node *address){
     
     // create a queue node
-    queue_node *newNode = QUEUE_NODE_createNode(address);
+    queue_node *newNode = QUEUE_createNode(address);
     
     
     // Check if this is the first node

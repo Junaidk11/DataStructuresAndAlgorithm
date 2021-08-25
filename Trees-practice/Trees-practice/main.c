@@ -18,7 +18,7 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 
-// Test passed.
+// Test passed. 
 void TEST_create_a_tree(void){
     
     // Create a root node first
