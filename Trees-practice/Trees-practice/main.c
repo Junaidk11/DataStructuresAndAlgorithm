@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "tree.h"
+#include "stack.h"
 
 
 /*
@@ -22,15 +23,16 @@
 void TEST_create_a_tree(void);
 void TEST_tree_traversal(void);
 
+
 int main(int argc, const char * argv[]) {
     
     TEST_tree_traversal();
     return 0;
 }
 
-// Recursive Pre-order passed.
-// Recursive In-order passed.
-// Recursive Post-order passed.
+// Recursive & Iterative Pre-order passed.
+// Recursive & Iterative In-order passed.
+// Recursive & Iterative Post-order passed.
 void TEST_tree_traversal(void){
     
     // Create root node of the tree
@@ -46,20 +48,31 @@ void TEST_tree_traversal(void){
     create_tree(&tree_nodes);
     
     // Pre order traversal of the tree
-    printf("Pre-Order Traversal of tree: ");
-    pre_order(root);
+    printf("Recursive Pre-Order Traversal of tree: ");
+    Recursive_pre_order(root);
+    printf("\n");
+    
+    printf("Iterative Pre-Order Traversal of tree: ");
+    Iterative_pre_order(root);
     printf("\n");
     
     // In-order traversal of the tree
     printf("In-Order Traversal of tree: ");
-    in_order(root);
+    Recursive_in_order(root);
+    printf("\n");
+    
+    printf("Iterative In-Order Traversal of tree: ");
+    Iterative_in_order(root);
     printf("\n");
     
     // Post-order traversal of the tree
     printf("Post-Order Traversal of tree: ");
-    post_order(root);
+    Recursive_post_order(root);
     printf("\n");
     
+    printf("Iterative Post-Order Traversal of tree: ");
+    Iterative_post_order(root);
+    printf("\n");
 }
 // Test passed. 
 void TEST_create_a_tree(void){

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2249D3E326D5C62300BE8A69 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2249D3E226D5C62300BE8A69 /* main.c */; };
 		2249D3EE26D5C9B100BE8A69 /* tree.c in Sources */ = {isa = PBXBuildFile; fileRef = 2249D3ED26D5C9B100BE8A69 /* tree.c */; };
+		2296917026D6DE3F002B089A /* stack.c in Sources */ = {isa = PBXBuildFile; fileRef = 2296916F26D6DE3F002B089A /* stack.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		2249D3E226D5C62300BE8A69 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		2249D3EC26D5C9B100BE8A69 /* tree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tree.h; sourceTree = "<group>"; };
 		2249D3ED26D5C9B100BE8A69 /* tree.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = tree.c; sourceTree = "<group>"; };
+		2296916E26D6DE3F002B089A /* stack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stack.h; sourceTree = "<group>"; };
+		2296916F26D6DE3F002B089A /* stack.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = stack.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +66,8 @@
 				2249D3E226D5C62300BE8A69 /* main.c */,
 				2249D3EC26D5C9B100BE8A69 /* tree.h */,
 				2249D3ED26D5C9B100BE8A69 /* tree.c */,
+				2296916E26D6DE3F002B089A /* stack.h */,
+				2296916F26D6DE3F002B089A /* stack.c */,
 			);
 			path = "Trees-practice";
 			sourceTree = "<group>";
@@ -123,6 +128,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2296917026D6DE3F002B089A /* stack.c in Sources */,
 				2249D3EE26D5C9B100BE8A69 /* tree.c in Sources */,
 				2249D3E326D5C62300BE8A69 /* main.c in Sources */,
 			);
