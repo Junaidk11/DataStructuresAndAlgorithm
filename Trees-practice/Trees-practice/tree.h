@@ -44,18 +44,6 @@ struct QUEUE{
 // Tree Node Operations
 tree_node* create_treenode(int data);
 
-// Tree Traversals
-void Recursive_pre_order(tree_node* node);
-void Recursive_in_order(tree_node* node);
-void Recursive_post_order(tree_node* node);
-void Iterative_pre_order(tree_node* node);
-void Iterative_in_order(tree_node* node);
-void Iterative_post_order(tree_node* node);
-void level_order(tree_node* node);
-
-
-
-
 // Queue Node Functions
 queue_node* QUEUE_createNode(tree_node *address);
 
@@ -69,5 +57,15 @@ int QUEUE_isEmpty(queue q);
 
 // Additional Functions
 void create_tree(queue* nodes);
+
+// Tree Traversals
+void Recursive_pre_order(tree_node* node);
+void Recursive_in_order(tree_node* node);
+void Recursive_post_order(tree_node* node);
+void Iterative_pre_order(tree_node* node);
+void Iterative_in_order(tree_node* node);
+void Iterative_post_order(tree_node* node);
+void level_order(tree_node* node);
+
 
 #endif /* queue_h */
