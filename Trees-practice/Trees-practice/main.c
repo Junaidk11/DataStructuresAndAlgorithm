@@ -24,6 +24,7 @@
 // Functions
 int count_total_number_of_nodes(tree_node *node);
 int count_nodes_with_degree_two(tree_node *node);
+int sum_of_all_nodes_data(tree_node *node);
 
 
 // Test Programs
@@ -40,6 +41,7 @@ int main(int argc, const char * argv[]) {
 
 // Counting total number of nodes in the tree: psssed.
 // Counting number of nodes with degree two: passed.
+// Sum of all node data in the tree: passed.
 void TEST_operations_on_tree(void){
     
     // Create a root node for your tree first
@@ -65,7 +67,9 @@ void TEST_operations_on_tree(void){
     
     // Count the number of nodes in the tree
     printf("Number of nodes in the tree with degree two: %d \n", count_nodes_with_degree_two(root));
-     
+    
+    // Count the number of nodes in the tree
+    printf("Sum of all data in the tree %d \n", sum_of_all_nodes_data(root));
     
 }
 // Recursive & Iterative Pre-order passed.
@@ -143,9 +147,10 @@ void TEST_create_a_tree(void){
 
 
 /*
-    In this function you're counting the number of nodes in a given tree. The function is recursive and is similar to post-order traversal
+    In this function you're counting the number of nodes in a given tree.
+    The function is recursive and is similar to post-order traversal
     of a tree.
- 
+    
     Note: Most of the operations you perform on a tree are done in post-order. This simple function can be adapted to
           many different things on the tree.
  
@@ -164,7 +169,8 @@ int count_total_number_of_nodes(tree_node *node){
         // The '1' accounts for the current node
         return left_subtree_nodes+right_subtree_nodes+1;
     }
-    // Base case, i.e. when you reach a leaf node
+    // This is the base case of the recursive function. I.e. when you reach the leaf nodes's children (which are NULL),
+    // return 0 to go back to the leaf node level.
     return 0;
 }
 
@@ -199,6 +205,34 @@ int count_nodes_with_degree_two(tree_node *node){
             return left_subtree_degree_2_nodes+right_subtree_degree_2_nodes;
         }
     }
-    // Base case, i.e. when you reach a leaf node
+    // This is the base case of the recursive function. I.e. when you reach the leaf nodes's children (which are NULL),
+    // return 0 to go back to the leaf node level.
     return 0;
 }
+
+/*
+    This function returns the sum of all the nodes data.
+ 
+    Similar to previous functions, just a minor change.
+ */
+int sum_of_all_nodes_data(tree_node *node){
+    
+    int left_subtree_sum, right_subtree_sum;
+    
+    if(node!=NULL){
+        
+        // get sum of left subtree nodes
+        left_subtree_sum = sum_of_all_nodes_data(node->left_child);
+        
+        // getn sum of right subtree nodes
+        right_subtree_sum = sum_of_all_nodes_data(node->right_child);
+        
+        // add current nodes sum to the left and right subtree sum
+        return left_subtree_sum+right_subtree_sum+node->data;
+    }
+    
+    // This is the base case of the recursive function. I.e. when you reach the leaf nodes's children (which are NULL),
+    // return 0 to go back to the leaf node level.
+    return 0;
+}
+
