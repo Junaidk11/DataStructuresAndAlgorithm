@@ -25,6 +25,7 @@
 int count_total_number_of_nodes(tree_node *node);
 int count_nodes_with_degree_two(tree_node *node);
 int sum_of_all_nodes_data(tree_node *node);
+int calculate_height_of_tree(tree_node *node);
 
 
 // Test Programs
@@ -42,6 +43,7 @@ int main(int argc, const char * argv[]) {
 // Counting total number of nodes in the tree: psssed.
 // Counting number of nodes with degree two: passed.
 // Sum of all node data in the tree: passed.
+// Height of tree : passed but still needs to be worked on - will work but the logic is iffy.
 void TEST_operations_on_tree(void){
     
     // Create a root node for your tree first
@@ -70,6 +72,10 @@ void TEST_operations_on_tree(void){
     
     // Count the number of nodes in the tree
     printf("Sum of all data in the tree %d \n", sum_of_all_nodes_data(root));
+    
+    // Count the number of nodes in the tree
+    printf("Height of tree is %d \n", calculate_height_of_tree(root));
+    
     
 }
 // Recursive & Iterative Pre-order passed.
@@ -117,7 +123,7 @@ void TEST_tree_traversal(void){
     Iterative_post_order(root);
     printf("\n");
     
-    //leve;-order traversal of the tree
+    //level-order traversal of the tree
     printf("Level-Order Traversal of tree: ");
     level_order(root);
     printf("\n");
@@ -236,3 +242,28 @@ int sum_of_all_nodes_data(tree_node *node){
     return 0;
 }
 
+/*
+    Calculating height of a tree : this function returns the height as actual height + 1 -> i.e. takes root node to be at height 1 if you
+    return 0 at base case.
+ */
+int calculate_height_of_tree(tree_node *node){
+    
+    int left_subtree_height=0, right_subtree_height=0;
+    
+    // Base case
+    if(node==NULL){
+        return -1; // If we return = 0 we get the height as actualHeight+1 b/c root node considered as height 1
+    }
+    
+    // Recursive calls
+    left_subtree_height = calculate_height_of_tree(node->left_child);
+    right_subtree_height = calculate_height_of_tree(node->right_child);
+    
+    
+    if(left_subtree_height>right_subtree_height){
+        return left_subtree_height+1;
+    }else{
+        return right_subtree_height+1;
+    }
+
+}
