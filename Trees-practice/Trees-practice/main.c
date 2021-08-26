@@ -12,18 +12,34 @@
 
 /*
     
-    E.g. Tree
+    E.g. 1  Tree
+ 
                Root
                 8
           3            5
         4   9       7     2
  */
 
+/*
+    
+    E.g. 2  Tree
+ 
+                    Root
+                    10
+          20                30
+    40          50
+                    60
+ 
+ */
 
 
 // Functions
 int count_total_number_of_nodes(tree_node *node);
 int count_nodes_with_degree_two(tree_node *node);
+int count_only_leaf_nodes(tree_node *node);
+int count_nodes_with_degree_1_or_2(tree_node *node);
+int count_nodes_with_only_degree_1(tree_node *node);
+
 int sum_of_all_nodes_data(tree_node *node);
 int calculate_height_of_tree(tree_node *node);
 
@@ -42,12 +58,14 @@ int main(int argc, const char * argv[]) {
 
 // Counting total number of nodes in the tree: psssed.
 // Counting number of nodes with degree two: passed.
+// Counting number of nodes with degree two/one: passed.
+// Counting number of nodes with degree zero: passed.
 // Sum of all node data in the tree: passed.
 // Height of tree : passed but still needs to be worked on - will work but the logic is iffy.
 void TEST_operations_on_tree(void){
     
     // Create a root node for your tree first
-    tree_node *root = create_treenode(8);
+    tree_node *root = create_treenode(10);
     
     // Declare and initialize a queue to create the rest of the sample tree
     queue tree_nodes;
@@ -71,7 +89,20 @@ void TEST_operations_on_tree(void){
     printf("Number of nodes in the tree with degree two: %d \n", count_nodes_with_degree_two(root));
     
     // Count the number of nodes in the tree
+    printf("Number of nodes in the tree with degree one: %d \n", count_nodes_with_only_degree_1(root));
+    
+
+    // Count the number of nodes in the tree
+    printf("Number of nodes in the tree with degree 0 (i.e. leaf nodes): %d \n", count_only_leaf_nodes(root));
+    
+    // Count the number of nodes in the tree
+    printf("Number of nodes in the tree with degree one/two: %d \n", count_nodes_with_degree_1_or_2(root));
+    
+    
+    // Count the number of nodes in the tree
     printf("Sum of all data in the tree %d \n", sum_of_all_nodes_data(root));
+    
+    
     
     // Count the number of nodes in the tree
     printf("Height of tree is %d \n", calculate_height_of_tree(root));
@@ -217,6 +248,102 @@ int count_nodes_with_degree_two(tree_node *node){
 }
 
 /*
+    The recursive function is same as previous. The only difference is the counting condition.
+ 
+    For a node to be a leaf node, the left and right child pointers should be NULL.
+ */
+int count_only_leaf_nodes(tree_node *node){
+    int left_subtree_degree_0_nodes, right_subtree_degree_0_nodes;
+    if(node!=NULL){
+        // Count the number of nodes with degree two in the left subtree of current node first
+        left_subtree_degree_0_nodes = count_only_leaf_nodes(node->left_child);
+        
+        // next, Count the number of nodes with degree two in the right subtree of current node
+        right_subtree_degree_0_nodes = count_only_leaf_nodes(node->right_child);
+        
+        // Count current node only if the current node has a degree of 0
+        if(node->left_child==NULL && node->right_child==NULL){
+            // Current node has degree of 0
+            // Both left and right child don't exist - count this node
+            // The '1' accounts for the current node
+            return left_subtree_degree_0_nodes+right_subtree_degree_0_nodes+1;
+        }else{
+            // Current node has either left/right child or both - i.e. is not a leaf node
+            // Don't count current node
+            return left_subtree_degree_0_nodes+right_subtree_degree_0_nodes;
+        }
+    }
+    // This is the base case of the recursive function. I.e. when you reach the leaf nodes's children (which are NULL),
+    // return 0 to go back to the leaf node level.
+    return 0;
+    
+}
+
+/*
+    The recursive function is same as previous. The only difference is the counting condition.
+ 
+    For a node to be of degree 1 or 2, the left/right or both child pointers should not be NULL.
+ */
+int count_nodes_with_degree_1_or_2(tree_node *node){
+    int left_subtree_internal_nodes, right_subtree_internal_nodes;
+    if(node!=NULL){
+        // Count the number of nodes with degree two in the left subtree of current node first
+        left_subtree_internal_nodes = count_nodes_with_degree_1_or_2(node->left_child);
+        
+        // next, Count the number of nodes with degree two in the right subtree of current node
+        right_subtree_internal_nodes = count_nodes_with_degree_1_or_2(node->right_child);
+        
+        // Count current node only if the current node has a degree of two or 1
+        if(node->left_child!=NULL || node->right_child!=NULL){
+            // Current node has degree of 0
+            // Both left right child exist or one of them exist - count this node as its an internal node
+            // The '1' accounts for the current node
+            return left_subtree_internal_nodes+right_subtree_internal_nodes+1;
+        }else{
+            // Current node has neither left/right child - i.e. is a leaf node
+            // Don't count current node
+            return left_subtree_internal_nodes+right_subtree_internal_nodes;
+        }
+    }
+    // This is the base case of the recursive function. I.e. when you reach the leaf nodes's children (which are NULL),
+    // return 0 to go back to the leaf node level.
+    return 0;
+    
+}
+
+/*
+    The recursive function is same as previous. The only difference is the counting condition.
+ 
+    For a node to be of degree 1, either left/right child pointers should not be NULL i.e. both can't exist or both can't be NULL.
+ */
+int count_nodes_with_only_degree_1(tree_node *node){
+    int left_subtree_degree_1_nodes, right_subtree_degree_1_nodes;
+    if(node!=NULL){
+        // Count the number of nodes with degree two in the left subtree of current node first
+        left_subtree_degree_1_nodes = count_nodes_with_only_degree_1(node->left_child);
+        
+        // next, Count the number of nodes with degree two in the right subtree of current node
+        right_subtree_degree_1_nodes = count_nodes_with_only_degree_1(node->right_child);
+        
+        // Count current node only if the current node has a degree of 1
+        if( (node->left_child!=NULL && node->right_child==NULL) ||  (node->left_child==NULL && node->right_child!=NULL)){
+            // Current node has degree of 1
+            // Only left/right child exist - count this node as its an internal node with degree 1
+            // The '1' accounts for the current node
+            return left_subtree_degree_1_nodes+right_subtree_degree_1_nodes+1;
+        }else{
+            // Current node has either both left/right children or neither - i.e. it has a degree of 2 or it is a leaf node
+            // Don't count current node
+            return left_subtree_degree_1_nodes+right_subtree_degree_1_nodes;
+        }
+    }
+    // This is the base case of the recursive function. I.e. when you reach the leaf nodes's children (which are NULL),
+    // return 0 to go back to the leaf node level.
+    return 0;
+}
+
+
+/*
     This function returns the sum of all the nodes data.
  
     Similar to previous functions, just a minor change.
@@ -267,3 +394,5 @@ int calculate_height_of_tree(tree_node *node){
     }
 
 }
+
+
