@@ -285,6 +285,54 @@ void Iterative_post_order(tree_node* node){
         
     }
 }
+
+/*
+    The idea is to use a Queue.
+        You visit a node, then you add the node's address to the queue.
+        Next iteration, you remove the node at the front of the queue, you print the data of the left child followed by
+        adding it to the queue, then you print the data of its right child and add it to queue.
+            This repeated until the queue is empty.
+ 
+    So, you print a nodes data, then you add it to the queue. For each node you dequeue, you print the data of left child, add it to queue,
+    print the data of right child, and at it to queue. These steps are repeated until the queue is not empty.
+ */
+void level_order(tree_node* node){
+    
+    // Declare and initialize a queue
+    queue tree_nodes;
+    QUEUE_initialize(&tree_nodes);
+    
+    // process the given node's data first
+    printf(" %d", node->data);
+    
+    // Add node to the queue
+    QUEUE_enqueue(&tree_nodes, node);
+    
+    // Repeat steps until queue is empty
+    while(!QUEUE_isEmpty(tree_nodes)){
+        
+        // First dequeue node from the queue
+        node = QUEUE_dequeue(&tree_nodes);
+        
+        // Process/Print left child iff it exists
+        if(node->left_child){
+            printf(" %d",node->left_child->data);
+            
+            // Add left_child to the queue
+            QUEUE_enqueue(&tree_nodes, node->left_child);
+        }
+        
+        // Process/print right child iff it exists
+        if(node->right_child){
+            printf(" %d", node->right_child->data);
+            
+            // Add right childd to the queue
+            QUEUE_enqueue(&tree_nodes, node->right_child);
+        }
+        
+    }// Level order traversal of tree completed.
+}
+
 // ======= Tree Traversal Functions ========
 
 // ======= Queue Node Functions ========

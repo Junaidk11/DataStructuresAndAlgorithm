@@ -33,6 +33,7 @@ int main(int argc, const char * argv[]) {
 // Recursive & Iterative Pre-order passed.
 // Recursive & Iterative In-order passed.
 // Recursive & Iterative Post-order passed.
+// Iterative Level order Passed.
 void TEST_tree_traversal(void){
     
     // Create root node of the tree
@@ -72,6 +73,11 @@ void TEST_tree_traversal(void){
     
     printf("Iterative Post-Order Traversal of tree: ");
     Iterative_post_order(root);
+    printf("\n");
+    
+    //leve;-order traversal of the tree
+    printf("Level-Order Traversal of tree: ");
+    level_order(root);
     printf("\n");
 }
 // Test passed. 
