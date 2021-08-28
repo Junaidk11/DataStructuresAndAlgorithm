@@ -32,30 +32,96 @@
  
  */
 
+// Create a tree function - Use this to create tree for testing a function - root_data is the root node data
+tree_node* createTree(int root_data);
 
-// Functions
+// General Binary Tree Functions
 int count_total_number_of_nodes(tree_node *node);
 int count_nodes_with_degree_two(tree_node *node);
 int count_only_leaf_nodes(tree_node *node);
 int count_nodes_with_degree_1_or_2(tree_node *node);
 int count_nodes_with_only_degree_1(tree_node *node);
-
 int sum_of_all_nodes_data(tree_node *node);
 int calculate_height_of_tree(tree_node *node);
 
+// Binary Search Tree Functions
+tree_node* Recurisve_BinarySearch(tree_node* headptr, int key);
+tree_node* Iterative_BinarySearch(tree_node* headptr, int key);
 
 // Test Programs
 void TEST_create_a_tree(void);
 void TEST_tree_traversal(void);
 void TEST_operations_on_tree(void);
+void TEST_searchBST(void);
 
 
 int main(int argc, const char * argv[]) {
     
-    TEST_operations_on_tree();
+    TEST_searchBST();
     return 0;
 }
 
+/*
+
+        Binary Search Tree
+
+                    Root
+                    10
+            8                30
+        4       9        20       50
+          
+
+*/
+
+// Recursive Binary Search on BST - test passed.
+// Iterative Binary Search on BST - test passed.
+void TEST_searchBST(void){
+    // Create a Binary Tree
+    
+    // Use -1 for nodes with no right/left child
+    tree_node *root = createTree(10);
+     
+    
+    // ===== Recursive Implementation ======
+    // Search for key in tree
+    tree_node *searchResult = Recurisve_BinarySearch(root, 4);
+    
+    if(searchResult){
+        printf("Key found = %d. Pointer to the node is %p. \n", searchResult->data, &searchResult);
+    }else{
+        printf("Key not found. \n");
+    }
+    
+    // Search for key not in tree
+    searchResult = Recurisve_BinarySearch(root, 1);
+    
+    if(searchResult){
+        printf("Key found = %d. Pointer to the node is %p. \n", searchResult->data, &searchResult);
+    }else{
+        printf("Key not found. \n");
+    }
+
+    // ===== Iterative Implementation ======
+    
+    // Search for key in tree
+    searchResult = Iterative_BinarySearch(root, 4);
+    
+    if(searchResult){
+        printf("Key found = %d. Pointer to the node is %p. \n", searchResult->data, &searchResult);
+    }else{
+        printf("Key not found. \n");
+    }
+    
+    // Search for key not in tree
+    searchResult = Iterative_BinarySearch(root, 1);
+    
+    if(searchResult){
+        printf("Key found = %d. Pointer to the node is %p. \n", searchResult->data, &searchResult);
+    }else{
+        printf("Key not found. \n");
+    }
+    
+}
 // Counting total number of nodes in the tree: psssed.
 // Counting number of nodes with degree two: passed.
 // Counting number of nodes with degree two/one: passed.
@@ -182,6 +248,25 @@ void TEST_create_a_tree(void){
     
 }
 
+//  ========== Creating a tree function =======
+// Tested and it works.
+tree_node* createTree(int root_data){
+    // Create root node of the tree
+    tree_node *root = create_treenode(root_data);
+    
+    // Declare and initialize a queue to create the rest of the sample tree above
+    queue tree_nodes;
+    
+    // add root node into queue
+    QUEUE_enqueue(&tree_nodes, root);
+    
+    // Call helper function to create the rest of tree
+    create_tree(&tree_nodes);
+
+    return root;
+}
+
+//  ========== Creating a tree function =======
 
 /*
     In this function you're counting the number of nodes in a given tree.
@@ -395,4 +480,52 @@ int calculate_height_of_tree(tree_node *node){
 
 }
 
+/*
+    Recursively searching a Binary Search Tree for the given key.
+    Time complexity -> Search depends on height of binary tree, which is logn < h < n, we take minimum so -> logn is search time
+    
+    Since there is no operation performed after the recursive call returns, this a tail recursion - can easily be converte to an iterative
+    solution using a while loop
+ */
+tree_node* Recurisve_BinarySearch(tree_node* headptr, int key){
+    
+    // base case of recursion
+    if(headptr==NULL){
+        // key not found in the tree
+        return NULL;
+    }
+    
+    // Recursive Calls
+    if(headptr->data == key){
+        // Key found, return node address
+        return headptr;
+    }else if(headptr->data > key){
+        // the key is in right subtree, if it exists
+        return Recurisve_BinarySearch(headptr->left_child, key);
+    }else{
+        // the key is in left subtree, if it exists
+        return Recurisve_BinarySearch(headptr->right_child, key);
+    }
+}
 
+/*
+    The recursive implementation of the binary search on a Binary tree
+ */
+tree_node* Iterative_BinarySearch(tree_node* headptr, int key){
+    
+    while(headptr!=NULL){
+        
+        if(key==headptr->data){
+            return headptr;
+        }else if(key < headptr->data){
+            // Key has to be in left subtree, if it exist
+            headptr = headptr->left_child;
+        }else{
+            // Key has to be in right subtree, if it exist
+            headptr = headptr->right_child;
+        }
+    }
+    
+    // key not found or tree empty
+    return NULL;
+}
