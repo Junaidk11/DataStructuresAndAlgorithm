@@ -34,6 +34,7 @@
 
 // Create a tree function - Use this to create tree for testing a function - root_data is the root node data
 tree_node* createTree(int root_data);
+void disply_tree(tree_node *root);
 
 // General Binary Tree Functions
 int count_total_number_of_nodes(tree_node *node);
@@ -47,17 +48,19 @@ int calculate_height_of_tree(tree_node *node);
 // Binary Search Tree Functions
 tree_node* Recurisve_BinarySearch(tree_node* headptr, int key);
 tree_node* Iterative_BinarySearch(tree_node* headptr, int key);
+void Insert_BST(tree_node *headptr, int key);
 
 // Test Programs
 void TEST_create_a_tree(void);
 void TEST_tree_traversal(void);
 void TEST_operations_on_tree(void);
 void TEST_searchBST(void);
+void TEST_insertBST(void);
 
 
 int main(int argc, const char * argv[]) {
     
-    TEST_searchBST();
+    TEST_insertBST();
     return 0;
 }
 
@@ -73,6 +76,39 @@ int main(int argc, const char * argv[]) {
 
 */
 
+void TEST_insertBST(void){
+    // Create a Binary Tree
+    
+    // Use -1 for nodes with no right/left child
+    tree_node *root = createTree(10);
+    
+    
+    // Search for key in tree before adding
+    tree_node *searchResult = Recurisve_BinarySearch(root, 60);
+    
+    if(searchResult){
+        printf("Key found = %d. Pointer to the node is %p. \n", searchResult->data, &searchResult);
+    }else{
+        printf("Key not found. \n");
+    }
+    
+    // We're assuming the tree is already populated - so don't have to worry about adding new key to the root
+    // so we pass the tree root pointer by value and not by reference
+    Insert_BST(root, 60);
+    
+    
+    // Search for key in tree again
+    searchResult = Recurisve_BinarySearch(root, 60);
+    
+    if(searchResult){
+        printf("Key found = %d. Pointer to the node is %p. \n", searchResult->data, &searchResult);
+    }else{
+        printf("Key not found. \n");
+    }
+    
+    
+    
+}
 // Recursive Binary Search on BST - test passed.
 // Iterative Binary Search on BST - test passed.
 void TEST_searchBST(void){
@@ -532,3 +568,56 @@ tree_node* Iterative_BinarySearch(tree_node* headptr, int key){
     // key not found or tree empty
     return NULL;
 }
+
+/*
+        Inserting a new node into a BST.
+        
+        The new node is only added if it doesn't exist in the tree. New nodes in a BST are always added as leaf nodes.
+        
+        First you have to find the parent node of this key node (assuming key is not in the BST) -> if the parent node data is
+        greater than key, then insert new node as left child, else as right child.
+            First you find the parent node, then you link the new node to it (as left/right child depending on parent node data).
+                To be able to do this, you need two tailing pointers, one pointer will search until it reaches the leaf node (i.e. NULL),
+                and the other will tail this pointer so that it can be used to link the new node to the parent's respective child pointer.
+        
+        Time complexity of this is logn because we're searching the tree to find the correct place for the new key and search of
+        binary tree depends on the height of the tree - we know binary tree height range is logn - n, we take the min, which is logn.
+ */
+void Insert_BST(tree_node *headptr, int key){
+    
+    // The tailing pointer - using headptr to move forward because its a copy of the original headptr
+    tree_node *follower = NULL, *newNode = NULL;
+    
+    // Find the node where the key will go in the BST
+    while(headptr!=NULL){
+        
+        // Move follower where headptr is
+        follower = headptr;
+        
+        // Update forward aka headptr
+        if(key==headptr->data){
+            // Key already exist - return
+            return;
+        }else if(key < headptr->data){
+            // Key will go in left subtree
+            headptr = headptr->left_child;
+        }else{
+            // Key will go in right subtree
+            headptr = headptr->right_child;
+        }
+    }
+    
+    // At this point, headptr reached end of tree, follower is pointing to the leaf node where the new key goes
+    // Create new node
+    newNode = create_treenode(key);
+    
+    // Link the new node to the existing leaf node
+    if(key < follower->data){
+        // New node goes to the left child
+        follower->left_child = newNode;
+    }else{
+        follower->right_child = newNode;
+    }
+    
+}
+
