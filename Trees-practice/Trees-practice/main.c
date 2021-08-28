@@ -509,7 +509,8 @@ tree_node* Recurisve_BinarySearch(tree_node* headptr, int key){
 }
 
 /*
-    The recursive implementation of the binary search on a Binary tree
+    The recursive implementation of the binary search on a Binary tree.
+    Time complexity: Search time depends on tree height and minimum height of Binary tree is logn, this is the time complexity. 
  */
 tree_node* Iterative_BinarySearch(tree_node* headptr, int key){
     
