@@ -646,6 +646,12 @@ void Insert_BST(tree_node *headptr, int key){
 
 /*
     This is a recursive implementation of creating BST.
+ 
+    Time complexity:
+            For a given key, first you search the tree to find its position - this takes logn time because search depends on height
+            of Binary tree and the minimum height of a Binary tree is logn. For given n keys, we search the BST n times, so the complexity
+            because n*logn. Finally, the creation of the new node takes constant time so the time complexity of creating a
+            BST for n given nodes is o(nlogn)
  */
 tree_node* Recursive_InsertBST(tree_node *nodeptr, int key){
     
