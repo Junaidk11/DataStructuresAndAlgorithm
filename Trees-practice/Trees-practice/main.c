@@ -49,6 +49,7 @@ int calculate_height_of_tree(tree_node *node);
 tree_node* Recurisve_BinarySearch(tree_node* headptr, int key);
 tree_node* Iterative_BinarySearch(tree_node* headptr, int key);
 void Insert_BST(tree_node *headptr, int key);
+tree_node* Recursive_InsertBST(tree_node *nodeptr, int key);
 
 // Test Programs
 void TEST_create_a_tree(void);
@@ -56,11 +57,12 @@ void TEST_tree_traversal(void);
 void TEST_operations_on_tree(void);
 void TEST_searchBST(void);
 void TEST_insertBST(void);
+void TEST_RecursiveCreationOfBST(void);
 
 
 int main(int argc, const char * argv[]) {
     
-    TEST_insertBST();
+    TEST_RecursiveCreationOfBST();
     return 0;
 }
 
@@ -76,6 +78,26 @@ int main(int argc, const char * argv[]) {
 
 */
 
+// Test passed.
+void TEST_RecursiveCreationOfBST(void){
+    
+    // Declare a root pointer of the BST
+    tree_node *root = NULL;
+    root = Recursive_InsertBST(root, 10);
+    
+    // Add new Nodes
+    Recursive_InsertBST(root, 8);
+    Recursive_InsertBST(root, 4);
+    Recursive_InsertBST(root, 9);
+    Recursive_InsertBST(root, 30);
+    Recursive_InsertBST(root, 20);
+    Recursive_InsertBST(root, 50);
+    
+   // In order traversal of BST - should print the tree in ascending order
+    Iterative_in_order(root);
+    printf("\n");
+    
+}
 void TEST_insertBST(void){
     // Create a Binary Tree
     
@@ -621,3 +643,42 @@ void Insert_BST(tree_node *headptr, int key){
     
 }
 
+
+/*
+    This is a recursive implementation of creating BST.
+ */
+tree_node* Recursive_InsertBST(tree_node *nodeptr, int key){
+    
+    // Pointer for new node
+    tree_node *newNode;
+    
+    if(nodeptr==NULL){
+        
+        // Reached the end of a tree, create a new node here
+        newNode = (tree_node*)malloc(sizeof(tree_node));
+        
+        if(newNode){
+            // memory allocated successfully
+            newNode->data = key;
+            newNode->right_child = NULL;
+            newNode->left_child = NULL;
+            return newNode;
+        }else{
+            printf("Memory allocation for node failed.\n");
+        }
+        
+    }else if(nodeptr->data > key){
+        // The new key should go to left subtree
+        // Call recursive function on left subtree by passing the left child as root node,
+        // At return, the new node will be assigned to the current node's left child
+        nodeptr->left_child = Recursive_InsertBST(nodeptr->left_child, key);
+    }else{
+        // The new key should go to right subtree
+        // Call recursive function on right subtree by passing the right child as root node,
+        // At return, the new node will be assigned to the current node's right child
+        nodeptr->right_child = Recursive_InsertBST(nodeptr->right_child, key);
+    }
+    
+    // Returning the current node pointer to the previous function call
+    return nodeptr;
+}
