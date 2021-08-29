@@ -50,7 +50,7 @@ tree_node* Recurisve_BinarySearch(tree_node* headptr, int key);
 tree_node* Iterative_BinarySearch(tree_node* headptr, int key);
 void Insert_BST(tree_node *headptr, int key);
 tree_node* Recursive_InsertBST(tree_node *nodeptr, int key);
-tree_node* Delete_BST(tree_node **root, tree_node *nodeptr, int key);
+tree_node* Delete_BST(tree_node *nodeptr, int key);
 
 
 // Test Programs
@@ -102,23 +102,23 @@ void TEST_deleteFromBST(void){
     printf("\n");
     
     // Delete a node
-    Delete_BST(&root, root, 50);
+    Delete_BST(root, 50);
     Iterative_in_order(root);
     printf("\n");
     
     // Delete a node
-    Delete_BST(&root, root, 30);
+    Delete_BST( root, 30);
     Iterative_in_order(root);
     printf("\n");
     
     // Delete a node
-    Delete_BST(&root, root, 10);
+    Delete_BST( root, 10);
     Iterative_in_order(root);
     printf("\n");
     
     
     // Delete a node
-    Delete_BST(&root, root, 4);
+    Delete_BST(root, 4);
     Iterative_in_order(root);
     printf("\n");
     
@@ -739,7 +739,7 @@ tree_node* Recursive_InsertBST(tree_node *nodeptr, int key){
         There are 3 possible cases:
                 The key to delete is a leaf node.
                 The key to delete has a single child.
-                The key to delete is the root node.
+                The key to delete has two children.
     In all three cases we don't want to adjust every single link to ensure that the BST properties are held. Therefore, the best method for deleting a key
     from a BST is to replace its data with EITHER this Node's in-order traversal pre-decessor OR the in-order successor - i.e. when you perform
     in-order traversal on the give BST, the node that comes before the key to be delete is = in-order predecessor and the node that comes
@@ -808,8 +808,44 @@ tree_node* get_in_order_succceessor(tree_node *nodeptr){
     return nodeptr;
 }
 
-// Root node address passed just incase the node to delete is actually the root node.
-tree_node* Delete_BST(tree_node **root, tree_node *nodeptr, int key){
+
+/*
+E.g. Tracing the Delete a key from BST:
+ 
+        Binary Search Tree
+
+                    Root
+                    10
+            8                30
+        4       9        20       50
+    
+        
+        In this example, suppose you want to delete key 50 ->
+                    The root node will be passed first, and then you will go to right subtree of 10, then right subtree of 30 to reach 50.
+                    At key 50, this the node to be deleted, the height of its left and right subtree is 0, because its a leaf node, so
+                    you will simply delete this node - the number recursive function calls made to delete 50 is 4 because at 50 you will call delete
+                    on its right child (because of code default case). You return with NULL, and then you return to previous call where nodeptr is pointing
+                    at 50, which has no children, so it is deleted and you return NULL to the previous call - where nodeptr is pointing to key 30, and its
+                    its right child is now NULL because 50 was deleted. Next, we return 30's address to previous call (which is the first call) where
+                    nodeptr is pointing to root node 10, so we returned 30's address to the right_child pointer of 10. And finally we return to main
+                    the root node address.
+    
+        In this example, suppose you want to delete 8 ->
+                    The root node will be passed first, and then you will go to the left subtree to reach 8. At key 8, this the node to be deleted,
+                     the height of its left and right subtree is 1, since its same, you will replace this node with 9 and 9's node will be deleted from the
+                    tree.
+                    The number of recursive function calls made to delete 8 is 3 because at 8 you will replace its data with its in-order sucessor which
+                    is 9 and then you will call delete on key = 9 and start search at 8's right child(which is key = 9's node) because BST
+                    cannot have duplicates. So, at key = 9's node you will delete this node because it is a leaf node (degree = 0). You return with NULL,
+                    and then you return to previous call where nodeptr is pointing at key=8's node, which HAD two children before and HAD data 8, but now its
+                    data is 9 and its right child is NULL (so now only 1 child), so we shifted key=9 to key=8's location and deleted the physical
+                    node of key=9. Now you return address of key=9 (was previous key=8's address) to the previous call - where nodeptr is pointing to key 10
+                    (the root node), and its left child is still pointing to the same address as of key=8 BUT now that node's data is 9 because we deleted
+                    physical node of key=9 and moved its data to key=8. Next, we return 10's address to main, which is the root node address.
+                    
+ 
+*/
+tree_node* Delete_BST(tree_node *nodeptr, int key){
     
     // ============ 3. This part is where the node is actually deleted  ============
     
@@ -824,11 +860,6 @@ tree_node* Delete_BST(tree_node **root, tree_node *nodeptr, int key){
         
         // Reached a leaf node - i.e. degree of node is 0
         // In deleting a node from a BST, you physically delete only the leaf node because nodes of the key to be deleted get shifted up
-        
-        if(nodeptr==*root){
-            // The node is the root node
-            *root = NULL;
-        }
         free(nodeptr);
         return NULL;
     }
@@ -843,10 +874,10 @@ tree_node* Delete_BST(tree_node **root, tree_node *nodeptr, int key){
     // Find the key to be deleted
     if(nodeptr->data < key){
         // key is in right subtree
-        nodeptr->right_child = Delete_BST(root,nodeptr->right_child, key);
+        nodeptr->right_child = Delete_BST(nodeptr->right_child, key);
     }else if(nodeptr->data > key){
         // key is in left subtree
-        nodeptr->left_child = Delete_BST(root,nodeptr->left_child, key);
+        nodeptr->left_child = Delete_BST(nodeptr->left_child, key);
         
     // ===================     This part is searching for the key to delete  =========================
     }else{
@@ -865,7 +896,7 @@ tree_node* Delete_BST(tree_node **root, tree_node *nodeptr, int key){
             
             // Now delete the pre-decessor node from the BST, because BST cannot have duplicates
             // We return the node
-            nodeptr->left_child = Delete_BST(root,nodeptr->left_child, temp->data);
+            nodeptr->left_child = Delete_BST(nodeptr->left_child, temp->data);
         }else{
             
             // Right subtree is longer, take the successor node of in-order traversal to replace the node to be deleted
@@ -876,7 +907,7 @@ tree_node* Delete_BST(tree_node **root, tree_node *nodeptr, int key){
             
             // Now delete the successor node from the BST, because BST cannot have duplicates
             // We return the node
-            nodeptr->right_child = Delete_BST(root,nodeptr->right_child, temp->data);
+            nodeptr->right_child = Delete_BST(nodeptr->right_child, temp->data);
         }
         
     // ============ This part is replacing the key found with the in-order predecessor node or successor node's data  by replacing   ============
