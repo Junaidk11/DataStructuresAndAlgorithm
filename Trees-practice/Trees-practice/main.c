@@ -50,6 +50,8 @@ tree_node* Recurisve_BinarySearch(tree_node* headptr, int key);
 tree_node* Iterative_BinarySearch(tree_node* headptr, int key);
 void Insert_BST(tree_node *headptr, int key);
 tree_node* Recursive_InsertBST(tree_node *nodeptr, int key);
+tree_node* Delete_BST(tree_node **root, tree_node *nodeptr, int key);
+
 
 // Test Programs
 void TEST_create_a_tree(void);
@@ -58,11 +60,12 @@ void TEST_operations_on_tree(void);
 void TEST_searchBST(void);
 void TEST_insertBST(void);
 void TEST_RecursiveCreationOfBST(void);
+void TEST_deleteFromBST(void);
 
 
 int main(int argc, const char * argv[]) {
     
-    TEST_RecursiveCreationOfBST();
+    TEST_deleteFromBST();
     return 0;
 }
 
@@ -78,6 +81,48 @@ int main(int argc, const char * argv[]) {
 
 */
 
+
+// Deleting a node from a BST - Passed - still need to review this.
+void TEST_deleteFromBST(void){
+    
+    // Declare a root pointer of the BST
+    tree_node *root = NULL;
+    root = Recursive_InsertBST(root, 10);
+    
+    // Add new Nodes
+    Recursive_InsertBST(root, 8);
+    Recursive_InsertBST(root, 4);
+    Recursive_InsertBST(root, 9);
+    Recursive_InsertBST(root, 30);
+    Recursive_InsertBST(root, 20);
+    Recursive_InsertBST(root, 50);
+    
+   // In order traversal of BST - should print the tree in ascending order
+    Iterative_in_order(root);
+    printf("\n");
+    
+    // Delete a node
+    Delete_BST(&root, root, 50);
+    Iterative_in_order(root);
+    printf("\n");
+    
+    // Delete a node
+    Delete_BST(&root, root, 30);
+    Iterative_in_order(root);
+    printf("\n");
+    
+    // Delete a node
+    Delete_BST(&root, root, 10);
+    Iterative_in_order(root);
+    printf("\n");
+    
+    
+    // Delete a node
+    Delete_BST(&root, root, 4);
+    Iterative_in_order(root);
+    printf("\n");
+    
+}
 // Test passed.
 void TEST_RecursiveCreationOfBST(void){
     
@@ -686,5 +731,156 @@ tree_node* Recursive_InsertBST(tree_node *nodeptr, int key){
     }
     
     // Returning the current node pointer to the previous function call
+    return nodeptr;
+}
+
+/*
+    In this function, we delete a given key from a BST.
+        There are 3 possible cases:
+                The key to delete is a leaf node.
+                The key to delete has a single child.
+                The key to delete is the root node.
+    In all three cases we don't want to adjust every single link to ensure that the BST properties are held. Therefore, the best method for deleting a key
+    from a BST is to replace its data with EITHER this Node's in-order traversal pre-decessor OR the in-order successor - i.e. when you perform
+    in-order traversal on the give BST, the node that comes before the key to be delete is = in-order predecessor and the node that comes
+    after the key to be deleted is = in-order nsuccessor.
+        You can either randomly choose which of these two will replace the data of the node to be deleted or you can calculate the height
+        of left and right subtree of the key to be deleted and select the node from the tree with the greater height.
+    
+        The in-order predecessor of a node is the right most child of this (node to be deleted) node's left child - i.e. go left child of the node to be deleted and then go right-child until you reach the end of the tree - i.e. NULL.
+        Similarly,The in-order successor of a node is the left most child of this(node to be deleted) node's right child - i.e. go right child of the node to be deleted and then go left-child until you reach the end of the tree - i.e. NULL.
+ 
+    
+    Note: If the node to be deleted has children, then delete function is called on the node's children to shift the decendants of the node deleted up.
+ 
+    The Time complexity of this deletion of key from a BST is dependent on the height of the tree because you have to find the key first - the height of a
+    binary tree ranges between logn and n, but we usually assume the height is minimum so the time complexity is logn.
+
+    So the KEY IDEA here is, first you find the key to be deleted from the BST and then replace this node's data with the in-order predecessor or
+    in-order successor node's data.
+        This process is repeated until all the node's of the node to be deleted are shifted up the BST to maintain the BST properties. Therefore, the node
+        corresponding to the key to be deleted is not physically deleted, it's data and links are updated with the pre/successor in-order node. The empty
+        leaf node after all decendants of the key to be deleted are shifted up is the only physical node that is deleted from the tree.
+ 
+    Algorithm:
+            First search for the key.
+                if key found:
+                    Find this key's left and right subtree height
+                        If left subtree height is greater:
+                            Find the in-order predecessor of the key to be deleted
+                            Replace the data of the key to be deleted with in-order predecessor node's data
+                            Call delete function on the in-order predecessor's data - this will repeat the steps above from start to shift up the nodes below
+                        If right subtree height is greater:
+                            Find the in-order successor of the key to be deleted
+                            Replace the data of the key to be deleted with in-order successor node's data
+                            Call delete function on the in-order successor's data - this will repeat the steps above from start to shift up the nodes below
+                
+   
+ 
+ */
+
+/*
+    In-order predeceessor of node is the right most child of the given node's left child
+        I.e. go to left child of the given node, then keep going right until you reach the end of tree
+ */
+tree_node* get_in_order_predecessor(tree_node *nodeptr){
+    
+    // go left child first
+    nodeptr = nodeptr->left_child;
+    while(nodeptr && nodeptr->right_child!=NULL){
+        nodeptr = nodeptr->right_child;
+    }
+    
+    return nodeptr;
+}
+
+/*
+    In-order successor of node is the left most child of the given node's right child
+        I.e. go to right child of the given node, then keep going left until you reach the end of tree
+ */
+tree_node* get_in_order_succceessor(tree_node *nodeptr){
+    
+    // go right child first
+    nodeptr = nodeptr->right_child;
+    while(nodeptr && nodeptr->left_child!=NULL){
+        nodeptr = nodeptr->left_child;
+    }
+    return nodeptr;
+}
+
+// Root node address passed just incase the node to delete is actually the root node.
+tree_node* Delete_BST(tree_node **root, tree_node *nodeptr, int key){
+    
+    // ============ 3. This part is where the node is actually deleted  ============
+    
+    if(nodeptr==NULL){
+        
+        //reached left/right child of node or tree was empty
+        return NULL;
+    }
+    
+    
+    if(nodeptr->left_child==NULL && nodeptr->right_child==NULL){
+        
+        // Reached a leaf node - i.e. degree of node is 0
+        // In deleting a node from a BST, you physically delete only the leaf node because nodes of the key to be deleted get shifted up
+        
+        if(nodeptr==*root){
+            // The node is the root node
+            *root = NULL;
+        }
+        free(nodeptr);
+        return NULL;
+    }
+    
+    // ============ This part is where the node is actually deleted  ============
+    
+    
+    // Temp node ptr to find the in-order predecessor or in-order successsor node of a given node in BST
+    tree_node *temp;
+    
+    // ===================    1. This part is searching for the key to delete  =========================
+    // Find the key to be deleted
+    if(nodeptr->data < key){
+        // key is in right subtree
+        nodeptr->right_child = Delete_BST(root,nodeptr->right_child, key);
+    }else if(nodeptr->data > key){
+        // key is in left subtree
+        nodeptr->left_child = Delete_BST(root,nodeptr->left_child, key);
+        
+    // ===================     This part is searching for the key to delete  =========================
+    }else{
+        
+    // ============  2. This part is replacing the key found with the in-order predecessor node or successor node's data  by replacing   ============
+        // The current node has the key - i.e. node to be deleted
+        
+        // To select whether pre-decessor node of in-order or successor of in-order will replace this node: Calculate height of left and right subtrees
+        if(calculate_height_of_tree(nodeptr->left_child)>calculate_height_of_tree(nodeptr->right_child)){
+            
+            // Left subtree is longer, take the pre-decessor node of in-order traversal to replace the node to be deleted
+            temp = get_in_order_predecessor(nodeptr);
+            
+            // Update the key node with temp's data
+            nodeptr->data = temp->data;
+            
+            // Now delete the pre-decessor node from the BST, because BST cannot have duplicates
+            // We return the node
+            nodeptr->left_child = Delete_BST(root,nodeptr->left_child, temp->data);
+        }else{
+            
+            // Right subtree is longer, take the successor node of in-order traversal to replace the node to be deleted
+            temp = get_in_order_succceessor(nodeptr);
+            
+            // Update the key node with temp's data
+            nodeptr->data = temp->data;
+            
+            // Now delete the successor node from the BST, because BST cannot have duplicates
+            // We return the node
+            nodeptr->right_child = Delete_BST(root,nodeptr->right_child, temp->data);
+        }
+        
+    // ============ This part is replacing the key found with the in-order predecessor node or successor node's data  by replacing   ============
+    }
+    
     return nodeptr;
 }
