@@ -51,6 +51,8 @@ tree_node* Iterative_BinarySearch(tree_node* headptr, int key);
 void Insert_BST(tree_node *headptr, int key);
 tree_node* Recursive_InsertBST(tree_node *nodeptr, int key);
 tree_node* Delete_BST(tree_node *nodeptr, int key);
+tree_node* GenerateBST_usingPreOrder(int pre_order[], int arr_size);
+tree_node* GenerateBST_usingPostOrder(int post_order[], int arr_size); // @TODO:
 
 
 // Test Programs
@@ -61,11 +63,13 @@ void TEST_searchBST(void);
 void TEST_insertBST(void);
 void TEST_RecursiveCreationOfBST(void);
 void TEST_deleteFromBST(void);
+void TEST_generateBSTFromPre_order(void);
+void TEST_generateBSTFromPost_order(void);
 
 
 int main(int argc, const char * argv[]) {
     
-    TEST_deleteFromBST();
+    TEST_generateBSTFromPre_order();
     return 0;
 }
 
@@ -80,8 +84,19 @@ int main(int argc, const char * argv[]) {
           
 
 */
-
-
+// Test passed.
+void TEST_generateBSTFromPre_order(void){
+    
+    // Pre order traversal of the BST I want to create
+    int pre_order[]={10, 8, 4, 9, 30, 20,50};
+    
+    tree_node *root = GenerateBST_usingPreOrder(pre_order, 7);
+    
+    // Print in-order traversal to confirm
+    Iterative_in_order(root);
+    
+    
+}
 // Deleting a node from a BST - Passed - still need to review this.
 void TEST_deleteFromBST(void){
     
@@ -915,3 +930,85 @@ tree_node* Delete_BST(tree_node *nodeptr, int key){
     
     return nodeptr;
 }
+
+/*
+ 
+    For generating a unique Binary tree, we need either pre-order + in-order traversal OR post-order + in-order traversal.
+    However, for generating a unique BST, we ONLY need either pre-order OR post-order traversal because we know that in-order traversal of the
+    BST will give the sorted BST in ascending order.
+ 
+    The idea is to scan through the given pre-order traversal array and add the nodes using a Stack.
+    Whenever you add a node as a left child, you suspend the current node by pushing it to a stack and move to the left child.
+    Whenever you want to add a node as right child, you first check if the data is in between the current node's data and the data of the node
+    at the top of the stack:
+            If it is, then you add the node to the right child and you DON'T suspend the current node, you simply move to the next data in the pre-order
+            traveral array.
+            If it is not, then you pop the top of the stack and check if the node to be added is going to the left child or the right child - repeating the
+            steps above. i.e. if new node goes to left child, you add the node and suspend the current node else you check if the new node is in range of
+            current node's data and the top of the stack node's data before addding the new node to the right child.
+ 
+        NOTE: If stack is empty, assume top of stack node's data is infinity.
+ 
+    The time complexity of this method is o(n) because we scan through the pre-order array once and create the BST.
+ */
+tree_node* GenerateBST_usingPreOrder(int pre_order[], int arr_size){
+    
+    // Create root node first
+    tree_node *root = create_treenode(pre_order[0]);
+    
+    // Create a temp pointer to create the rest of the BST tree, and newNode for creating new nodes
+    tree_node *temp = root, *newNode =NULL;
+    
+    // For scanning the pre-order array
+    int i=1;
+    
+    // Declare and initialize a stack
+    stack BST_nodes;
+    STACK_Init(&BST_nodes);
+    
+    // Repeating steps for adding nodes to the BST
+    while(i<arr_size){
+        if(pre_order[i] < temp->data){
+            // Add node to the left child of current node
+            
+            // Create new node
+            newNode = create_treenode(pre_order[i]);
+            temp->left_child = newNode;
+            
+            // Suspend the current node
+            STACK_push(&BST_nodes, temp);
+            
+            // Move temp to the new node created
+            temp = temp->left_child;
+            
+            // Move to next element
+            i++;
+                                                
+        }else{
+            
+            // Check if the new node is in range of current node's data and top of stack node
+            if( (pre_order[i]> temp->data && pre_order[i] < STACK_top(BST_nodes) ) ||
+                (pre_order[i] > temp->data && STACK_isEmpty(BST_nodes)) ){
+                
+                // Create new node
+                newNode = create_treenode(pre_order[i]);
+                
+                // New node is in range
+                temp->right_child = newNode;
+                
+                // move temp to the new node
+                temp = temp->right_child;
+                
+                i++;
+            }else{
+                
+                // Pop node from the top of the stack
+                temp  = STACK_pop(&BST_nodes);
+            }
+            
+        }
+    }
+    
+    return root;
+}
+

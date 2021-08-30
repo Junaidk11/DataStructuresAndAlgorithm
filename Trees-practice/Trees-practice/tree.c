@@ -215,6 +215,7 @@ void Iterative_in_order(tree_node* node){
             node = node->right_child;
         }
     }
+    printf("\n");
 }
 
 /*
@@ -284,6 +285,7 @@ void Iterative_post_order(tree_node* node){
         }
         
     }
+    printf("\n");
 }
 
 /*

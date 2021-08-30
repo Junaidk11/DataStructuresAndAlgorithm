@@ -33,6 +33,7 @@ stack_node* STACK_create_node(tree_node *address);
 void STACK_push(stack *st, tree_node *address);
 tree_node* STACK_pop(stack *st);
 int STACK_isEmpty(stack st);
+int STACK_top(stack st);
 
 
 

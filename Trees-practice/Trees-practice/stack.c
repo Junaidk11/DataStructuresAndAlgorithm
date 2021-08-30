@@ -6,6 +6,7 @@
 //
 
 #include "stack.h"
+#include <limits.h>
 // Basci stack operations
 
 void STACK_Init(stack *st){
@@ -105,4 +106,16 @@ int STACK_isEmpty(stack st){
     
     // stack is empty
     return 1;
+}
+
+/*
+    Return data of top node of the stack
+ */
+int STACK_top(stack st){
+    if(st.top){
+        return st.top->address->data;
+    }else{
+        // Stack is empty
+        return INT_MIN;
+    }
 }
